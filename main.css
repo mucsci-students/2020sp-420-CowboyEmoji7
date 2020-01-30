@@ -1,0 +1,211 @@
+
+
+body{
+    margin: 0px;
+    padding: 0px;
+}
+
+.main-body{
+    height: 250vh;
+    margin-top: 10px;
+    margin-left: 275px;
+    margin-bottom: 5px;
+    margin-right: 5px;
+    display: flex;
+}
+
+.navBar{
+    width: 255px;
+    margin-left: 10px;
+    border-radius: 5px;
+    border: 1px solid gray;
+    box-shadow: 6px 6px 5px rgb(53, 53, 53);
+    position: fixed;
+    background-color: #E4E4E1;
+    background-image: radial-gradient(at top center, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.03) 100%), linear-gradient(to top, rgba(255,255,255,0.1) 0%, rgba(143,152,157,0.60) 100%);
+ 	background-blend-mode: normal, multiply;
+}
+
+.navBarItems{
+    list-style: none;
+    margin-left: 2px;
+}
+
+.navBarItems li {
+    padding-top: 25px;
+}
+
+#AddButton {
+    cursor: pointer;
+    outline: none;
+    background-color: lightskyblue;
+    font-size: 22px;
+    font-weight: bold;
+    font-family: 'Ubuntu', sans-serif;
+    border: none;
+    border-radius: 5px;
+    width: 125px;
+    height: 45px;
+}
+
+#AddButton:hover {
+    color: rgb(65, 65, 65);
+    box-shadow: 5px 8px 8px rgb(36, 36, 36);
+}
+
+.active{
+    color: rgb(65, 65, 65);
+    box-shadow: 5px 8px 8px rgb(36, 36, 36);
+}
+
+.non-active {
+    color: white;
+    box-shadow: 5px 3px 3px rgb(36, 36, 36);
+}
+
+
+#SaveButton {
+    cursor: pointer;
+    outline: none;
+    background-color: rgb(123, 241, 123);
+    font-weight: bold;
+    font-size: 22px;
+    font-family: 'ubuntu', sans-serif;
+    border: none;
+    border-radius: 5px;
+    width: 125px;
+    height: 45px;
+}
+
+#SaveButton:hover{
+    color: rgb(65, 65, 65);
+    box-shadow: 5px 8px 8px rgb(36, 36, 36);
+}
+
+#LoadButton {
+    cursor: pointer;
+    outline: none;
+    background-image: linear-gradient(to right, #f78ca0 0%, #f9748f 19%, #fd868c 60%, #fe9a8b 100%);
+    font-weight: bold;
+    font-size: 22px;
+    font-family: 'Ubuntu', sans-serif;
+    border: none;
+    border-radius: 5px;
+    width: 125px;
+    height: 45px;
+}
+
+#LoadButton:hover {
+    color: rgb(65, 65, 65);
+    box-shadow: 5px 8px 8px rgb(36, 36, 36);
+}
+
+#Delete{
+    cursor: pointer;
+    position: absolute;
+    border-radius: 0px 5px 0px 0px;
+    background-color: red;
+    color: white;
+    font-size: 16px;
+    border: none;
+    right: 0px;
+    top: 0px;
+}
+
+#Delete:hover{
+    background-color: crimson;
+}
+
+.Add-popup{
+    position: sticky;
+    z-index: 1;
+    background-color: lightskyblue;
+    text-align: center;
+    width: 200px;
+    height: 130px;
+    font-size: 16px;
+    font-family: 'Ubuntu', sans-serif;
+    border-radius: 5px;
+    box-shadow: 5px 4px 3px rgb(36, 36, 36);
+    visibility: visible;
+    -webkit-animation: fadeIn .5s;
+    animation: fadeIn .5s
+}
+
+.Add-popup input {
+    padding-left: 5px;
+    margin-top: 15px;
+    border: 1px solid rgb(36, 36, 36);
+    border-radius: 5px;
+    outline: none;
+}
+
+.Add-popup h1 {
+    padding-top: 15px;
+    margin-bottom: 0px;
+    margin-top: 5px;
+    color: rgb(65, 65, 65);
+}
+
+#AddClassForm{
+    display: none;
+}
+
+.SubmitButton {
+    outline: none;
+    cursor: pointer;
+    border: 1px solid rgb(106, 184, 233);
+    background-color: lightskyblue;
+    box-shadow: 2px 2px 1px rgb(36, 36, 36);
+    color: rgb(65, 65, 65);
+    border-radius: 5px;
+    width: 60px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.SubmitButton:hover{
+    background-color: rgb(106, 195, 250);
+    box-shadow: 3px 3px 3px rgb(36, 36, 36);
+}
+
+.CancelButton {
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.Class{
+    width: 200px;
+    height: 75px;
+    font-size: 16px;
+    font-family: 'Ubuntu', sans-serif;
+    background-image: linear-gradient(to top, #c4c5c7 0%, #dcdddf 52%, #ebebeb 100%);
+    cursor: pointer;
+    position: relative;
+    border-radius: 5px;
+    box-shadow: 4px 3px 3px gray;
+    margin-right: 10px;
+    border: .5px solid gray;
+}
+
+.Class:hover {
+    box-shadow: 5px 8px 8px gray;
+}
+
+.className {
+    display: block;
+    text-align: center;
+    border-bottom: none;
+}
+
+@-webkit-keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+  
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
