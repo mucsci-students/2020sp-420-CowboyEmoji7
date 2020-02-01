@@ -1,17 +1,18 @@
 from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-#testing Commit ..
 
 app = Flask (__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///newtest.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 db = SQLAlchemy(app)
 
 class Todo(db.Model):
     name = db.Column(db.String(200), primary_key=True)
     content = db.Column(db.String(200))
     date_created = db.Column(db.DateTime, default = datetime.utcnow)
-
+    x = db.Column(db.Numeric(6,2))
+    y = db.Column(db.Numeric(6,2))
+    
     def __repr__(self):
         return '<Task %r>' % self.id
 
