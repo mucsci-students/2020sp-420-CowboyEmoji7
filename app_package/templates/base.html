@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu&display=swap" rel="stylesheet">
+    <title>UML Editor</title>
+</head>
+<body>
+    <div class="navBar">
+        <ul class="navBarItems">
+            <li><button id="AddButton" class="non-active" onclick="addClass()"><i class="fa fa-plus"></i> Class</button>
+                <span class="Add-popup" id="AddClassForm">
+                    <form action="/" class="form-container" method="POST">
+                        <button id="Delete" class="btn" onclick="cancelAddClass()"><i class="fa fa-close"></i></button>
+                        <h1>Add Class</h1>
+                        <input type="text" placeholder="Enter Class Name" id="ClassInput" name="class_name" required>
+                        <button type="submit" class="btn SubmitButton">Add</button>
+                    </form>
+                </span>
+            </li>
+            <li><button id="SaveButton" class="non-active"><i class="fa fa-save"></i>  Save</button></li>
+            <li><button id="LoadButton" class="non-active"><i class="fa fa-folder"></i> Load</button></li>
+        </ul>
+    </div>
+    <div class="main-body">
+        {% block elements %} {% endblock %}
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.1.0/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.0.5/Draggable.min.js"></script>
+    <script src="{{ url_for('static', filename='javascript/index.js') }}"></script>
+</body>
+</html>

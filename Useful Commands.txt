@@ -1,0 +1,17 @@
+To create a new Database:
+    - In console, navigate to the app folder (2020 cowboy/app)
+    - Type python3(linux/mac) or python (windows)
+    - Type 'from app_package import db'
+    - Type 'from app_package.models import ClassSchema' (plus any other models)
+    - Type 'db.create_all()'
+    - Finally 'exit()'
+
+The enviroment which containes all libraries needed 
+resides in the project directory.  It must be activated to
+run the app:
+    - Navigate to the main project folder ('220 cowboy')
+    - Type 'source env/bin/activate'
+
+To run the website:
+    - python3 run.py (linux/mac) / python run.py (windows)
+    
