@@ -13,19 +13,28 @@
     <div class="navBar">
         <ul class="navBarItems">
             <li><button id="AddButton" class="non-active" onclick="addClass()"><i class="fa fa-plus"></i> Class</button>
-                <span class="Add-popup" id="AddClassForm">
+                <span class="classPopup" id="AddClassForm">
                     <form action="/" class="form-container" method="POST">
-                        <button id="Delete" class="btn" onclick="cancelAddClass()"><i class="fa fa-close"></i></button>
                         <h1>Add Class</h1>
                         <input type="text" placeholder="Enter Class Name" id="ClassInput" name="class_name" required>
                         <button type="submit" class="btn SubmitButton">Add</button>
+                        <button id="DeleteAdd" class="btn" onclick="cancelAddClass()"><i class="fa fa-close"></i></button>
                     </form>
                 </span>
             </li>
-            <li><button id="SaveButton" class="non-active"><i class="fa fa-save"></i>  Save</button></li>
+            <li><button id="SaveButton" class="non-active" onclick="openSaveBox()"><i class="fa fa-save"></i>  Save</button>
+                <span class="savePopup" id="saveForm">
+                    <form action="/" class="form-container" method="POST">
+                        <h1>Save File</h1>
+                        <input type="text" placeholder="Enter File Name" id="saveInput" name="save_name" required>
+                        <button type="submit" class="btn saveButton">Save</button>
+                        <button id="DeleteSave" class="btn" onclick="closeSaveBox()"><i class="fa fa-close"></i></button>
+                    </form>
+                </span>
+            </li>
             <li><button id="LoadButton" class="non-active"><i class="fa fa-folder"></i> Load</button></li>
         </ul>
-    </div>
+    </div>    
     <div class="main-body">
         {% block elements %} {% endblock %}
     </div>
