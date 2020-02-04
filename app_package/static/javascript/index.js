@@ -20,3 +20,14 @@ function cancelAddClass(){
 }
 
 
+function openSaveBox() {
+    document.getElementById('saveForm').style.display = "block";
+    document.getElementById('SaveButton').classList.remove("non-active");
+    document.getElementById('SaveButton').classList.add("active");
+}
+
+function closeSaveBox() {
+    document.getElementById('saveForm').style.display = "none";
+    document.getElementById('SaveButton').classList.remove("active");
+    document.getElementById('SaveButton').classList.add("non-active");
+}

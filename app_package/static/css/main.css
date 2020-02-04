@@ -100,7 +100,7 @@ body{
     box-shadow: 5px 8px 8px rgb(36, 36, 36);
 }
 
-#Delete{
+#DeleteAdd{
     cursor: pointer;
     position: absolute;
     border-radius: 0px 5px 0px 0px;
@@ -112,11 +112,43 @@ body{
     top: 0px;
 }
 
-#Delete:hover{
+#DeleteAdd:hover{
     background-color: crimson;
 }
 
-.Add-popup{
+#DeleteSave{
+    cursor: pointer;
+    position: absolute;
+    border-radius: 0px 5px 0px 0px;
+    background-color: red;
+    color: white;
+    font-size: 16px;
+    border: none;
+    right: 0px;
+    top: 0px;
+}
+
+#DeleteSave:hover{
+    background-color: crimson;
+}
+
+#DeleteClass{
+    cursor: pointer;
+    position: absolute;
+    border-radius: 0px 5px 0px 0px;
+    background-color: red;
+    color: white;
+    font-size: 16px;
+    border: none;
+    right: 0px;
+    top: 0px;
+}
+
+#DeleteClass:hover{
+    background-color: crimson;
+}
+
+.classPopup{
     position: sticky;
     z-index: 1;
     background-color: lightskyblue;
@@ -132,7 +164,7 @@ body{
     animation: fadeIn .5s
 }
 
-.Add-popup input {
+.classPopup input {
     padding-left: 5px;
     margin-top: 15px;
     border: 1px solid rgb(36, 36, 36);
@@ -140,7 +172,7 @@ body{
     outline: none;
 }
 
-.Add-popup h1 {
+.classPopup h1 {
     padding-top: 15px;
     margin-bottom: 0px;
     margin-top: 5px;
@@ -169,11 +201,74 @@ body{
     box-shadow: 3px 3px 3px rgb(36, 36, 36);
 }
 
-.CancelButton {
-    background-color: red;
-    color: white;
-    border: none;
+.savePopup{
+    position: sticky;
+    z-index: 1;
+    background-color: rgb(123, 241, 123);
+    text-align: center;
+    width: 200px;
+    height: 130px;
+    font-size: 16px;
+    font-family: 'Ubuntu', sans-serif;
     border-radius: 5px;
+    box-shadow: 5px 4px 3px rgb(36, 36, 36);
+    visibility: visible;
+    -webkit-animation: fadeIn .5s;
+    animation: fadeIn .5s
+}
+
+.savePopup input {
+    padding-left: 5px;
+    margin-top: 15px;
+    border: 1px solid rgb(36, 36, 36);
+    border-radius: 5px;
+    outline: none;
+}
+
+.savePopup h1 {
+    padding-top: 15px;
+    margin-bottom: 0px;
+    margin-top: 5px;
+    color: rgb(65, 65, 65);
+}
+
+#saveForm{
+    display: none;
+}
+
+.saveButton {
+    outline: none;
+    cursor: pointer;
+    border: 1px solid rgb(123, 241, 123);
+    background-color: rgb(123, 241, 123);
+    box-shadow: 2px 2px 1px rgb(36, 36, 36);
+    color: rgb(65, 65, 65);
+    border-radius: 5px;
+    width: 60px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.saveButton:hover{
+    background-color: rgb(100, 230, 100);
+    box-shadow: 3px 3px 3px rgb(36, 36, 36);
+}
+
+#noClasses {
+    font-family: 'Ubuntu', sans-serif; 
+    left: 50%; 
+    top: 35%; 
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    padding-top: 25px;
+    border-radius: 5px;
+    box-shadow: 4px 3px 3px gray;
+    border: .5px solid gray;
+    width: 250px;
+    height: 50px;
+    background-image: linear-gradient(to top, #c4c5c7 0%, #dcdddf 52%, #ebebeb 100%);
+    position: fixed;
 }
 
 .Class{
