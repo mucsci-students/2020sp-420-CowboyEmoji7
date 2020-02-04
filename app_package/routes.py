@@ -1,5 +1,5 @@
-from app_package.models import ClassSchema
-from flask import render_template, url_for, request, redirect, flash
+from app_package.models import ClassSchema, SaveSchema
+from flask import render_template, json, url_for, request, redirect, flash
 from app_package import app, db
 
 
@@ -38,18 +38,20 @@ def delete(name):
         return 'ERROR: Unable to delete Class'
 
 
-@app.route('/update/<string:name>', methods=['GET', 'POST'])
-def update(name):
-    task = ClassSchema.query.get_or_404(name)
+@app.route('/save/')
+def save():
+    req_pathname = request.files.get('pathname')
 
-    if request.method == 'POST':
-        # set task content to form input
-        task.content = request.form['content']
+    if req_pathname is None:
+        return 'ERROR: Invalid location/name'
 
-        try:
-            db.session.commit()
-            return redirect('/')
-        except:
-            return 'ERROR: There was an issue updating your Class'
-    else:
-        return render_template('update.html', task=task)
+    classes = ClassSchema.query.all()
+    class_schema = SaveSchema(many=True)
+    out = class_schema.dump(classes)
+    
+    # with open(req_pathname, 'w') as f:
+    with open('stuffandthings', 'w') as f:
+        json.dump(out, f, ensure_ascii=False, indent=4)
+        #send_file(attachment_filename='stuffandthings',filename_or_fp=f, as_attachment=True)
+
+    return redirect('/')
