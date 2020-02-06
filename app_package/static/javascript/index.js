@@ -14,8 +14,7 @@ function addClass(){
     document.getElementById('AddButton').classList.add("active");
 }
 
-function cancelAddClass(){
-    document.getElementById('ClassInput').value = "";
+function closeAddClass(){
     document.getElementById('AddClassForm').style.display = "none";
     document.getElementById('AddButton').classList.remove("active");
     document.getElementById('AddButton').classList.add("non-active");
@@ -30,7 +29,6 @@ function openSaveBox() {
 }
 
 function closeSaveBox() {
-    document.getElementById('saveInput').value = "";
     document.getElementById('saveForm').style.display = "none";
     document.getElementById('SaveButton').classList.remove("active");
     document.getElementById('SaveButton').classList.add("non-active");
