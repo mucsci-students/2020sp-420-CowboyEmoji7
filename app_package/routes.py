@@ -1,5 +1,5 @@
 from app_package.models import ClassSchema, SaveSchema
-from flask import render_template, json, url_for, request, redirect, flash
+from flask import render_template, json, url_for, request, redirect, flash, Response
 from app_package import app, db
 
 
@@ -46,11 +46,8 @@ def save():
     class_schema = SaveSchema(many=True)
     out = class_schema.dump(classes)
 
-    with open(name + ".cowboy", 'w') as f:
-        json.dump(out, f, ensure_ascii=False, indent=4)
-        #send_file(attachment_filename='stuffandthings',filename_or_fp=f, as_attachment=True)
-
-    return redirect('/')
+    contents = json.dumps(out, ensure_ascii=False, indent=4)
+    return Response(contents, mimetype="application/json", headers={"Content-disposition":"attachment; filename="+ name + ".json"})
 
 
 @app.route("/load/<string:name>")
