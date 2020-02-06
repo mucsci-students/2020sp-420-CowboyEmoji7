@@ -1,5 +1,5 @@
 To create a new Database:
-    - In console, navigate to the app folder (2020 cowboy/app)
+    - In console, navigate to the app folder (2020 cowboy)
     - Type python3(linux/mac) or python (windows)
     - Type 'from app_package import db'
     - Type 'from app_package.models import ClassSchema, SaveSchema' (plus any other models)
@@ -8,8 +8,7 @@ To create a new Database:
 
 Create a virtual enviroment (only done once):
     - Navigate to directory root
-    - Type 'virtualenv *name_of_env_here*
-                        ^--- usually 'env'
+    - Type 'virtualenv env'
 
 Install all dependencies:
     - Navigate to the main project folder ('220 cowboy')
