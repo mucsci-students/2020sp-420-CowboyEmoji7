@@ -38,33 +38,29 @@ def delete(name):
         return 'ERROR: Unable to delete Class'
 
 
-@app.route('/save/')
+@app.route('/save/', methods=['POST', 'GET'])
 def save():
-    name = request.files.get('fileName')
-
-    if name is None:
-        return 'ERROR: Invalid name'
+    name = request.form['save_name']
 
     classes = ClassSchema.query.all()
     class_schema = SaveSchema(many=True)
     out = class_schema.dump(classes)
 
-    # with open(req_pathname, 'w') as f:
-    with open('stuffandthings', 'w') as f:
+    with open(name + ".cowboy", 'w') as f:
         json.dump(out, f, ensure_ascii=False, indent=4)
         #send_file(attachment_filename='stuffandthings',filename_or_fp=f, as_attachment=True)
 
     return redirect('/')
 
 
-@app.route("/load/")
-def load():
+@app.route("/load/<string:name>")
+def load(name):
 
     classes = ClassSchema.query.all()
     for item in classes:
         db.session.delete(item)
 
-    with open("stuffandthings") as Jfile:
+    with open(name) as Jfile:
         data = json.load(Jfile)
         for element in data:
             newClass = ClassSchema(
