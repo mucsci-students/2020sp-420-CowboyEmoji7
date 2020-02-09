@@ -32,11 +32,16 @@
                     </form>
                 </span>
             </li>
-            <li><button id="LoadButton" class="non-active"><i class="fa fa-folder"></i> Load</button></li>
-                <form action = "/load/" class="form-container" method="POST" enctype= "multipart/form-data">
-                    <input type = "file" name = "file"/>
-                    <input type = "submit"/>
-                </form>
+            <li><button id="LoadButton" class="non-active" onclick="openLoadBox()"><i class="fa fa-folder"></i> Load</button>
+                <span class="loadPopup" id="loadForm">
+                    <form action="/load/" class="form-container" method="POST" enctype= "multipart/form-data" onsubmit="closeLoadBox()">
+                        <h1>Load File</h1>
+                        <input id="loadInput" type="file" name="file" required>
+                        <button type="submit" class="btn loadButton">Load</button>
+                        <button id="DeleteSave" class="btn" onclick="closeLoadBoxBeforeSubmit()"><i class="fa fa-close"></i></button>
+                    </form>
+                </span>
+            </li>
         </ul>
     </div>    
     <div class="main-body">

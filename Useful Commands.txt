@@ -15,7 +15,7 @@ Install all dependencies:
         - Navigate to your env\scripts\activate and type 'activate'
     - Type 'pip install -r requirements.txt' to install librarys
 
-To create a new Database:
+To create a new Database: 
     - In console, navigate to the app folder (2020 cowboy)
     - Type python3(linux/mac) or python (windows)
     - Type 'from app_package import db'

@@ -254,6 +254,68 @@ body{
     box-shadow: 3px 3px 3px rgb(36, 36, 36);
 }
 
+.loadPopup{
+    position: sticky;
+    z-index: 1;
+    background-image: linear-gradient(to right, #f78ca0 0%, #f9748f 19%, #fd868c 60%, #fe9a8b 100%);
+    text-align: center;
+    width: 200px;
+    height: 130px;
+    font-size: 16px;
+    font-family: 'Ubuntu', sans-serif;
+    border-radius: 5px;
+    box-shadow: 5px 4px 3px rgb(36, 36, 36);
+    visibility: visible;
+    -webkit-animation: fadeIn .5s;
+    animation: fadeIn .5s
+}
+
+.loadPopup input {
+    padding-left: 5px;
+    margin-top: 15px;
+    border: 1px solid rgb(36, 36, 36);
+    border-radius: 5px;
+    outline: none;
+}
+
+.loadPopup h1 {
+    padding-top: 15px;
+    margin-bottom: 0px;
+    margin-top: 5px;
+    color: rgb(65, 65, 65);
+}
+
+#loadInput {
+    width: 175px;
+    color: white;
+    border: none;
+    outline: none;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 14px;
+}
+
+#loadForm{
+    display: none;
+}
+
+.loadButton {
+    outline: none;
+    cursor: pointer;
+    border: 1px solid #f9748f;
+    background-image: linear-gradient(to right, #f78ca0 0%, #f9748f 19%, #fd868c 60%, #fe9a8b 100%);
+    box-shadow: 2px 2px 1px rgb(36, 36, 36);
+    color: rgb(65, 65, 65);
+    border-radius: 5px;
+    width: 60px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.loadButton:hover{
+    background-color: #f9748f;
+    box-shadow: 3px 3px 3px rgb(36, 36, 36);
+}
+
 #noClasses {
     font-family: 'Ubuntu', sans-serif; 
     left: 50%; 

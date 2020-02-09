@@ -33,3 +33,23 @@ function closeSaveBox() {
     document.getElementById('SaveButton').classList.remove("active");
     document.getElementById('SaveButton').classList.add("non-active");
 }
+
+function openLoadBox(){
+    document.getElementById('loadInput').value = "";
+    document.getElementById('loadForm').style.display = "block";
+    document.getElementById('LoadButton').classList.remove("non-active");
+    document.getElementById('LoadButton').classList.add("active");
+}
+
+function closeLoadBox(){
+    document.getElementById('loadForm').style.display = "none";
+    document.getElementById('LoadButton').classList.remove("active");
+    document.getElementById('LoadButton').classList.add("non-active");
+}
+
+function closeLoadBoxBeforeSubmit(){
+    document.getElementById('loadInput').value = "";
+    document.getElementById('loadForm').style.display = "none";
+    document.getElementById('LoadButton').classList.remove("active");
+    document.getElementById('LoadButton').classList.add("non-active");
+}
