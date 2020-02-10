@@ -7,7 +7,25 @@ Draggable.create('.draggable', {
     bounds: container
 });
 
+focusMethod = function getFocus(){
+    document.getElementById('saveInput').focus();
+}
+
 function addClass(){
+    if(document.getElementById('loadForm').style.display == "block")
+    {
+        document.getElementById('loadInput').value = "";
+        document.getElementById('loadForm').style.display = "none";
+        document.getElementById('LoadButton').classList.remove("active");
+        document.getElementById('LoadButton').classList.add("non-active");
+    }
+    else if(document.getElementById('saveForm').style.display == "block")
+    {
+        document.getElementById('saveInput').value = "";
+        document.getElementById('saveForm').style.display = "none";
+        document.getElementById('SaveButton').classList.remove("active");
+        document.getElementById('SaveButton').classList.add("non-active");
+    }
     document.getElementById('ClassInput').value = "";
     document.getElementById('AddClassForm').style.display = "block";
     document.getElementById('AddButton').classList.remove("non-active");
@@ -20,8 +38,29 @@ function closeAddClass(){
     document.getElementById('AddButton').classList.add("non-active");
 }
 
+function closeAddClassBeforeSubmit(){
+    document.getElementById('ClassInput').value = "";
+    document.getElementById('AddClassForm').style.display = "none";
+    document.getElementById('AddButton').classList.remove("active");
+    document.getElementById('AddButton').classList.add("non-active");
+}
+
 
 function openSaveBox() {
+    if(document.getElementById('AddClassForm').style.display == "block")
+    {
+        document.getElementById('ClassInput').value = "";
+        document.getElementById('AddClassForm').style.display = "none";
+        document.getElementById('AddButton').classList.remove("active");
+        document.getElementById('AddButton').classList.add("non-active");
+    }
+    else if(document.getElementById('loadForm').style.display == "block")
+    {
+        document.getElementById('loadInput').value = "";
+        document.getElementById('loadForm').style.display = "none";
+        document.getElementById('LoadButton').classList.remove("active");
+        document.getElementById('LoadButton').classList.add("non-active");
+    }
     document.getElementById('saveInput').value = "";
     document.getElementById('saveForm').style.display = "block";
     document.getElementById('SaveButton').classList.remove("non-active");
@@ -34,7 +73,28 @@ function closeSaveBox() {
     document.getElementById('SaveButton').classList.add("non-active");
 }
 
+function closeSaveBoxBeforeSubmit() {
+    document.getElementById('saveInput').value = "";
+    document.getElementById('saveForm').style.display = "none";
+    document.getElementById('SaveButton').classList.remove("active");
+    document.getElementById('SaveButton').classList.add("non-active");
+}
+
 function openLoadBox(){
+    if(document.getElementById('saveForm').style.display == "block")
+    {
+        document.getElementById('saveInput').value = "";
+        document.getElementById('saveForm').style.display = "none";
+        document.getElementById('SaveButton').classList.remove("active");
+        document.getElementById('SaveButton').classList.add("non-active");
+    }
+    else if(document.getElementById('AddClassForm').style.display == "block")
+    {
+        document.getElementById('ClassInput').value = "";
+        document.getElementById('AddClassForm').style.display = "none";
+        document.getElementById('AddButton').classList.remove("active");
+        document.getElementById('AddButton').classList.add("non-active");
+    }
     document.getElementById('loadInput').value = "";
     document.getElementById('loadForm').style.display = "block";
     document.getElementById('LoadButton').classList.remove("non-active");
