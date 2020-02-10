@@ -1,5 +1,5 @@
 from app_package.models import ClassSchema, SaveSchema
-from flask import render_template, json, url_for, request, redirect, flash
+from flask import render_template, json, url_for, request, redirect, flash, Response
 from app_package import app, db
 
 
@@ -38,20 +38,34 @@ def delete(name):
         return 'ERROR: Unable to delete Class'
 
 
-@app.route('/save/')
+@app.route('/save/', methods=['POST'])
 def save():
-    req_pathname = request.files.get('pathname')
-
-    if req_pathname is None:
-        return 'ERROR: Invalid location/name'
+    name = request.form['save_name']
 
     classes = ClassSchema.query.all()
     class_schema = SaveSchema(many=True)
     out = class_schema.dump(classes)
-    
-    # with open(req_pathname, 'w') as f:
-    with open('stuffandthings', 'w') as f:
-        json.dump(out, f, ensure_ascii=False, indent=4)
-        #send_file(attachment_filename='stuffandthings',filename_or_fp=f, as_attachment=True)
 
+    contents = json.dumps(out, ensure_ascii=False, indent=4)
+    return Response(contents, mimetype="application/json", headers={"Content-disposition":"attachment; filename="+ name + ".json;"})
+
+
+@app.route("/load/", methods=['POST'])
+def load():
+
+    Jfile = request.files['file']
+    classes = ClassSchema.query.all()
+    for item in classes:
+        db.session.delete(item)
+
+    data = json.load(Jfile)
+    for element in data:
+        newClass = ClassSchema(
+            name=element["name"],
+            x=element["x"],
+            y=element["y"]
+        )
+        db.session.add(newClass)
+
+    db.session.commit()
     return redirect('/')

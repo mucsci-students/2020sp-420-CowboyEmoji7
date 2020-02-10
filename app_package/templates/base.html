@@ -14,25 +14,34 @@
         <ul class="navBarItems">
             <li><button id="AddButton" class="non-active" onclick="addClass()"><i class="fa fa-plus"></i> Class</button>
                 <span class="classPopup" id="AddClassForm">
-                    <form action="/" class="form-container" method="POST">
+                    <form action="/" class="form-container" method="POST" onsubmit="closeAddClass()">
                         <h1>Add Class</h1>
                         <input type="text" placeholder="Enter Class Name" id="ClassInput" name="class_name" required>
                         <button type="submit" class="btn SubmitButton">Add</button>
-                        <button id="DeleteAdd" class="btn" onclick="cancelAddClass()"><i class="fa fa-close"></i></button>
+                        <button id="DeleteAdd" class="btn" onclick="closeAddClassBeforeSubmit()"><i class="fa fa-close"></i></button>
                     </form>
                 </span>
             </li>
             <li><button id="SaveButton" class="non-active" onclick="openSaveBox()"><i class="fa fa-save"></i>  Save</button>
                 <span class="savePopup" id="saveForm">
-                    <form action="/" class="form-container" method="POST">
+                    <form action="/save/" class="form-container" method="POST" onsubmit="closeSaveBox()">
                         <h1>Save File</h1>
                         <input type="text" placeholder="Enter File Name" id="saveInput" name="save_name" required>
                         <button type="submit" class="btn saveButton">Save</button>
-                        <button id="DeleteSave" class="btn" onclick="closeSaveBox()"><i class="fa fa-close"></i></button>
+                        <button id="DeleteSave" class="btn" onclick="closeSaveBoxBeforeSubmit()"><i class="fa fa-close"></i></button>
                     </form>
                 </span>
             </li>
-            <li><button id="LoadButton" class="non-active"><i class="fa fa-folder"></i> Load</button></li>
+            <li><button id="LoadButton" class="non-active" onclick="openLoadBox()"><i class="fa fa-folder"></i> Load</button>
+                <span class="loadPopup" id="loadForm">
+                    <form action="/load/" class="form-container" method="POST" enctype= "multipart/form-data" onsubmit="closeLoadBox()">
+                        <h1>Load File</h1>
+                        <input id="loadInput" type="file" name="file" required>
+                        <button type="submit" class="btn loadButton">Load</button>
+                        <button id="DeleteSave" class="btn" onclick="closeLoadBoxBeforeSubmit()"><i class="fa fa-close"></i></button>
+                    </form>
+                </span>
+            </li>
         </ul>
     </div>    
     <div class="main-body">
