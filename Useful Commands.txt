@@ -5,17 +5,17 @@ Python:
 Install virtualenv:
     - Type 'pip install virtualenv'
 
-Create a virtual enviroment (only done once):
+Create a virtual environment (only done once):
     - Navigate to directory root
     - Type 'virtualenv env'
 
 Install all dependencies:
     - Navigate to the main project folder ('220 cowboy')
-    - Activate enviroment.
+    - Activate environment.
         - Navigate to your env\scripts\activate and type 'activate'
-    - Type 'pip install -r requirements.txt' to install librarys
+    - Type 'pip install -r requirements.txt' to install libraries
 
-To create a new Database:
+To create a new Database: 
     - In console, navigate to the app folder (2020 cowboy)
     - Type python3(linux/mac) or python (windows)
     - Type 'from app_package import db'

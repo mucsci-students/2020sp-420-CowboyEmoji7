@@ -38,7 +38,7 @@ def delete(name):
         return 'ERROR: Unable to delete Class'
 
 
-@app.route('/save/', methods=['POST', 'GET'])
+@app.route('/save/', methods=['POST'])
 def save():
     name = request.form['save_name']
 
@@ -47,26 +47,25 @@ def save():
     out = class_schema.dump(classes)
 
     contents = json.dumps(out, ensure_ascii=False, indent=4)
-    return Response(contents, mimetype="application/json", headers={"Content-disposition":"attachment; filename="+ name + ".json"})
+    return Response(contents, mimetype="application/json", headers={"Content-disposition":"attachment; filename="+ name + ".json;"})
 
 
-@app.route("/load/<string:name>")
-def load(name):
+@app.route("/load/", methods=['POST'])
+def load():
 
+    Jfile = request.files['file']
     classes = ClassSchema.query.all()
     for item in classes:
         db.session.delete(item)
 
-    with open(name) as Jfile:
-        data = json.load(Jfile)
-        for element in data:
-            newClass = ClassSchema(
-                name=element["name"],
-                content=element["content"],
-                x=element["x"],
-                y=element["y"]
-            )
-            db.session.add(newClass)
+    data = json.load(Jfile)
+    for element in data:
+        newClass = ClassSchema(
+            name=element["name"],
+            x=element["x"],
+            y=element["y"]
+        )
+        db.session.add(newClass)
 
     db.session.commit()
     return redirect('/')
