@@ -7,10 +7,6 @@ Draggable.create('.draggable', {
     bounds: container
 });
 
-focusMethod = function getFocus(){
-    document.getElementById('saveInput').focus();
-}
-
 function addClass(){
     if(document.getElementById('loadForm').style.display == "block")
     {
