@@ -44,7 +44,9 @@ def delete(name):
     Removes the requested class from database, if successful
     """
 
-    class_to_delete = ClassSchema.query.get_or_404(name)
+    class_to_delete = ClassSchema.query.get(name)
+    if (class_to_delete == None):
+        return 'ERROR: No such class. No changes have been made to your diagram'
 
     try:
         db.session.delete(class_to_delete)
@@ -60,18 +62,21 @@ def save():
     JSONify current data and return the result in a .json file
       as an attachment--to download--with requested name
     """
+    try:
+        name = request.form['save_name']
+        classes = ClassSchema.query.all()
 
-    name = request.form['save_name']
+        # Use flask-marshmallow to "jsonify" current data
+        class_schema = SaveSchema(many=True)
+        out = class_schema.dump(classes)
 
-    classes = ClassSchema.query.all()
+        # Options utilized strictly for readability of the resulting file
+        contents = json.dumps(out, ensure_ascii=False, indent=4)
+        return Response(contents, mimetype="application/json", headers={"Content-disposition":"attachment; filename="+ name + ".json;"})
+    except:
+        return 'ERROR: There was a problem saving. Try again.'
 
-    # Use flask-marshmallow to "jsonify" current data
-    class_schema = SaveSchema(many=True)
-    out = class_schema.dump(classes)
-
-    # Options utilized strictly for readability of the resulting file
-    contents = json.dumps(out, ensure_ascii=False, indent=4)
-    return Response(contents, mimetype="application/json", headers={"Content-disposition":"attachment; filename="+ name + ".json;"})
+    
 
 @app.route("/load/", methods=['POST'])
 def load():
@@ -82,19 +87,22 @@ def load():
       redirects to base index to re-render with loaded data
     """
 
-    Jfile = request.files['file']
-    classes = ClassSchema.query.all()
-    for item in classes:
-        db.session.delete(item)
+    try:
+        Jfile = request.files['file']
+        classes = ClassSchema.query.all()
+        for item in classes:
+            db.session.delete(item)
 
-    data = json.load(Jfile)
-    for element in data:
-        newClass = ClassSchema(
-            name=element["name"],
-            x=element["x"],
-            y=element["y"]
-        )
-        db.session.add(newClass)
+        data = json.load(Jfile)
+        for element in data:
+            newClass = ClassSchema(
+                name=element["name"],
+                x=element["x"],
+                y=element["y"]
+            )
+            db.session.add(newClass)
 
-    db.session.commit()
-    return redirect('/')
+        db.session.commit()
+        return redirect('/')
+    except:
+        return "ERROR: Unable to load file"
