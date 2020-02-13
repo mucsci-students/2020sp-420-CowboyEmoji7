@@ -2,3 +2,4 @@ app_package/database.db
 app_package/__pycache__
 env
 .vscode
+.pyc
