@@ -340,7 +340,7 @@ body{
     font-family: 'Ubuntu', sans-serif;
     background-image: linear-gradient(to top, #c4c5c7 0%, #dcdddf 52%, #ebebeb 100%);
     cursor: pointer;
-    position: relative;
+    position: absolute;
     border-radius: 5px;
     box-shadow: 4px 3px 3px gray;
     margin-right: 10px;

@@ -7,6 +7,8 @@ Contains routes through which requests from
 from app_package.models import ClassSchema, SaveSchema
 from flask import render_template, json, url_for, request, redirect, flash, Response
 from app_package import app, db
+from app_package.core_func import core_add, core_delete, core_save, core_load
+
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
@@ -20,22 +22,19 @@ def index():
     if request.method == 'POST':
         # form tag 'content'
         class_name = request.form['class_name']
-        new_class = ClassSchema(name=class_name)
 
         if class_name == '':
             return redirect('/')
 
-        try:
-            db.session.add(new_class)
-            db.session.commit()
-            return redirect('/')
-        except:
+        if core_add(class_name):
             return 'ERROR: Unable to add Class'
+        return redirect('/')
 
     else:
         # grab all entries in order
         classes = ClassSchema.query.order_by(ClassSchema.date_created).all()
         return render_template('index.html', classes=classes)
+
 
 @app.route('/delete/<string:name>')
 def delete(name):
@@ -44,16 +43,10 @@ def delete(name):
     Removes the requested class from database, if successful
     """
 
-    class_to_delete = ClassSchema.query.get(name)
-    if (class_to_delete == None):
-        return 'ERROR: No such class. No changes have been made to your diagram'
-
-    try:
-        db.session.delete(class_to_delete)
-        db.session.commit()
-        return redirect('/')
-    except:
+    if core_delete(name):
         return 'ERROR: Unable to delete Class'
+    return redirect('/')
+
 
 @app.route('/save/', methods=['POST'])
 def save():
@@ -64,19 +57,15 @@ def save():
     """
     try:
         name = request.form['save_name']
-        classes = ClassSchema.query.all()
-
-        # Use flask-marshmallow to "jsonify" current data
-        class_schema = SaveSchema(many=True)
-        out = class_schema.dump(classes)
-
-        # Options utilized strictly for readability of the resulting file
-        contents = json.dumps(out, ensure_ascii=False, indent=4)
-        return Response(contents, mimetype="application/json", headers={"Content-disposition":"attachment; filename="+ name + ".json;"})
     except:
-        return 'ERROR: There was a problem saving. Try again.'
+        return "There was a problem saving. Try again."
 
-    
+    contents = core_save()
+    if contents is None:
+        return "There was a problem saving. Try again."
+    return Response(contents, mimetype="application/json", headers={"Content-disposition": "attachment; filename=" + name + ".json;"})
+ 
+
 
 @app.route("/load/", methods=['POST'])
 def load():
@@ -87,22 +76,28 @@ def load():
       redirects to base index to re-render with loaded data
     """
 
+    Jfile = request.files['file']
     try:
-        Jfile = request.files['file']
-        classes = ClassSchema.query.all()
-        for item in classes:
-            db.session.delete(item)
-
-        data = json.load(Jfile)
-        for element in data:
-            newClass = ClassSchema(
-                name=element["name"],
-                x=element["x"],
-                y=element["y"]
-            )
-            db.session.add(newClass)
-
-        db.session.commit()
+        if core_load(json.load(Jfile)):
+            return "ERROR: Unable to load data into database"
         return redirect('/')
     except:
-        return "ERROR: Unable to load file"
+        return "Invalid JSON"
+
+
+@app.route("/updateCoords/", methods=['POST'])
+def updateCoords():
+    """Deals with requests from GUI to save dragged coordinates."""
+    try:
+        name = request.form['name']
+        x = request.form['left']
+        y = request.form['top']
+
+        updatee = ClassSchema.query.get_or_404(name)
+        updatee.x = x
+        updatee.y = y
+
+        db.session.commit()
+        return "success"
+    except:
+        return "Something has gone wrong in updating."

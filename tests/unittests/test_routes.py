@@ -38,7 +38,7 @@ def test_delete (test_client, init_database):
 
 def test_delete_no_existo (test_client, init_database):
     response = test_client.get('/delete/TestDelete', follow_redirects=True)
-    assert b"No such class. No changes have been made to your diagram" in response.data
+    assert b"Unable to delete Class" in response.data
 
 ################################ TEST LOAD ################################
 
@@ -90,7 +90,7 @@ def test_load_invalid_json_attributes (test_client, init_database):
     }
     ]""")
     response = test_client.post('/load/', data=dict(file=(jFile, 'temp.json')), content_type='multipart/form-data', follow_redirects=True)
-    assert b"Unable to load file" in response.data
+    assert b"Unable to load data into database" in response.data
 
 def test_load_from_empty (test_client, init_database):
     jFile = io.BytesIO(b"[]")
@@ -100,7 +100,7 @@ def test_load_from_empty (test_client, init_database):
 def test_load_not_even_json (test_client, init_database):
     jFile = io.BytesIO(b"")
     response = test_client.post('/load/', data=dict(file=(jFile, 'temp.json')), content_type='multipart/form-data', follow_redirects=True)
-    assert b"Unable to load file" in response.data
+    assert b"Invalid JSON" in response.data
 
 ################################ TEST SAVE ################################
 
