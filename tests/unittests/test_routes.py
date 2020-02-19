@@ -45,22 +45,38 @@ def test_delete_no_existo (test_client, init_database):
 def test_load_good (test_client, init_database):
     jFile = io.BytesIO(b"""[
     {
-        "date_created": "2020-02-13T15:36:32.536751",
-        "name": "Howdy",
-        "x": 2799,
-        "y": 1595
-    },
-    {
-        "date_created": "2020-02-13T15:36:36.205104",
+        "class_attributes": [],
+        "class_relationships": [],
+        "date_created": "2020-02-19T21:22:18.116981",
         "name": "Plane",
-        "x": 2542,
-        "y": 1534
+        "x": 542,
+        "y": 514
     },
     {
-        "date_created": "2020-02-13T15:37:06.798737",
+        "class_attributes": [],
+        "class_relationships": [],
+        "date_created": "2020-02-19T21:22:18.116981",
         "name": "pardner",
-        "x": 3293,
-        "y": 1540
+        "x": 285,
+        "y": 201
+    },
+    {
+        "class_attributes": [
+            {
+                "attribute": "seven",
+                "class_name": "Howdy"
+            }
+        ],
+        "class_relationships": [
+            {
+                "from_name": "Howdy",
+                "to_name": "Plane"
+            }
+        ],
+        "date_created": "2020-02-19T21:22:18.116981",
+        "name": "Howdy",
+        "x": 305,
+        "y": 413
     }
     ]""")
     response = test_client.post('/load/', data=dict(file=(jFile, 'temp.json')), content_type='multipart/form-data', follow_redirects=True)

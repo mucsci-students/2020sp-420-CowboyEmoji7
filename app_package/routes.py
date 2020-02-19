@@ -9,7 +9,7 @@ from flask import render_template, json, url_for, request, redirect, flash, Resp
 from app_package import app, db
 from app_package.core_func import (core_add, core_delete, core_save, core_update,
                                    core_load, core_add_attr, core_del_attr, 
-                                   core_edit_attr, core_add_rel, core_del_rel)
+                                   core_update_attr, core_add_rel, core_del_rel)
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -145,15 +145,15 @@ def delAttribute():
     except:
         return "Invalid arguments, try again"
 
-@app.route("/editAttribute", methods=['POST'])
-def editAttribute():
-    """Deals with requests from GUI to edit attributes in class."""
+@app.route("/updateAttribute", methods=['POST'])
+def updateAttribute():
+    """Deals with requests from GUI to update attributes in class."""
     try:
         class_name = request.form['class_name']
         attribute = request.form['attribute']
         new_attr = request.form['new_attribute']
 
-        if core_edit_attr(class_name, attribute, new_attr):
+        if core_update_attr(class_name, attribute, new_attr):
             return "ERROR: Unable to edit attribute"
         return redirect('/')
     except:
