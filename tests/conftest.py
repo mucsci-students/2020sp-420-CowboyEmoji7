@@ -5,7 +5,7 @@ NOTE: use 'pytest' to run unit tests while in virtual env
 """
 from app_package import app, db
 import pytest
-from app_package.models import ClassSchema
+from app_package.models import Class, Relationship, Attribute
 from flask import Flask
 
 @pytest.fixture(autouse=True)
