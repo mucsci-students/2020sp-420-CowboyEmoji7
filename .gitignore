@@ -3,3 +3,5 @@ app_package/__pycache__
 env
 .vscode
 .pyc
+tests/__pycache__/conftest.cpython-38-pytest-5.3.5.pyc
+tests/unittests/__pycache__/test_routes.cpython-38-pytest-5.3.5.pyc
