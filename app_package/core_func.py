@@ -3,6 +3,7 @@
 from app_package.models import ClassSchema, SaveSchema
 from app_package import app, db
 from flask import json
+import datetime
 
 def core_add(class_name):
     """Adds a class with the given name to the database
@@ -10,7 +11,7 @@ def core_add(class_name):
     Returns 0 on success, 1 on failure
     """
     try:
-        new_class = ClassSchema(name=class_name)
+        new_class = ClassSchema(name=class_name, date_created=datetime.utcnow())
         db.session.add(new_class)
         db.session.commit()
         return 0
@@ -24,7 +25,7 @@ def core_delete(class_name):
     """
     try:
         class_to_delete = ClassSchema.query.get(class_name)
-        if (class_to_delete == None):
+        if class_to_delete is None:
             return 1
 
         db.session.delete(class_to_delete)
