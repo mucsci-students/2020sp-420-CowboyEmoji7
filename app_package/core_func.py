@@ -3,6 +3,7 @@
 from app_package.models import ClassSchema, SaveSchema
 from app_package import app, db
 from flask import json
+from sqlalchemy.exc import IntegrityError
 
 def core_add(class_name):
     """Adds a class with the given name to the database
@@ -15,6 +16,7 @@ def core_add(class_name):
         db.session.commit()
         return 0
     except:
+        db.session.rollback()
         return 1
 
 def core_delete(class_name):
