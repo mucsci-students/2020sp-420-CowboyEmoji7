@@ -3,16 +3,25 @@
  */
 
 document.querySelector('.main-body').style.width = screen.availWidth;
-const container = document.querySelector('.main-body');
 
-document.querySelector('.navBar').style.height = '96%';
+document.querySelector('.navBar').style.height = '100%';
 
 Draggable.create('.draggable', {
-    bounds: container,
+    bounds: {
+        top: 5,
+        left: 5
+    },
     onRelease: function () {
         updateCoords(this.target.getAttribute("id"));
-    }
+        
+    },
 });
+
+// Toggles the navBar sliding in and out from left
+function navBarAction(){
+    document.querySelector('.navBar').classList.toggle('navActive');
+    document.getElementById('navTab').classList.toggle('toggle');
+}
 
 // Displays "Add Class" popup, closes all other popups
 // TODO: Utilize existing functions, rather than copy-pasting
