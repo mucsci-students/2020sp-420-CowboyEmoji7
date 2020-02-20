@@ -16,6 +16,7 @@ def core_add(class_name):
         db.session.commit()
         return 0
     except:
+        db.session.rollback()
         return 1
 
 def core_delete(class_name):
