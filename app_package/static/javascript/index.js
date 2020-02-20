@@ -13,7 +13,6 @@ Draggable.create('.draggable', {
     },
     onRelease: function () {
         updateCoords(this.target.getAttribute("id"));
-
     },
 });
 
