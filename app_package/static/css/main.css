@@ -116,6 +116,11 @@ body{
     background-color: crimson;
 }
 
+#DeleteClass a{
+    text-decoration: none;
+    color: white;
+}
+
 #DeleteSave{
     cursor: pointer;
     position: absolute;
