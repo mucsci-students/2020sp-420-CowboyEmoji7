@@ -45,7 +45,7 @@ body{
     height: 5px;
     display: block;
     background-color: rgb(167,172,172);
-    border: 1px solid gray;
+    border: 1px solid rgb(167,172,172);
     border-radius: 2px;
     margin-top: 4px;
     transition: 0.5s;
@@ -56,7 +56,7 @@ body{
 }
 
 .toggle .line1 {
-    transform: rotate(-48deg) translate(-12px,6px);    
+    transform: rotate(45deg) translate(15px,5px);    
 }
 
 .toggle .line2 {
@@ -64,7 +64,7 @@ body{
 }
 
 .toggle .line3 {
-    transform: rotate(46deg) translate(-8px,-4px);
+    transform: rotate(-45deg) translate(10px,0px);
 }
 
 #AddButton {
