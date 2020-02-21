@@ -62,6 +62,9 @@ class replShell(cmd.Cmd):
         self.close()
         return True
 
+    def emptyline(self):
+        pass
+    
     # ----- record and playback -----
     def do_record(self, arg):
         'Save future commands to filename:  RECORD rose.cmd'
@@ -74,7 +77,6 @@ class replShell(cmd.Cmd):
             self.cmdqueue.extend(f.read().splitlines())
 
     def precmd(self, line):
-        line = line.lower()
         if self.file and 'playback' not in line:
             print(line, file=self.file)
         return line

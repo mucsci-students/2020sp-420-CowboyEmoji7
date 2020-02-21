@@ -11,7 +11,7 @@ def core_add(class_name):
     Returns 0 on success, 1 on failure
     """
     try:
-        new_class = ClassSchema(name=class_name, date_created=datetime.utcnow())
+        new_class = ClassSchema(name=class_name)
         db.session.add(new_class)
         db.session.commit()
         return 0
