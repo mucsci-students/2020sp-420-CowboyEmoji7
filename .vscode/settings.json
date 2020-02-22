@@ -1,3 +1,6 @@
 {
-    "python.pythonPath": "c:\\src\\CSCI420\\2020sp-420-CowboyEmoji7\\env\\Scripts\\python.exe"
+    "python.pythonPath": "env/bin/python",
+    "python.linting.pylintEnabled": false,
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": true
 }
