@@ -3,7 +3,6 @@
 from app_package.models import Class, ClassSchema, Attribute, AttributeSchema, Relationship, RelationshipSchema
 from app_package import app, db
 from flask import json
-import datetime
 
 def core_add(class_name):
     """Adds a class with the given name to the database

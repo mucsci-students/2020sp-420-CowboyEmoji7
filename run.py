@@ -1,6 +1,6 @@
 import cmd
 from app_package.core_func import core_add, core_delete
-from app_package.models import ClassSchema
+from app_package.models import Class
 from app_package import app
 
 
@@ -41,7 +41,7 @@ class replShell(cmd.Cmd):
 
     def do_list(self, args):
         'Lists every class in the database'
-        classes = ClassSchema.query.order_by(ClassSchema.date_created).all()
+        classes = Class.query.order_by(Class.date_created).all()
         listStr = ""
 
         if not classes:
