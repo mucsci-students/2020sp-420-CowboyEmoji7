@@ -4,10 +4,12 @@ Contains routes through which requests from
   the view are passed to interact with the data model.
 """
 
-from app_package.models import ClassSchema, SaveSchema
+from app_package.models import Class, ClassSchema
 from flask import render_template, json, url_for, request, redirect, flash, Response
 from app_package import app, db
-from app_package.core_func import core_add, core_delete, core_save, core_load
+from app_package.core_func import (core_add, core_delete, core_save, core_update,
+                                   core_load, core_add_attr, core_del_attr, 
+                                   core_update_attr, core_add_rel, core_del_rel)
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -32,7 +34,7 @@ def index():
 
     else:
         # grab all entries in order
-        classes = ClassSchema.query.order_by(ClassSchema.date_created).all()
+        classes = Class.query.order_by(Class.date_created).all()
         return render_template('index.html', classes=classes)
 
 
@@ -46,6 +48,21 @@ def delete(name):
     if core_delete(name):
         return 'ERROR: Unable to delete Class'
     return redirect('/')
+
+@app.route('/update/', methods=['POST'])
+def update():
+    """Deals with requests to update a class.
+
+    Edits the requested class in database, if successful
+    """
+    try:
+        oldName = request.form['old_name']
+        newName = request.form['new_name']
+        if core_update(oldName, newName):
+            return "ERROR: Unable to update class"
+        return redirect('/')
+    except:
+        return "Invalid arguments, try again."
 
 
 @app.route('/save/', methods=['POST'])
@@ -76,8 +93,8 @@ def load():
       redirects to base index to re-render with loaded data
     """
 
-    Jfile = request.files['file']
     try:
+        Jfile = request.files['file']
         if core_load(json.load(Jfile)):
             return "ERROR: Unable to load data into database"
         return redirect('/')
@@ -93,7 +110,7 @@ def updateCoords():
         x = request.form['left']
         y = request.form['top']
 
-        updatee = ClassSchema.query.get_or_404(name)
+        updatee = Class.query.get_or_404(name)
         updatee.x = x
         updatee.y = y
 
@@ -101,3 +118,69 @@ def updateCoords():
         return "success"
     except:
         return "Something has gone wrong in updating."
+
+@app.route("/addAttribute/", methods=['POST'])
+def addAttribute():
+    """Deals with requests from GUI to add attributes to class."""
+    try:
+        class_name = request.form['class_name']
+        attribute = request.form['attribute']
+
+        if core_add_attr(class_name, attribute):
+            return "ERROR: Unable to add attribute"
+        return redirect('/')
+    except:
+        return "Invalid arguments, try again"
+
+@app.route("/delAttribute/", methods=['POST'])
+def delAttribute():
+    """Deals with requests from GUI to remove attributes from class."""
+    try:
+        class_name = request.form['class_name']
+        attribute = request.form['attribute']
+
+        if core_del_attr(class_name, attribute):
+            return "ERROR: Unable to remove attribute"
+        return redirect('/')
+    except:
+        return "Invalid arguments, try again"
+
+@app.route("/updateAttribute", methods=['POST'])
+def updateAttribute():
+    """Deals with requests from GUI to update attributes in class."""
+    try:
+        class_name = request.form['class_name']
+        attribute = request.form['attribute']
+        new_attr = request.form['new_attribute']
+
+        if core_update_attr(class_name, attribute, new_attr):
+            return "ERROR: Unable to edit attribute"
+        return redirect('/')
+    except:
+        return "Invalid arguments, try again"
+
+@app.route("/addRelationship/", methods=['POST'])
+def addRelationship():
+    """Deals with requests from GUI to add relationships to class."""
+    try:
+        fro = request.form['class_name']
+        to = request.form['relationship']
+
+        if core_add_rel(fro, to):
+            return "ERROR: Unable to add relationship"
+        return redirect('/')
+    except:
+        return "Invalid arguments, try again"
+
+@app.route("/delRelationship/", methods=['POST'])
+def delRelationship():
+    """Deals with requests from GUI to remove relationships from class."""
+    try:
+        fro = request.form['class_name']
+        to = request.form['relationship']
+
+        if core_del_rel(fro, to):
+            return "ERROR: Unable to remove relationship"
+        return redirect('/')
+    except:
+        return "Invalid arguments, try again"
