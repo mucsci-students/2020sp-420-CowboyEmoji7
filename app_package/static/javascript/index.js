@@ -2,9 +2,26 @@
  * Defines view responses to user input and dynamically adjusts some components.
  */
 
-document.querySelector('.main-body').style.width = screen.availWidth;
+// Declaring and Initializing key components of GUI
+const mainBody = document.querySelector('.main-body');
+const navBar = document.querySelector('.navBar');
+const navTab = document.getElementById('navTab');
+const loadForm = document.getElementById('loadForm');
+const loadInput = document.getElementById('loadInput');
+const loadButton = document.getElementById('LoadButton');
+const saveForm = document.getElementById('saveForm');
+const saveInput = document.getElementById('saveInput');
+const saveButton = document.getElementById('SaveButton');
+const addClassForm = document.getElementById('AddClassForm');
+const classInput = document.getElementById('ClassInput');
+const addButton = document.getElementById('AddButton');
 
-document.querySelector('.navBar').style.height = '100%';
+
+mainBody.style.width = screen.availWidth;
+
+navBar.style.height = '100%';
+
+//Creates the Draggable component for the classes
 
 Draggable.create('.draggable', {
     bounds: {
@@ -18,143 +35,118 @@ Draggable.create('.draggable', {
 
 // Toggles the navBar sliding in and out from left
 function navBarAction(){
-    document.querySelector('.navBar').classList.toggle('navActive');
-    document.getElementById('navTab').classList.toggle('toggle');
-    if (document.getElementById('loadForm').style.display == "block") {
-        document.getElementById('loadInput').value = "";
-        document.getElementById('loadForm').style.display = "none";
-        document.getElementById('LoadButton').classList.remove("active");
-        document.getElementById('LoadButton').classList.add("non-active");
+    navBar.classList.toggle('navActive');
+    navTab.classList.toggle('toggle');
+    if (loadForm.style.display == "block") {
+        closeLoadBoxBeforeSubmit();
     }
-    else if (document.getElementById('saveForm').style.display == "block") {
-        document.getElementById('saveInput').value = "";
-        document.getElementById('saveForm').style.display = "none";
-        document.getElementById('SaveButton').classList.remove("active");
-        document.getElementById('SaveButton').classList.add("non-active");
+    else if (saveForm.style.display == "block") {
+        closeSaveBoxBeforeSubmit();
     }
-    else if (document.getElementById('AddClassForm').style.display == "block") {
-        document.getElementById('ClassInput').value = "";
-        document.getElementById('AddClassForm').style.display = "none";
-        document.getElementById('AddButton').classList.remove("active");
-        document.getElementById('AddButton').classList.add("non-active");
+    else if (addClassForm.style.display == "block") {
+        closeAddClassBeforeSubmit();
     }
 }
 
 // Displays "Add Class" popup, closes all other popups
 // TODO: Utilize existing functions, rather than copy-pasting
 function addClass() {
-    if (document.getElementById('loadForm').style.display == "block") {
-        document.getElementById('loadInput').value = "";
-        document.getElementById('loadForm').style.display = "none";
-        document.getElementById('LoadButton').classList.remove("active");
-        document.getElementById('LoadButton').classList.add("non-active");
+    if (loadForm.style.display == "block") {
+        closeLoadBoxBeforeSubmit();
     }
-    else if (document.getElementById('saveForm').style.display == "block") {
-        document.getElementById('saveInput').value = "";
-        document.getElementById('saveForm').style.display = "none";
-        document.getElementById('SaveButton').classList.remove("active");
-        document.getElementById('SaveButton').classList.add("non-active");
+    else if (saveForm.style.display == "block") {
+        closeSaveBoxBeforeSubmit();
     }
-    document.getElementById('ClassInput').value = "";
-    document.getElementById('AddClassForm').style.display = "block";
-    document.getElementById('AddButton').classList.remove("non-active");
-    document.getElementById('AddButton').classList.add("active");
+    classInput.value = "";
+    addClassForm.style.display = "block";
+    addButton.classList.remove("non-active");
+    addButton.classList.add("active");
 }
 
 // Closes "Add Class" popup
 function closeAddClass() {
-    document.getElementById('AddClassForm').style.display = "none";
-    document.getElementById('AddButton').classList.remove("active");
-    document.getElementById('AddButton').classList.add("non-active");
+    addClassForm.style.display = "none";
+    addButton.classList.remove("active");
+    addButton.classList.add("non-active");
 }
 
 // Closes "Add Class" popup, clears field
 // TODO: This and "closeAddClass" should probably be one function
 function closeAddClassBeforeSubmit() {
-    document.getElementById('ClassInput').value = "";
-    document.getElementById('AddClassForm').style.display = "none";
-    document.getElementById('AddButton').classList.remove("active");
-    document.getElementById('AddButton').classList.add("non-active");
+    classInput.value = "";
+    addClassForm.style.display = "none";
+    addButton.classList.remove("active");
+    addButton.classList.add("non-active");
 }
 
 // Displays "Save File" popup, closes all other popups
 // TODO: Utilize existing functions, rather than copy-pasting
 function openSaveBox() {
-    if (document.getElementById('AddClassForm').style.display == "block") {
-        document.getElementById('ClassInput').value = "";
-        document.getElementById('AddClassForm').style.display = "none";
-        document.getElementById('AddButton').classList.remove("active");
-        document.getElementById('AddButton').classList.add("non-active");
+    if (addClassForm.style.display == "block") {
+        closeAddClassBeforeSubmit();
     }
-    else if (document.getElementById('loadForm').style.display == "block") {
-        document.getElementById('loadInput').value = "";
-        document.getElementById('loadForm').style.display = "none";
-        document.getElementById('LoadButton').classList.remove("active");
-        document.getElementById('LoadButton').classList.add("non-active");
+    else if (loadForm.style.display == "block") {
+        closeLoadBoxBeforeSubmit();
     }
-    document.getElementById('saveInput').value = "";
-    document.getElementById('saveForm').style.display = "block";
-    document.getElementById('SaveButton').classList.remove("non-active");
-    document.getElementById('SaveButton').classList.add("active");
+    saveInput.value = "";
+    saveForm.style.display = "block";
+    saveButton.classList.remove("non-active");
+    saveButton.classList.add("active");
 }
 
 // Closes "Save File" popup
 function closeSaveBox() {
-    document.getElementById('saveForm').style.display = "none";
-    document.getElementById('SaveButton').classList.remove("active");
-    document.getElementById('SaveButton').classList.add("non-active");
+    saveForm.style.display = "none";
+    saveButton.classList.remove("active");
+    saveButton.classList.add("non-active");
 }
 
 // Closes "Save File" popup, clears field
 // TODO: This and "closeSaveBox" should probably be one function
 function closeSaveBoxBeforeSubmit() {
-    document.getElementById('saveInput').value = "";
-    document.getElementById('saveForm').style.display = "none";
-    document.getElementById('SaveButton').classList.remove("active");
-    document.getElementById('SaveButton').classList.add("non-active");
+    saveInput.value = "";
+    saveForm.style.display = "none";
+    saveButton.classList.remove("active");
+    saveButton.classList.add("non-active");
 }
 
 // Displays "Load File" popup, closes all other popups
 // TODO: Utilize existing functions, rather than copy-pasting
 function openLoadBox() {
-    if (document.getElementById('saveForm').style.display == "block") {
-        document.getElementById('saveInput').value = "";
-        document.getElementById('saveForm').style.display = "none";
-        document.getElementById('SaveButton').classList.remove("active");
-        document.getElementById('SaveButton').classList.add("non-active");
+    if (saveForm.style.display == "block") {
+        closeSaveBoxBeforeSubmit();
     }
-    else if (document.getElementById('AddClassForm').style.display == "block") {
-        document.getElementById('ClassInput').value = "";
-        document.getElementById('AddClassForm').style.display = "none";
-        document.getElementById('AddButton').classList.remove("active");
-        document.getElementById('AddButton').classList.add("non-active");
+    else if (addClassForm.style.display == "block") {
+        closeAddClassBeforeSubmit();
     }
-    document.getElementById('loadInput').value = "";
-    document.getElementById('loadForm').style.display = "block";
-    document.getElementById('LoadButton').classList.remove("non-active");
-    document.getElementById('LoadButton').classList.add("active");
+    loadInput.value = "";
+    loadForm.style.display = "block";
+    loadButton.classList.remove("non-active");
+    loadButton.classList.add("active");
 }
 
 // Closes "Load File" popup
 function closeLoadBox() {
-    document.getElementById('loadForm').style.display = "none";
-    document.getElementById('LoadButton').classList.remove("active");
-    document.getElementById('LoadButton').classList.add("non-active");
+    loadForm.style.display = "none";
+    loadButton.classList.remove("active");
+    loadButton.classList.add("non-active");
 }
 
 // Closes "Load File" popup, clears field
 // TODO: This and "closeLoadBox" should probably be one function
 function closeLoadBoxBeforeSubmit() {
-    document.getElementById('loadInput').value = "";
-    document.getElementById('loadForm').style.display = "none";
-    document.getElementById('LoadButton').classList.remove("active");
-    document.getElementById('LoadButton').classList.add("non-active");
+    loadInput.value = "";
+    loadForm.style.display = "none";
+    loadButton.classList.remove("active");
+    loadButton.classList.add("non-active");
 }
 
+// Upon release of the draggable component this function will be called to update cords in 
+// database so that upon reload or other interface calls locations of classes will be saved
 function updateCoords(name) {
-    var coords = document.getElementById(name).getBoundingClientRect();
-    var xReq = new XMLHttpRequest();
-    var params = "name=" + name + "&left=" + coords.left + "&top=" + coords.top;
+    let coords = document.getElementById(name).getBoundingClientRect();
+    let xReq = new XMLHttpRequest();
+    let params = "name=" + name + "&left=" + coords.left + "&top=" + coords.top;
     xReq.open("POST", "/updateCoords/", true);
     xReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xReq.setRequestHeader("Content-length", params.length);
