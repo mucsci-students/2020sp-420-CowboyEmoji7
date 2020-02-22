@@ -9,11 +9,11 @@ class replShell(cmd.Cmd):
     prompt = '(UML): '
     file = None
 
-    def do_web(cmd, args):
+    def do_web(self, args):
         'Starts the web app'
         app.run(debug=False)
 
-    def do_add(cmd, args):
+    def do_add(self, args):
         """Accepts a single class name OR a list separated by spaces and adds them to the database
     ex: add dog cat fish  <-- will add all three classes to database"""
         argList = args.split()
@@ -26,7 +26,7 @@ class replShell(cmd.Cmd):
         else:
             print("Please provide a class name")
 
-    def do_delete(cmd, args):
+    def do_delete(self, args):
         """Accepts a single class name OR a list separated by spaces and removes them from the database
     ex: delete dog cat fish  <-- will delete all three classes from database"""
         argList = args.split()
@@ -39,7 +39,7 @@ class replShell(cmd.Cmd):
         else:
             print("Please provide a class name")
 
-    def do_list(cmd, args):
+    def do_list(self, args):
         'Lists every class in the database'
         classes = ClassSchema.query.order_by(ClassSchema.date_created).all()
         listStr = ""
