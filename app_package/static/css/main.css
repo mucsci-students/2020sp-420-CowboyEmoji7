@@ -372,10 +372,6 @@ body{
 }
 
 .Class{
-    padding-left: 75px;
-    padding-right: 75px;
-    padding-top: 5px;
-    padding-bottom: 5px;
     font-size: 16px;
     font-family: 'Ubuntu', sans-serif;
     background-image: linear-gradient(to top, #c4c5c7 0%, #dcdddf 52%, #ebebeb 100%);
@@ -390,7 +386,56 @@ body{
     box-shadow: 5px 8px 8px gray;
 }
 
+#EditClass {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+}
+
+#EditButton {
+    cursor: pointer;
+    border-radius: 5px 0px 0px 0px;
+    background-color: rgb(248, 246, 94);
+    color: black;
+    font-size: 16px;
+    border: none;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.divider{
+    height: 2px;
+    position: relative;
+    left: 0;
+    width: 98%;
+}
+
+.headings {
+    padding-left: 5px;
+}
+
+#attributeList {
+    list-style: none;
+    
+}
+
+#attributeList li {
+    font-size: 14px;
+}
+
+#relationshipList {
+    list-style: none;
+}
+
+#relationshipList li {
+    font-size: 14px;
+}
+
 .className {
+    padding-left: 75px;
+    padding-right: 75px;
+    padding-top: 5px;
+    padding-bottom: 5px;
     display: block;
     text-align: center;
     border-bottom: none;
