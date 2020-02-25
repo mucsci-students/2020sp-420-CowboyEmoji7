@@ -32,7 +32,7 @@ class replShell(cmd.Cmd):
 
     def do_addAttr(self, args):
         """Accepts a single class name followed by a list of attribute names separated by spaces
-             and adds them to the database
+      and adds them to the database
     ex: addAttr zoo dog cat catDog <-- will add all three attributes to the class "zoo" in database"""
         argList = args.split()
         if len(argList) > 1:
@@ -45,9 +45,40 @@ class replShell(cmd.Cmd):
         else:
             print("Please provide a class name and at least one attribute")
 
+    def do_delAttr(self, args):
+        """Accepts a single class name followed by a list of attribute names separated by spaces
+      and removes them from the database
+    ex: delAttr zoo dog cat catDog <-- will remove all three attributes from the class "zoo" in database"""
+        argList = args.split()
+        if len(argList) > 1:
+            class_name = argList.pop(0)
+            for attr in argList:
+                if core_del_attr(class_name, attr):
+                    print('ERROR: Unable to delete attribute \'' + attr + '\'')
+                else:
+                    print('Successfully deleted attribute \'' + attr + '\'')
+        else:
+            print("Please provide a class name and at least one attribute")
+
+    def do_editAttr(self, args):
+        """Accepts a single class name followed by an existing attribute within said class and a
+      new name which will replace said attribute in the database
+    ex: editAttr zoo dog cat <-- will update attribute 'dog' in class 'zoo' with the name 'cat'"""
+        argList = args.split()
+        if len(argList) > 2:
+            class_name = argList.pop(0)
+            old_name = argList.pop(0)
+            new_name = argList.pop(0)
+            if core_update_attr(class_name, old_name, new_name):
+                print('ERROR: Unable to update attribute \'' + old_name + '\' to \'' + new_name + '\'')
+            else:
+                print('Successfully updated attribute \'' + old_name + '\' to \'' + new_name + '\'')
+        else:
+            print("Please provide a class name, followed by two attribute names")
+
     def do_addRel(self, args):
         """Accepts a single parent class name followed by a list of child class names separated by spaces
-             and adds relationships from parents to children in database
+      and adds relationships from parents to children in database
     ex: addRel cat kitten catDog <-- will add both relationships to the class "cat" in database"""
         argList = args.split()
         if len(argList) > 1:
@@ -57,6 +88,21 @@ class replShell(cmd.Cmd):
                     print('ERROR: Unable to add relationship from \'' + class_name + '\' to \'' + rel + '\'')
                 else:
                     print('Successfully added relationship from \'' + class_name + '\' to \'' + rel + '\'')
+        else:
+            print("Please provide a class name and at least one relationship")
+
+    def do_delRel(self, args):
+        """Accepts a single parent class name followed by a list of child class names separated by spaces
+      and removes relationships from parents to children in database
+    ex: delRel cat kitten catDog <-- will delete both relationships from the class "cat" in database"""
+        argList = args.split()
+        if len(argList) > 1:
+            class_name = argList.pop(0)
+            for rel in argList:
+                if core_del_rel(class_name, rel):
+                    print('ERROR: Unable to delete relationship from \'' + class_name + '\' to \'' + rel + '\'')
+                else:
+                    print('Successfully deleted relationship from \'' + class_name + '\' to \'' + rel + '\'')
         else:
             print("Please provide a class name and at least one relationship")
 
@@ -89,6 +135,12 @@ class replShell(cmd.Cmd):
                 listStr += (classObj.name + ", ")
         
         print(listStr)
+
+    def do_save(self, args):
+        pass
+
+    def do_load(self, args):
+        pass
 
     def do_exit(self, args):
         'Exits the UML shell'
