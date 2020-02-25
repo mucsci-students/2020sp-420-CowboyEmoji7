@@ -2,6 +2,7 @@ import cmd
 from app_package.core_func import core_add, core_delete
 from app_package.models import Class
 from app_package import app
+import webbrowser
 
 
 class replShell(cmd.Cmd):
@@ -10,8 +11,9 @@ class replShell(cmd.Cmd):
     file = None
 
     def do_web(self, args):
-        'Starts the web app'
-        app.run(debug=False)
+        """Starts the web app in the user's default browser."""
+        webbrowser.open_new_tab("http://127.0.0.1:5000")
+        app.run(port=5000, debug=False)
 
     def do_add(self, args):
         """Accepts a single class name OR a list separated by spaces and adds them to the database

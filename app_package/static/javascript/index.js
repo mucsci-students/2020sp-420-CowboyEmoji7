@@ -9,7 +9,7 @@ document.querySelector('.navBar').style.height = '96%';
 
 Draggable.create('.draggable', {
     bounds: container,
-    onRelease: function () {
+    onDragEnd: function () {
         updateCoords(this.target.getAttribute("id"));
     }
 });
