@@ -437,7 +437,7 @@ body{
     top: 0px;
 }
 
-#EditButton {
+.EditButton {
     cursor: pointer;
     border-radius: 5px 0px 0px 0px;
     background-color: rgb(248, 246, 94);
@@ -459,22 +459,23 @@ body{
     padding-left: 5px;
 }
 
-#attributeList {
+.attributeList {
     list-style: none;
     
 }
 
-#attributeList li {
+.attributeList li {
     font-size: 14px;
 }
 
-#relationshipList {
+.relationshipList {
     list-style: none;
 }
 
-#relationshipList li {
+.relationshipList li {
     font-size: 14px;
 }
+
 
 .className {
     padding-left: 75px;

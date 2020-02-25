@@ -15,22 +15,28 @@
         <a href="/delete/{{ class.name }}" name="delete" onclick="return confirm('Are you sure you want to delete?')"><i class="fa fa-close"></i></a>
     </div>
     <div id="EditClass">
-        <button id="EditButton"><i class="fa fa-pencil" aria-hidden="true"></i></button>
+        <button class="EditButton" onclick="editClass('{{ class.name }}')"><i class="fa fa-pencil" aria-hidden="true"></i></button>
     </div>
     <h2 class="className">{{ class.name }}</h2>
-    <hr class="divider">
     <div id="Attributes">
+        <hr class="divider">
         <h4 class="headings">Attributes</h4>
-        <ul id="attributeList">
+        <ul class="attributeList">
             <li>startTheEngine()</li>
             <li>stopTheEngine()</li>
             <li>getColor()</li>
+            <span id="addAttributeForm-{{ class.name }}" onclick="addAttribute('attInput-{{ class.name }}')" style="display: none; padding-right: 10px; padding-top: 5px;">
+                <form action="/">
+                    <input type="text" id="attInput-{{ class.name }}" style="width: 75%;" placeholder="getCar(),setColor(),..."  name="attribute_names" required>
+                    <button id="AddAttribute" type="submit">Add</button> 
+                </form>
+            </span>
         </ul>
     </div>
-    <hr class="divider">
-    <div id="Relationships">
+    <div id="Relationships-{{ class.name }}" style="display: none;">
+        <hr class="divider">
         <h4 class="headings">Relationships</h4>
-        <ul id="relationshipList">
+        <ul class="relationshipList">
             <li>Car</li>
             <li>Wheel</li>
             <li>Train</li>

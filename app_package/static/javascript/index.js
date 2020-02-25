@@ -48,6 +48,22 @@ function navBarAction(){
     }
 }
 
+function addAttribute(name){
+    document.getElementById(name).focus();
+}
+
+// OnClick function for the edit button
+function editClass(name) {
+    if(document.getElementById('Relationships-' + name).style.display == 'block') {
+        document.getElementById('Relationships-' + name).style.display = 'none';
+        document.getElementById('addAttributeForm-' + name).style.display = 'none';
+    }
+    else if (document.getElementById('Relationships-' + name).style.display == 'none') {
+        document.getElementById('Relationships-' + name).style.display = 'block';
+        document.getElementById('addAttributeForm-' + name).style.display = 'block';
+    }
+}
+
 // Displays "Add Class" popup, closes all other popups
 // TODO: Utilize existing functions, rather than copy-pasting
 function addClass() {
