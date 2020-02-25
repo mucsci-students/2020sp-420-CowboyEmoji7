@@ -158,7 +158,7 @@ def core_del_attr(pName, attr):
     """
 
     try:
-        attr_to_delete = Attribute.query.filter(and_(pName == Attribute.class_name, attr == Attribute.attribute))
+        attr_to_delete = Attribute.query.get({"class_name": pName, "attribute": attr})
         if (attr_to_delete is None):
             return 1
 
@@ -175,7 +175,7 @@ def core_update_attr(pName, attr, newAttr):
     """
 
     try:
-        attr_to_update = Attribute.query.filter(and_(pName == Attribute.class_name, attr == Attribute.attribute))
+        attr_to_update = Attribute.query.get({"class_name": pName, "attribute": attr})
         if (attr_to_update is None):
             return 1
 

@@ -12,10 +12,7 @@ class replShell(cmd.Cmd):
     prompt = '(UML): '
     file = None
 
-    def do_web(self, args):
-        """Starts the web app in the user's default browser."""
-        webbrowser.open_new_tab("http://127.0.0.1:5000")
-        app.run(port=5000, debug=False)
+################################# Class level ############################################
 
     def do_add(self, args):
         """Accepts a single class name OR a list separated by spaces and adds them to the database
@@ -29,6 +26,36 @@ class replShell(cmd.Cmd):
                     print('Successfully added class \'' + name + '\'')
         else:
             print("Please provide a class name")
+
+    def do_delete(self, args):
+        """Accepts a single class name OR a list separated by spaces and removes them from the database
+    ex: delete dog cat fish  <-- will delete all three classes from database"""
+        argList = args.split()
+        if argList:
+            for name in argList:
+                if core_delete(name):
+                    print('ERROR: Unable to delete class \'' + name + '\'')
+                else:
+                    print('Successfully deleted class \'' + name + '\'')
+        else:
+            print("Please provide a class name")
+
+    def do_edit(self, args):
+        """Accepts a single class name followed by a replacement name and changes instances of old class
+      name in database with new
+    ex: edit kitten cat <-- will rename kitten to cat in database"""
+        argList = args.split()
+        if len(argList) > 1:
+            old_name = argList.pop(0)
+            new_name = argList.pop(0)
+            if core_update(old_name, new_name):
+                print('ERROR: Unable to update class \'' + old_name + '\' to \'' + new_name + '\'')
+            else:
+                print('Successfully updated class \'' + old_name + '\' to \'' + new_name + '\'')
+        else:
+            print("Please provide a class name, followed by a new class name")
+
+######################################## Attribute level #########################################
 
     def do_addAttr(self, args):
         """Accepts a single class name followed by a list of attribute names separated by spaces
@@ -76,6 +103,8 @@ class replShell(cmd.Cmd):
         else:
             print("Please provide a class name, followed by two attribute names")
 
+########################################## Relationship level ########################################
+
     def do_addRel(self, args):
         """Accepts a single parent class name followed by a list of child class names separated by spaces
       and adds relationships from parents to children in database
@@ -106,18 +135,12 @@ class replShell(cmd.Cmd):
         else:
             print("Please provide a class name and at least one relationship")
 
-    def do_delete(self, args):
-        """Accepts a single class name OR a list separated by spaces and removes them from the database
-    ex: delete dog cat fish  <-- will delete all three classes from database"""
-        argList = args.split()
-        if argList:
-            for name in argList:
-                if core_delete(name):
-                    print('ERROR: Unable to delete class \'' + name + '\'')
-                else:
-                    print('Successfully deleted class \'' + name + '\'')
-        else:
-            print("Please provide a class name")
+#################################### Other ############################################
+
+    def do_web(self, args):
+        """Starts the web app in the user's default browser."""
+        webbrowser.open_new_tab("http://127.0.0.1:5000")
+        app.run(port=5000, debug=False)
 
     def do_list(self, args):
         """Lists every class in the database"""
@@ -137,7 +160,7 @@ class replShell(cmd.Cmd):
         print(listStr)
 
     def do_save(self, args):
-        if len(args.split()) is not 1:
+        if len(args.split()) != 1:
             print("Please provide one file name.")
         else:
             try:
@@ -148,7 +171,7 @@ class replShell(cmd.Cmd):
                 print("ERROR: Unable to save file as \'" + args + '\'')
 
     def do_load(self, args):
-        if len(args.split()) is not 1:
+        if len(args.split()) != 1:
             print("Please provide one file name.")
         else:
             try:
