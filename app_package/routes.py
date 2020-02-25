@@ -38,16 +38,19 @@ def index():
         return render_template('index.html', classes=classes)
 
 
-@app.route('/delete/<string:name>')
-def delete(name):
+@app.route('/delete/', methods=['POST'])
+def delete():
     """Deals with requests to remove a class.
 
     Removes the requested class from database, if successful
     """
-
-    if core_delete(name):
-        return 'ERROR: Unable to delete Class'
-    return redirect('/')
+    try:
+        name = request.form['delete']
+        if core_delete(name):
+            return 'ERROR: Unable to delete Class'
+        return redirect('/')
+    except:
+        return "Invalid name"
 
 @app.route('/update/', methods=['POST'])
 def update():

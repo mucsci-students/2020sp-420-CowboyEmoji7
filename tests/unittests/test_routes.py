@@ -33,11 +33,11 @@ def test_add_no_name(test_client, init_database):
 def test_delete (test_client, init_database):
     response = test_client.post('/', data=dict(class_name='TestAddToDelete'), follow_redirects=True)
     assert b"TestAddToDelete" in response.data
-    response = test_client.get('/delete/TestAddToDelete', follow_redirects=True)
+    response = test_client.post('/delete/', data=dict(delete='TestAddToDelete'), follow_redirects=True)
     assert b"No Classes Added" in response.data
 
 def test_delete_no_existo (test_client, init_database):
-    response = test_client.get('/delete/TestDelete', follow_redirects=True)
+    response = test_client.post('/delete/', data=dict(delete='TestDelete'), follow_redirects=True)
     assert b"Unable to delete Class" in response.data
 
 ################################ TEST LOAD ################################
