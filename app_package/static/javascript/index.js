@@ -153,3 +153,7 @@ function updateCoords(name) {
     xReq.setRequestHeader("Connection", "close");
     xReq.send(params);
 }
+
+function closeFlashMsg(){
+    document.getElementById("flashMsg").style.display = "none";
+}

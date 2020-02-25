@@ -41,16 +41,9 @@ body{
     padding-left: 10px;
 }
 
-#DeleteFlash{
-    cursor: pointer;
+#flashMsg{
     position: absolute;
-    border-radius: 0px 5px 0px 0px;
-    background-color: red;
-    color: white;
-    font-size: 16px;
-    border: none;
-    right: 0px;
-    top: 0px;
+    left: 85%;
 }
 
 .navBar{
