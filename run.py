@@ -5,7 +5,7 @@ from app_package.core_func import (core_add, core_delete, core_save, core_update
 from app_package.models import Class
 from app_package import app
 import webbrowser
-
+import json
 
 class replShell(cmd.Cmd):
     intro = 'Welcome to the UML editor shell.   Type help or ? to list commands. \nType web to open web app.\n'
@@ -137,10 +137,29 @@ class replShell(cmd.Cmd):
         print(listStr)
 
     def do_save(self, args):
-        pass
+        if len(args.split()) is not 1:
+            print("Please provide one file name.")
+        else:
+            try:
+                Jfile = open(args, "w+")
+                Jfile.write(core_save())
+                print("Successfully saved file as \'" + args + '\'')
+            except:
+                print("ERROR: Unable to save file as \'" + args + '\'')
 
     def do_load(self, args):
-        pass
+        if len(args.split()) is not 1:
+            print("Please provide one file name.")
+        else:
+            try:
+                Jfile = open(args, "r")
+                if core_load(json.load(Jfile)):
+                    print("ERROR: Unable to load file \'" + args + '\'')
+                else:
+                    print("Successfully loaded file \'" + args + '\'')
+            except:
+                print("ERROR: Unable to open file \'" + args + '\'')
+
 
     def do_exit(self, args):
         'Exits the UML shell'
