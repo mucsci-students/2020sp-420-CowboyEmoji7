@@ -9,6 +9,50 @@ body{
     margin: 0px;
 }
 
+.flash-error {
+    outline: none;
+    cursor: pointer;
+    border: 1px solid rgb(0, 0, 0);
+    background-color: rgb(250, 170, 181);
+    box-shadow: 2px 2px 1px rgb(36, 36, 36);
+    color: rgb(0, 0, 0);
+    border-radius: 5px;
+    width: 160px;
+    margin: 20px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+.flash-success {
+    outline: none;
+    cursor: pointer;
+    border: 1px solid rgb(0, 0, 0);
+    background-color: rgb(198, 255, 164);
+    box-shadow: 2px 2px 1px rgb(36, 36, 36);
+    color: rgb(0, 0, 0);
+    border-radius: 5px;
+    width: 160px;
+    margin: 20px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+#DeleteFlash{
+    cursor: pointer;
+    position: absolute;
+    border-radius: 0px 5px 0px 0px;
+    background-color: red;
+    color: white;
+    font-size: 16px;
+    border: none;
+    right: 0px;
+    top: 0px;
+}
+
 .navBar{
     width: 255px;
     border: 1px solid gray;
@@ -167,6 +211,7 @@ body{
 #DeleteSave:hover{
     background-color: crimson;
 }
+
 
 #DeleteClass{
     cursor: pointer;

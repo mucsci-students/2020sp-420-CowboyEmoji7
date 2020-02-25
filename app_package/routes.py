@@ -29,7 +29,7 @@ def index():
             return redirect('/')
 
         if core_add(class_name):
-            return 'ERROR: Unable to add Class'
+            flash('ERROR: Unable to add Class', 'error')
         return redirect('/')
 
     else:
@@ -46,7 +46,7 @@ def delete(name):
     """
 
     if core_delete(name):
-        return 'ERROR: Unable to delete Class'
+        flash('ERROR: Unable to delete Class', 'error')
     return redirect('/')
 
 @app.route('/update/', methods=['POST'])
