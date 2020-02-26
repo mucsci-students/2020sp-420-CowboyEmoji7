@@ -1,5 +1,5 @@
 app_package/database.db
-__pycache__/
+**/__pycache__/
 env
 .vscode
-*.pyc
+**/*.pyc
