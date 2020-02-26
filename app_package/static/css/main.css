@@ -43,7 +43,7 @@ body{
 
 #flashMsg{
     position: absolute;
-    left: 85%;
+    right: 20px;
 }
 
 .navBar{
