@@ -469,6 +469,9 @@ body{
     font-size: 14px;
 }
 
+.custom-select {
+    width: 70%;
+}
 
 .className {
     padding-left: 75px;
