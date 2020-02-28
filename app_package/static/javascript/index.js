@@ -31,14 +31,26 @@ jsPlumb.ready(function() {
             for(var i = 0; i < data.length; ++i) {
                 let from = data[i].from_name;
                 let to = data[i].to_name;
-
-                jsPlumb.connect({
-                    source:from, 
-                    target:to,
-                    anchor:"Continuous",
-                    endpoint:"Blank",
-                    connector:"Flowchart"
-                });
+                if (from != to){
+                    jsPlumb.connect({
+                        source:from, 
+                        target:to,
+                        anchor:"Continuous",
+                        endpoint:"Blank",
+                        connector:"Flowchart",
+                        overlays:[["PlainArrow", {location:1, width:10, length:10}]]
+                    });
+                }
+                else{
+                    jsPlumb.connect({
+                        source:from, 
+                        target:to,
+                        anchor:"Continuous",
+                        endpoint:"Blank",
+                        connector:"Bezier",
+                        overlays:[["PlainArrow", {location:1, width:10, length:10}]]
+                    });
+                }
             }
         }
     }
@@ -52,18 +64,6 @@ jsPlumb.ready(function() {
     });
 });
 
-//Creates the Draggable component for the classes
-/*
-Draggable.create('.draggable', {
-    bounds: {
-        top: 5,
-        left: 5
-    },
-    onRelease: function () {
-        updateCoords(this.target.getAttribute("id"));
-    }
-});
-*/
 // Toggles the navBar sliding in and out from left
 function navBarAction(){
     navBar.classList.toggle('navActive');

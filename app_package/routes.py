@@ -28,8 +28,10 @@ def index():
         if class_name == '':
             return redirect('/')
 
-        if core_add(class_name):
-            flash('ERROR: Unable to add Class', 'error')
+        classList = class_name.split()
+        for class_ in classList:
+            if core_add(class_):
+                flash('ERROR: Unable to add Class', 'error')
         return redirect('/')
 
     else:
@@ -39,15 +41,14 @@ def index():
         return render_template('index.html', classes=classes, attributes=attributes)
 
 
-@app.route('/addattr/<string:name>', methods=['POST', 'GET'])
-def add_attr(name):
+@app.route('/addAttribute/', methods=['POST'])
+def add_attr():
     """Deals with requests to add an attribute to a class.
     
     Adds the requested attribute to the database, if successful
     """
-
-    attrName = request.form[name+'-attribute']
-    flash(attrName, 'error')
+    name = request.form['class_name']
+    attrName = request.form['attribute']
     attrList = attrName.split()
     for attr in attrList:
         flash(attr, 'error')
@@ -165,15 +166,15 @@ def updateAttribute():
     except:
         return "Invalid arguments, try again"
 
-@app.route("/addRelationship/<string:fro>", methods=['POST', 'GET'])
-def addRelationship(fro):
+@app.route("/addRelationship/", methods=['POST'])
+def addRelationship():
     """Deals with requests from GUI to add relationships to class."""
     try:
-        #fro = request.form['class_name']
-        to = request.form[fro+'-child']
-        print('fro: ' + fro + ' to: ' + to)
-        if core_add_rel(fro, to):
-            return "ERROR: Unable to add relationship"
+        fro = request.form['class_name']
+        to = request.form.getlist('relationship')
+        for child in to:
+            if core_add_rel(fro, child):
+                return "ERROR: Unable to add relationship"
         return redirect('/')
     except:
         return "Invalid arguments, try again"
