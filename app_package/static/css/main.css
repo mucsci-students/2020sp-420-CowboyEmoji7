@@ -453,8 +453,7 @@ body{
 }
 
 .attributeList {
-    list-style: none;
-    
+    list-style-type: square;
 }
 
 .attributeList li {

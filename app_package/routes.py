@@ -4,7 +4,7 @@ Contains routes through which requests from
   the view are passed to interact with the data model.
 """
 
-from app_package.models import Class, ClassSchema
+from app_package.models import Class, Attribute
 from flask import render_template, json, url_for, request, redirect, flash, Response
 from app_package import app, db
 from app_package.core_func import (core_add, core_delete, core_save, core_update,
@@ -35,7 +35,26 @@ def index():
     else:
         # grab all entries in order
         classes = Class.query.order_by(Class.date_created).all()
-        return render_template('index.html', classes=classes)
+        attributes = Attribute.query.order_by(Attribute.date_created).all()
+        return render_template('index.html', classes=classes, attributes=attributes)
+
+
+@app.route('/addattr/<string:name>', methods=['POST', 'GET'])
+def add_attr(name):
+    """Deals with requests to add an attribute to a class.
+
+    Adds the requested attribute to the database, if successful
+    """
+    
+    attrName = request.form[name+'-attribute']
+    flash(attrName, 'error')
+    attrList = attrName.split()
+    for attr in attrList:
+        flash(attr, 'error')
+        if core_add_attr(name, attr):
+            flash('ERROR: Unable to add Attribute '+attr, 'error')
+    return redirect('/')
+
 
 
 @app.route('/delete/<string:name>')
