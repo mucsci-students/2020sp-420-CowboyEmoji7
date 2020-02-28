@@ -164,13 +164,13 @@ def updateAttribute():
     except:
         return "Invalid arguments, try again"
 
-@app.route("/addRelationship/<string:fro>/<string:to>", methods=['POST', 'GET'])
-def addRelationship(fro, to):
+@app.route("/addRelationship/<string:fro>", methods=['POST', 'GET'])
+def addRelationship(fro):
     """Deals with requests from GUI to add relationships to class."""
     try:
         #fro = request.form['class_name']
-        #to = request.form['relationship']
-
+        to = request.form[fro+'-child']
+        print('fro: ' + fro + ' to: ' + to)
         if core_add_rel(fro, to):
             return "ERROR: Unable to add relationship"
         return redirect('/')

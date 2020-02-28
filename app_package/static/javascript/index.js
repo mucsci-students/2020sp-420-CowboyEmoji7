@@ -26,7 +26,7 @@ jsPlumb.ready(function() {
 
     let xReq = new XMLHttpRequest();
     xReq.onreadystatechange = function() {
-        if (xReq.readyState == 4 && xReq.status ==200) {
+        if (xReq.readyState == 4 && xReq.status == 200) {
             let data = JSON.parse(this.responseText);
             for(var i = 0; i < data.length; ++i) {
                 let from = data[i].from_name;
