@@ -418,6 +418,7 @@ body{
     border-radius: 5px;
     box-shadow: 4px 3px 3px gray;
     border: .5px solid gray;
+    z-index: 10;
 }
 
 .Class:hover {
