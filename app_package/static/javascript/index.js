@@ -55,8 +55,10 @@ function addAttribute(name){
 // OnClick function for the edit button
 function editClass(name) {
     if(document.getElementById('Relationships-' + name).style.display == 'block') {
+        document.getElementById('attInput-' + name).value = "";
         document.getElementById('Relationships-' + name).style.display = 'none';
         document.getElementById('addAttributeForm-' + name).style.display = 'none';
+        document.getElementById('attInput-' + name).blur();
     }
     else if (document.getElementById('Relationships-' + name).style.display == 'none') {
         document.getElementById('Relationships-' + name).style.display = 'block';

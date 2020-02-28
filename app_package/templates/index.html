@@ -33,22 +33,15 @@
             </span>
         </ul>
     </div>
-    <div id="Relationships-{{ class.name }}" style="display: none;">
+    <div id="Relationships-{{ class.name }}" class="RelationshipDiv" style="display: none;">
         <hr class="divider">
         <h4 class="headings">Relationships</h4>
         <ul class="relationshipList">
             <li>Car</li>
             <li>Wheel</li>
             <li>Train</li>
-            <form action="/">
-                <select class="custom-select" multiple style="width: 70%;" onclick="document.querySelector('.custom-select').focus()">
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                </select>
-                <button type="submit">Add</button>
-            </form>
         </ul>
+        <button id="RelationshipButton" class="relButton"><i class="fa fa-link"></i> Add Child</button>
     </div>
 </div>
 
