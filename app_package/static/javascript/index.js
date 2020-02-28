@@ -207,28 +207,3 @@ function updateCoords(name) {
 function closeFlashMsg(){
     document.getElementById("flashMsg").style.display = "none";
 }
-
-function renderLines() {
-    let xReq = new XMLHttpRequest();
-    xReq.onreadystatechange = function() {
-        if (xReq.readyState == 4 && xReq.status ==200) {
-            let data = JSON.parse(this.responseText);
-            for(var i = 0; i < data.length; ++i) {
-                let from = data[i].from_name;
-                let to = data[i].to_name;
-                jsPlumb.connect({
-                    source:from, 
-                    target:to,
-                    anchor:"Continuous",
-                    endpoint:"Blank",
-                    connector:"Flowchart"
-                });
-                jsPlumb.draggable([from, to], {
-                    containment:true
-                });
-            }
-        }
-    }
-    xReq.open("POST", "/getRelationships/", true);
-    xReq.send();
-}

@@ -15,6 +15,7 @@ def core_add(class_name):
         db.session.commit()
         return 0
     except:
+        db.session.rollback()
         return 1
 
 def core_delete(class_name):
@@ -27,10 +28,23 @@ def core_delete(class_name):
         if (class_to_delete is None):
             return 1
 
+        relations = Relationship.query.filter(class_name == Relationship.from_name).all()
+        for rel in relations:
+            db.session.delete(rel)
+
+        relations = Relationship.query.filter(class_name == Relationship.to_name).all()
+        for rel in relations:
+            db.session.delete(rel)
+
+        attributes = Attribute.query.filter(class_name == Attribute.class_name).all()
+        for attr in attributes:
+            db.session.delete(attr)
+
         db.session.delete(class_to_delete)
         db.session.commit()
         return 0
     except:
+        db.session.rollback()
         return 1
 
 def core_update(old_name, new_name):
@@ -62,6 +76,7 @@ def core_update(old_name, new_name):
         return 0
 
     except:
+        db.session.rollback()
         return 1
 
 def core_save():
@@ -79,6 +94,7 @@ def core_save():
         # Options utilized strictly for readability of the resulting file
         return json.dumps(out, ensure_ascii=False, indent=4)
     except:
+        db.session.rollback()
         return None
 
 def core_load(data):
@@ -119,6 +135,7 @@ def core_load(data):
         db.session.commit()
         return 0
     except:
+        db.session.rollback()
         return 1
 
 def core_add_attr(pName, attr):
@@ -128,11 +145,14 @@ def core_add_attr(pName, attr):
     """
 
     try:
+        if Class.query.get(pName) is None:
+            return 1
         new_attr = Attribute(attribute=attr, class_name=pName)
         db.session.add(new_attr)
         db.session.commit()
         return 0
     except:
+        db.session.rollback()
         return 1
 
 def core_del_attr(pName, attr):
@@ -142,7 +162,7 @@ def core_del_attr(pName, attr):
     """
 
     try:
-        attr_to_delete = Attribute.query.filter(and_(pName == Attribute.class_name, attr == Attribute.attribute))
+        attr_to_delete = Attribute.query.get({"class_name": pName, "attribute": attr})
         if (attr_to_delete is None):
             return 1
 
@@ -150,6 +170,7 @@ def core_del_attr(pName, attr):
         db.session.commit()
         return 0
     except:
+        db.session.rollback()
         return 1
 
 def core_update_attr(pName, attr, newAttr):
@@ -159,7 +180,7 @@ def core_update_attr(pName, attr, newAttr):
     """
 
     try:
-        attr_to_update = Attribute.query.filter(and_(pName == Attribute.class_name, attr == Attribute.attribute))
+        attr_to_update = Attribute.query.get({"class_name": pName, "attribute": attr})
         if (attr_to_update is None):
             return 1
 
@@ -167,6 +188,7 @@ def core_update_attr(pName, attr, newAttr):
         db.session.commit()
         return 0
     except:
+        db.session.rollback()
         return 1
 
 def core_add_rel(from_name, to_name):
@@ -176,11 +198,14 @@ def core_add_rel(from_name, to_name):
     """
 
     try:
+        if (Class.query.get(from_name) is None or Class.query.get(to_name) is None):
+            return 1
         new_rel = Relationship(from_name=from_name, to_name=to_name)
         db.session.add(new_rel)
         db.session.commit()
         return 0
     except:
+        db.session.rollback()
         return 1
 
 def core_del_rel(from_name, to_name):
@@ -190,12 +215,13 @@ def core_del_rel(from_name, to_name):
     """
 
     try:
-        rel_to_delete = Relationship.query.filter(and_(from_name == Relationship.from_name, to_name == Relationship.to_name))
+        rel_to_delete = Relationship.query.get({"from_name": from_name, "to_name": to_name})
         if (rel_to_delete is None):
             return 1
-
+        
         db.session.delete(rel_to_delete)
         db.session.commit()
         return 0
     except:
+        db.session.rollback()
         return 1

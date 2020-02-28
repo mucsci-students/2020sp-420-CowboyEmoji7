@@ -57,16 +57,19 @@ def add_attr():
     return redirect('/')
 
 
-@app.route('/delete/<string:name>')
-def delete(name):
+@app.route('/delete/', methods=['POST'])
+def delete():
     """Deals with requests to remove a class.
 
     Removes the requested class from database, if successful
     """
-
-    if core_delete(name):
-        flash('ERROR: Unable to delete Class', 'error')
-    return redirect('/')
+    try:
+        name = request.form['delete']
+        if core_delete(name):
+            flash('ERROR: Unable to delete Class', 'error')
+        return redirect('/')
+    except:
+        return "Invalid name"
 
 @app.route('/update/', methods=['POST'])
 def update():
