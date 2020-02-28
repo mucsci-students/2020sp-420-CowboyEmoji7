@@ -50,6 +50,7 @@ function navBarAction(){
 
 function addAttribute(name){
     document.getElementById(name).focus();
+    document.getElementById(name).style.boxShadow = 'none';
 }
 
 // OnClick function for the edit button
