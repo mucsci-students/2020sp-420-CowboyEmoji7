@@ -22,12 +22,19 @@
         <hr class="divider">
         <h4 class="headings">Attributes</h4>
         <ul class="attributeList">
-            <li>startTheEngine()</li>
-            <li>stopTheEngine()</li>
-            <li>getColor()</li>
+            {% for attr in attributes %}
+            {% if attributes|length < 1 %}
+            <li>No Attributes</li>
+            {% else %}
+
+            {% if attr.class_name == class.name %}
+            <li>{{ attr.attribute }}</li>
+            {% endif %}
+            {% endif %}
+            {% endfor %}
             <span id="addAttributeForm-{{ class.name }}" onclick="addAttribute('attInput-{{ class.name }}')" style="display: none; padding-right: 10px; padding-top: 5px;">
-                <form action="/">
-                    <input type="text" id="attInput-{{ class.name }}" style="width: 70%;" placeholder="getCar(),setColor(),..."  name="attribute_names" required>
+                <form action="/addattr/{{ class.name }}" method="POST">
+                    <input type="text" id="attInput-{{ class.name }}" style="width: 70%;" placeholder="getCar(),setColor(),..."  name="{{ class.name }}-attribute" required>
                     <button id="AddAttribute" type="submit">Add</button> 
                 </form>
             </span>
