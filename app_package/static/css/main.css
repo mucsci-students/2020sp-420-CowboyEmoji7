@@ -122,6 +122,27 @@ body{
     box-shadow: 5px 8px 8px rgb(36, 36, 36);
 }
 
+#RelationshipButton {
+    cursor: pointer;
+    outline: none;
+    background-color: rgb(29, 58, 77);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: 'Ubuntu', sans-serif;
+    border: none;
+    border-radius: 5px;
+    width: 150px;
+    height: 25px;
+    margin-left: 20%;
+    margin-bottom: 10px;
+}
+
+#RelationshipButton:hover {
+    color: white;
+    box-shadow: 5px 8px 8px rgb(36, 36, 36);
+}
+
 .active{
     color: rgb(65, 65, 65);
     box-shadow: 5px 8px 8px rgb(36, 36, 36);
@@ -454,8 +475,7 @@ body{
 }
 
 .attributeList {
-    list-style: none;
-    
+    list-style-type: square;
 }
 
 .attributeList li {
@@ -469,6 +489,7 @@ body{
 .relationshipList li {
     font-size: 14px;
 }
+
 
 .custom-select {
     width: 70%;
