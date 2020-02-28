@@ -21,8 +21,39 @@ mainBody.style.width = screen.availWidth;
 
 navBar.style.height = '100%';
 
-//Creates the Draggable component for the classes
+jsPlumb.ready(function() {
+    jsPlumb.Defaults.Container = mainBody;
 
+    let xReq = new XMLHttpRequest();
+    xReq.onreadystatechange = function() {
+        if (xReq.readyState == 4 && xReq.status ==200) {
+            let data = JSON.parse(this.responseText);
+            for(var i = 0; i < data.length; ++i) {
+                let from = data[i].from_name;
+                let to = data[i].to_name;
+
+                jsPlumb.connect({
+                    source:from, 
+                    target:to,
+                    anchor:"Continuous",
+                    endpoint:"Blank",
+                    connector:"Flowchart"
+                });
+            }
+        }
+    }
+    xReq.open("POST", "/getRelationships/", true);
+    xReq.send();
+
+    jsPlumb.draggable(document.querySelectorAll(".Class"), {
+        stop: function(params) {
+            updateCoords(params.el.getAttribute("id"));
+        }
+    });
+});
+
+//Creates the Draggable component for the classes
+/*
 Draggable.create('.draggable', {
     bounds: {
         top: 5,
@@ -30,9 +61,9 @@ Draggable.create('.draggable', {
     },
     onRelease: function () {
         updateCoords(this.target.getAttribute("id"));
-    },
+    }
 });
-
+*/
 // Toggles the navBar sliding in and out from left
 function navBarAction(){
     navBar.classList.toggle('navActive');
@@ -172,4 +203,29 @@ function updateCoords(name) {
 
 function closeFlashMsg(){
     document.getElementById("flashMsg").style.display = "none";
+}
+
+function renderLines() {
+    let xReq = new XMLHttpRequest();
+    xReq.onreadystatechange = function() {
+        if (xReq.readyState == 4 && xReq.status ==200) {
+            let data = JSON.parse(this.responseText);
+            for(var i = 0; i < data.length; ++i) {
+                let from = data[i].from_name;
+                let to = data[i].to_name;
+                jsPlumb.connect({
+                    source:from, 
+                    target:to,
+                    anchor:"Continuous",
+                    endpoint:"Blank",
+                    connector:"Flowchart"
+                });
+                jsPlumb.draggable([from, to], {
+                    containment:true
+                });
+            }
+        }
+    }
+    xReq.open("POST", "/getRelationships/", true);
+    xReq.send();
 }

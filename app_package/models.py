@@ -53,6 +53,7 @@ class ClassSchema(ma.ModelSchema):
 class RelationshipSchema(ma.ModelSchema):
     member_of = ma.Nested(ClassSchema)
     class Meta:
+        fields = ("from_name", "to_name")
         model = Relationship
 
 class AttributeSchema(ma.ModelSchema):

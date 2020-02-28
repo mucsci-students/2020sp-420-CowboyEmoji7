@@ -4,7 +4,7 @@ Contains routes through which requests from
   the view are passed to interact with the data model.
 """
 
-from app_package.models import Class, ClassSchema
+from app_package.models import Class, ClassSchema, Relationship, RelationshipSchema
 from flask import render_template, json, url_for, request, redirect, flash, Response
 from app_package import app, db
 from app_package.core_func import (core_add, core_delete, core_save, core_update,
@@ -159,12 +159,12 @@ def updateAttribute():
     except:
         return "Invalid arguments, try again"
 
-@app.route("/addRelationship/", methods=['POST'])
-def addRelationship():
+@app.route("/addRelationship/<string:fro>/<string:to>", methods=['POST', 'GET'])
+def addRelationship(fro, to):
     """Deals with requests from GUI to add relationships to class."""
     try:
-        fro = request.form['class_name']
-        to = request.form['relationship']
+        #fro = request.form['class_name']
+        #to = request.form['relationship']
 
         if core_add_rel(fro, to):
             return "ERROR: Unable to add relationship"
@@ -184,3 +184,16 @@ def delRelationship():
         return redirect('/')
     except:
         return "Invalid arguments, try again"
+
+@app.route("/getRelationships/", methods=['POST'])
+def getRelationship():
+    """Helper route to give relationship information to JS."""
+    try:
+        rels = Relationship.query.all()
+
+        rel_schema = RelationshipSchema(many=True)
+        out = rel_schema.dump(rels)
+
+        return json.dumps(out)
+    except:
+        return "Error: Unable to get relationship data"
