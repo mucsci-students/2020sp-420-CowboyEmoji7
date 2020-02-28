@@ -31,7 +31,7 @@ def index():
         classList = class_name.split()
         for class_ in classList:
             if core_add(class_):
-                flash('ERROR: Unable to add Class', 'error')
+                return 'ERROR: Unable to add Class'
         return redirect('/')
 
     else:
@@ -51,7 +51,6 @@ def add_attr():
     attrName = request.form['attribute']
     attrList = attrName.split()
     for attr in attrList:
-        flash(attr, 'error')
         if core_add_attr(name, attr):
             flash('ERROR: Unable to add Attribute '+attr, 'error')
     return redirect('/')
@@ -66,7 +65,7 @@ def delete():
     try:
         name = request.form['delete']
         if core_delete(name):
-            flash('ERROR: Unable to delete Class', 'error')
+            return 'ERROR: Unable to delete Class'
         return redirect('/')
     except:
         return "Invalid name"
@@ -96,14 +95,12 @@ def save():
     """
     try:
         name = request.form['save_name']
+        contents = core_save()
+        if contents is None:
+            return "There was a problem saving. Try again."
+        return Response(contents, mimetype="application/json", headers={"Content-disposition": "attachment; filename=" + name + ".json;"})
     except:
         return "There was a problem saving. Try again."
-
-    contents = core_save()
-    if contents is None:
-        return "There was a problem saving. Try again."
-    return Response(contents, mimetype="application/json", headers={"Content-disposition": "attachment; filename=" + name + ".json;"})
- 
 
 
 @app.route("/load/", methods=['POST'])

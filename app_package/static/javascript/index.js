@@ -27,29 +27,31 @@ jsPlumb.ready(function() {
     let xReq = new XMLHttpRequest();
     xReq.onreadystatechange = function() {
         if (xReq.readyState == 4 && xReq.status == 200) {
-            let data = JSON.parse(this.responseText);
-            for(var i = 0; i < data.length; ++i) {
-                let from = data[i].from_name;
-                let to = data[i].to_name;
-                if (from != to){
-                    jsPlumb.connect({
-                        source:from, 
-                        target:to,
-                        anchor:"Continuous",
-                        endpoint:"Blank",
-                        connector:"Flowchart",
-                        overlays:[["PlainArrow", {location:1, width:10, length:10}]]
-                    });
-                }
-                else{
-                    jsPlumb.connect({
-                        source:from, 
-                        target:to,
-                        anchor:"Continuous",
-                        endpoint:"Blank",
-                        connector:"Bezier",
-                        overlays:[["PlainArrow", {location:1, width:10, length:10}]]
-                    });
+            if (this.responseText != "Error: Unable to get relationship data"){
+                let data = JSON.parse(this.responseText);
+                for(var i = 0; i < data.length; ++i) {
+                    let from = data[i].from_name;
+                    let to = data[i].to_name;
+                    if (from != to){
+                        jsPlumb.connect({
+                            source:from, 
+                            target:to,
+                            anchor:"Continuous",
+                            endpoint:"Blank",
+                            connector:"Flowchart",
+                            overlays:[["PlainArrow", {location:1, width:10, length:10}]]
+                        });
+                    }
+                    else{
+                        jsPlumb.connect({
+                            source:from, 
+                            target:to,
+                            anchor:"Continuous",
+                            endpoint:"Blank",
+                            connector:"Bezier",
+                            overlays:[["PlainArrow", {location:1, width:10, length:10}]]
+                        });
+                    }
                 }
             }
         }
