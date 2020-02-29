@@ -44,6 +44,7 @@ def core_delete(class_name):
         db.session.commit()
         return 0
     except:
+        db.session.rollback()
         return 1
 
 def core_update(old_name, new_name):
@@ -75,6 +76,7 @@ def core_update(old_name, new_name):
         return 0
 
     except:
+        db.session.rollback()
         return 1
 
 def core_save():
@@ -92,6 +94,7 @@ def core_save():
         # Options utilized strictly for readability of the resulting file
         return json.dumps(out, ensure_ascii=False, indent=4)
     except:
+        db.session.rollback()
         return None
 
 def core_load(data):
@@ -132,6 +135,7 @@ def core_load(data):
         db.session.commit()
         return 0
     except:
+        db.session.rollback()
         return 1
 
 def core_add_attr(pName, attr):
@@ -166,6 +170,7 @@ def core_del_attr(pName, attr):
         db.session.commit()
         return 0
     except:
+        db.session.rollback()
         return 1
 
 def core_update_attr(pName, attr, newAttr):
@@ -183,6 +188,7 @@ def core_update_attr(pName, attr, newAttr):
         db.session.commit()
         return 0
     except:
+        db.session.rollback()
         return 1
 
 def core_add_rel(from_name, to_name):

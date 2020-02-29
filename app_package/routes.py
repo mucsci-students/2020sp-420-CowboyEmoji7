@@ -4,7 +4,7 @@ Contains routes through which requests from
   the view are passed to interact with the data model.
 """
 
-from app_package.models import Class, ClassSchema
+from app_package.models import Class, ClassSchema, Relationship, RelationshipSchema, Attribute
 from flask import render_template, json, url_for, request, redirect, flash, Response
 from app_package import app, db
 from app_package.core_func import (core_add, core_delete, core_save, core_update,
@@ -28,14 +28,32 @@ def index():
         if class_name == '':
             return redirect('/')
 
-        if core_add(class_name):
-            return 'ERROR: Unable to add Class'
+        classList = class_name.split()
+        for class_ in classList:
+            if core_add(class_):
+                flash('ERROR: Unable to add class ' + class_, 'error')
         return redirect('/')
 
     else:
         # grab all entries in order
         classes = Class.query.order_by(Class.date_created).all()
-        return render_template('index.html', classes=classes)
+        attributes = Attribute.query.order_by(Attribute.date_created).all()
+        return render_template('index.html', classes=classes, attributes=attributes)
+
+
+@app.route('/addAttribute/', methods=['POST'])
+def add_attr():
+    """Deals with requests to add an attribute to a class.
+    
+    Adds the requested attribute to the database, if successful
+    """
+    name = request.form['class_name']
+    attrName = request.form['attribute']
+    attrList = attrName.split()
+    for attr in attrList:
+        if core_add_attr(name, attr):
+            flash('ERROR: Unable to add attribute ' + attr + " to " + name, 'error')
+    return redirect('/')
 
 
 @app.route('/delete/', methods=['POST'])
@@ -47,10 +65,11 @@ def delete():
     try:
         name = request.form['delete']
         if core_delete(name):
-            return 'ERROR: Unable to delete Class'
-        return redirect('/')
+            flash('ERROR: Unable to delete class ' + name, 'error')
     except:
-        return "Invalid name"
+        flash("Invalid name", 'error')
+
+    return redirect('/')
 
 @app.route('/update/', methods=['POST'])
 def update():
@@ -62,10 +81,11 @@ def update():
         oldName = request.form['old_name']
         newName = request.form['new_name']
         if core_update(oldName, newName):
-            return "ERROR: Unable to update class"
-        return redirect('/')
+            flash("ERROR: Unable to update class " + oldName + " to " + newName, 'error')
     except:
-        return "Invalid arguments, try again."
+        flash("Invalid arguments, try again.", 'error')
+    
+    return redirect('/')
 
 
 @app.route('/save/', methods=['POST'])
@@ -77,14 +97,13 @@ def save():
     """
     try:
         name = request.form['save_name']
+        contents = core_save()
+        if contents is None:
+            flash("There was a problem saving. Try again.", 'error')
+        return Response(contents, mimetype="application/json", headers={"Content-disposition": "attachment; filename=" + name + ".json;"})
     except:
-        return "There was a problem saving. Try again."
-
-    contents = core_save()
-    if contents is None:
-        return "There was a problem saving. Try again."
-    return Response(contents, mimetype="application/json", headers={"Content-disposition": "attachment; filename=" + name + ".json;"})
- 
+        flash("There was a problem saving. Try again.", 'error')
+        return redirect('/')
 
 
 @app.route("/load/", methods=['POST'])
@@ -99,10 +118,11 @@ def load():
     try:
         Jfile = request.files['file']
         if core_load(json.load(Jfile)):
-            return "ERROR: Unable to load data into database"
-        return redirect('/')
+            flash("ERROR: Unable to load data into database", 'error')
     except:
-        return "Invalid JSON"
+        flash("Invalid JSON", 'error')
+
+    return redirect('/')
 
 
 @app.route("/updateCoords/", methods=['POST'])
@@ -122,18 +142,6 @@ def updateCoords():
     except:
         return "Something has gone wrong in updating."
 
-@app.route("/addAttribute/", methods=['POST'])
-def addAttribute():
-    """Deals with requests from GUI to add attributes to class."""
-    try:
-        class_name = request.form['class_name']
-        attribute = request.form['attribute']
-
-        if core_add_attr(class_name, attribute):
-            return "ERROR: Unable to add attribute"
-        return redirect('/')
-    except:
-        return "Invalid arguments, try again"
 
 @app.route("/delAttribute/", methods=['POST'])
 def delAttribute():
@@ -143,10 +151,11 @@ def delAttribute():
         attribute = request.form['attribute']
 
         if core_del_attr(class_name, attribute):
-            return "ERROR: Unable to remove attribute"
-        return redirect('/')
+            flash("ERROR: Unable to remove attribute " + attribute + " from " + class_name, 'error')
     except:
-        return "Invalid arguments, try again"
+        flash("Invalid arguments, try again", 'error')
+    
+    return redirect('/')
 
 @app.route("/updateAttribute", methods=['POST'])
 def updateAttribute():
@@ -157,33 +166,51 @@ def updateAttribute():
         new_attr = request.form['new_attribute']
 
         if core_update_attr(class_name, attribute, new_attr):
-            return "ERROR: Unable to edit attribute"
-        return redirect('/')
+            flash("ERROR: Unable to update attribute " + attribute + " in " + class_name + " to " + new_attr, 'error')
     except:
-        return "Invalid arguments, try again"
+        flash("Invalid arguments, try again", 'error')
+    
+    return redirect('/')
 
-@app.route("/addRelationship/", methods=['POST'])
-def addRelationship():
-    """Deals with requests from GUI to add relationships to class."""
+@app.route("/manipRelationship/", methods=['POST'])
+def manipRelationship():
+    """Deals with requests from GUI to manipulate relationships.
+    
+    Delegates to helper functions
+    """
     try:
         fro = request.form['class_name']
-        to = request.form['relationship']
-
-        if core_add_rel(fro, to):
-            return "ERROR: Unable to add relationship"
-        return redirect('/')
+        to = request.form.getlist('relationship')
+        if (request.form['action'] == 'delete'):
+            delRelationship(fro, to)
+        else:
+            addRelationship(fro, to)
     except:
-        return "Invalid arguments, try again"
+        flash("Invalid arguments, try again", 'error')
+    
+    return redirect('/')
 
-@app.route("/delRelationship/", methods=['POST'])
-def delRelationship():
-    """Deals with requests from GUI to remove relationships from class."""
+def addRelationship(fro, to):
+    """Helper function to add relationships to class."""
+    for child in to:
+        if core_add_rel(fro, child):
+            flash("ERROR: Unable to add relationship from " + fro + " to " + child, 'error')
+
+def delRelationship(fro, to):
+    """Helper function to remove relationships from class."""
+    for child in to:
+        if core_del_rel(fro, child):
+            flash("ERROR: Unable to delete relationship from " + fro + " to " + child, 'error')
+
+@app.route("/getRelationships/", methods=['POST'])
+def getRelationship():
+    """Helper route to give relationship information to JS."""
     try:
-        fro = request.form['class_name']
-        to = request.form['relationship']
+        rels = Relationship.query.all()
 
-        if core_del_rel(fro, to):
-            return "ERROR: Unable to remove relationship"
-        return redirect('/')
+        rel_schema = RelationshipSchema(many=True)
+        out = rel_schema.dump(rels)
+
+        return json.dumps(out)
     except:
-        return "Invalid arguments, try again"
+        return "Error: Unable to get relationship data"

@@ -30,6 +30,7 @@ class Attribute(db.Model):
 
     __tablename__ = 'attribute'
     attribute = db.Column(db.String(200), primary_key=True)
+    date_created = db.Column(db.DateTime, default=datetime.utcnow)
     class_name = db.Column(db.String(200), db.ForeignKey('class.name'), primary_key=True)
     parent_class = relationship("Class", back_populates="class_attributes", foreign_keys=[class_name], primaryjoin='Class.name==Attribute.class_name')
 
@@ -53,6 +54,7 @@ class ClassSchema(ma.ModelSchema):
 class RelationshipSchema(ma.ModelSchema):
     member_of = ma.Nested(ClassSchema)
     class Meta:
+        fields = ("from_name", "to_name")
         model = Relationship
 
 class AttributeSchema(ma.ModelSchema):

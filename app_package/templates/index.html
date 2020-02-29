@@ -11,10 +11,58 @@
 
 <!-- No matter what IntelliSense tries to tell you, the moustaches in the next line are not errors. -->
 <div id="{{ class.name }}" class="draggable Class" style="top: {{ class.y }}px; left: {{ class.x }}px;">
-    <form action="/delete/" method="POST">
-        <button type="submit" id="DeleteClass" class="btn" name="delete" value="{{ class.name }}"><i class="fa fa-close"></i></button>
-    </form>
+    <div id="DeleteClass">
+        <form action="/delete/" method="POST">
+            <button type="submit" id="DeleteClass" class="btn" name="delete" value="{{ class.name }}" onclick="return confirm('Are you sure you want to delete this class?')"><i class="fa fa-close"></i></button>
+        </form>
+    </div>
+    <div id="EditClass">
+        <button class="EditButton" onclick="editClass('{{ class.name }}')"><i class="fa fa-pencil" aria-hidden="true"></i></button>
+    </div>
     <h2 class="className">{{ class.name }}</h2>
+    <div id="Attributes">
+        <hr class="divider">
+        <h4 class="headings">Attributes</h4>
+        <ul class="attributeList">
+
+            {% for attr in attributes %}
+
+            {% if attributes|length < 1 %}
+            <li>No Attributes</li>
+            {% else %}
+
+            {% if attr.class_name == class.name %}
+            <li>{{ attr.attribute }}</li>
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+            <span id="addAttributeForm-{{ class.name }}" onclick="addAttribute('attInput-{{ class.name }}')" style="display: none; padding-right: 10px; padding-top: 5px;">
+                <form action="/addAttribute/" method="POST">
+                    <input type="hidden" name="class_name" value="{{ class.name }}">
+                    <input type="text" id="attInput-{{ class.name }}" style="width: 70%;" placeholder="getCar() setColor() ..." name="attribute" required>
+                    <button id="AddAttribute" type="submit">Add</button> 
+                </form>
+            </span>
+        </ul>
+    </div>
+    <div id="Relationships-{{ class.name }}" class="RelationshipDiv" style="display: none;">
+        <hr class="divider">
+        <h4 class="headings">Relationships</h4>
+        <ul class="relationshipList">
+            <form action="/manipRelationship/" method="POST">
+                <input type="hidden" name="class_name" value="{{ class.name }}">
+                <select class="custom-select" multiple style="width: 70%;" onclick="document.querySelector('.custom-select').focus()" name="relationship">
+                    {% for child in classes %}
+                    <option value="{{ child.name }}">{{ child.name }}</option>
+                    {% endfor %}
+                </select>
+                <br>
+                <button type="submit" name="action" value="delete">Delete</button>
+                <button type="submit" name="action" value="add">Add</button>
+            </form>
+        </ul>
+        <button id="RelationshipButton" class="relButton"><i class="fa fa-link"></i> Add Child</button>
+    </div>
 </div>
 
 {% endfor %}

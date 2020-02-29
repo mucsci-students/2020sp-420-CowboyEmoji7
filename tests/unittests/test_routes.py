@@ -16,7 +16,7 @@ def test_add_empty(test_client, init_database):
 def test_add_dupes(test_client, init_database):
     test_client.post('/', data=dict(class_name='TestAddDupe'), follow_redirects=True)
     response = test_client.post('/', data=dict(class_name='TestAddDupe'), follow_redirects=True)
-    assert b"Unable to add Class" in response.data
+    assert b"Unable to add class TestAddDupe" in response.data
 
 def test_add_nondupes(test_client, init_database):
     test_client.post('/', data=dict(class_name='TestAddDerp0'), follow_redirects=True)
@@ -38,7 +38,7 @@ def test_delete (test_client, init_database):
 
 def test_delete_no_existo (test_client, init_database):
     response = test_client.post('/delete/', data=dict(delete='TestDelete'), follow_redirects=True)
-    assert b"Unable to delete Class" in response.data
+    assert b"Unable to delete class TestDelete" in response.data
 
 ################################ TEST LOAD ################################
 
