@@ -49,14 +49,16 @@
         <hr class="divider">
         <h4 class="headings">Relationships</h4>
         <ul class="relationshipList">
-            <form action="/addRelationship/" method="POST">
+            <form action="/manipRelationship/" method="POST">
                 <input type="hidden" name="class_name" value="{{ class.name }}">
                 <select class="custom-select" multiple style="width: 70%;" onclick="document.querySelector('.custom-select').focus()" name="relationship">
                     {% for child in classes %}
                     <option value="{{ child.name }}">{{ child.name }}</option>
                     {% endfor %}
                 </select>
-                <button type="submit">Add</button>
+                <br>
+                <button type="submit" name="action" value="delete">Delete</button>
+                <button type="submit" name="action" value="add">Add</button>
             </form>
         </ul>
         <button id="RelationshipButton" class="relButton"><i class="fa fa-link"></i> Add Child</button>

@@ -166,31 +166,40 @@ def updateAttribute():
     except:
         return "Invalid arguments, try again"
 
-@app.route("/addRelationship/", methods=['POST'])
-def addRelationship():
-    """Deals with requests from GUI to add relationships to class."""
+@app.route("/manipRelationship/", methods=['POST'])
+def manRel():
     try:
         fro = request.form['class_name']
         to = request.form.getlist('relationship')
-        for child in to:
-            if core_add_rel(fro, child):
+        if (request.form['action'] == 'delete'):
+            if delRelationship(fro, to):
+                return "ERROR: Unable to delete relationship"
+        else:
+            if addRelationship(fro, to):
                 return "ERROR: Unable to add relationship"
         return redirect('/')
     except:
         return "Invalid arguments, try again"
 
-@app.route("/delRelationship/", methods=['POST'])
-def delRelationship():
+def addRelationship(fro, to):
+    """Deals with requests from GUI to add relationships to class."""
+    try:
+        for child in to:
+            if core_add_rel(fro, child):
+                return 1
+        return 0
+    except:
+        return 1
+
+def delRelationship(fro, to):
     """Deals with requests from GUI to remove relationships from class."""
     try:
-        fro = request.form['class_name']
-        to = request.form['relationship']
-
-        if core_del_rel(fro, to):
-            return "ERROR: Unable to remove relationship"
-        return redirect('/')
+        for child in to:
+            if core_del_rel(fro, child):
+                return 1
+        return 0
     except:
-        return "Invalid arguments, try again"
+        return 1
 
 @app.route("/getRelationships/", methods=['POST'])
 def getRelationship():
