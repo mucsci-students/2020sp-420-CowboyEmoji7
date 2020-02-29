@@ -140,7 +140,6 @@ class replShell(cmd.Cmd):
     def do_web(self, args):
         """Starts the web app in the user's default browser."""
         webbrowser.open_new_tab("http://127.0.0.1:5000")
-        app.secret_key = 'the random and secure key'
         app.run(port=5000, debug=False)
 
     def do_list(self, args):

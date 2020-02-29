@@ -21,43 +21,19 @@ mainBody.style.width = screen.availWidth;
 
 navBar.style.height = '100%';
 
+// Initialize important components on document ready
 jsPlumb.ready(function() {
+
+    // Add click event listeners to flash messages to allow closing
+    let elements = document.getElementsByClassName("flash");
+    for(const el of elements) {
+        el.addEventListener('click', closeFlashMsg, true);
+    }
+
+    // Initialize jsPlumb to allow relationship lines and draggable classes
     jsPlumb.Defaults.Container = mainBody;
 
-    let xReq = new XMLHttpRequest();
-    xReq.onreadystatechange = function() {
-        if (xReq.readyState == 4 && xReq.status == 200) {
-            if (this.responseText != "Error: Unable to get relationship data"){
-                let data = JSON.parse(this.responseText);
-                for(var i = 0; i < data.length; ++i) {
-                    let from = data[i].from_name;
-                    let to = data[i].to_name;
-                    if (from != to){
-                        jsPlumb.connect({
-                            source:from, 
-                            target:to,
-                            anchor:"Continuous",
-                            endpoint:"Blank",
-                            connector:"Flowchart",
-                            overlays:[["PlainArrow", {location:1, width:10, length:10}]]
-                        });
-                    }
-                    else{
-                        jsPlumb.connect({
-                            source:from, 
-                            target:to,
-                            anchor:"Continuous",
-                            endpoint:"Blank",
-                            connector:"Bezier",
-                            overlays:[["PlainArrow", {location:1, width:10, length:10}]]
-                        });
-                    }
-                }
-            }
-        }
-    }
-    xReq.open("POST", "/getRelationships/", true);
-    xReq.send();
+    renderLines();
 
     jsPlumb.draggable(document.querySelectorAll(".Class"), {
         stop: function(params) {
@@ -206,6 +182,45 @@ function updateCoords(name) {
     xReq.send(params);
 }
 
+// On click function for flash messages to close
 function closeFlashMsg(){
-    document.getElementById("flashMsg").style.display = "none";
+    this.style.display = "none";
+}
+
+// Get relationship data from database and use jsPlumb to draw lines
+function renderLines(){
+    let xReq = new XMLHttpRequest();
+    xReq.onreadystatechange = function() {
+        if (xReq.readyState == 4 && xReq.status == 200) {
+            if (this.responseText != "Error: Unable to get relationship data"){
+                let data = JSON.parse(this.responseText);
+                for(var i = 0; i < data.length; ++i) {
+                    let from = data[i].from_name;
+                    let to = data[i].to_name;
+                    if (from != to){
+                        jsPlumb.connect({
+                            source:from, 
+                            target:to,
+                            anchor:"Continuous",
+                            endpoint:"Blank",
+                            connector:"Flowchart",
+                            overlays:[["PlainArrow", {location:1, width:10, length:10}]]
+                        });
+                    }
+                    else{
+                        jsPlumb.connect({
+                            source:from, 
+                            target:to,
+                            anchor:"Continuous",
+                            endpoint:"Blank",
+                            connector:"Bezier",
+                            overlays:[["PlainArrow", {location:1, width:10, length:10}]]
+                        });
+                    }
+                }
+            }
+        }
+    }
+    xReq.open("POST", "/getRelationships/", true);
+    xReq.send();
 }
