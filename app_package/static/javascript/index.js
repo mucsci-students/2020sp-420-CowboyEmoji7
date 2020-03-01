@@ -16,7 +16,6 @@ const addClassForm = document.getElementById('AddClassForm');
 const classInput = document.getElementById('ClassInput');
 const addButton = document.getElementById('AddButton');
 
-
 mainBody.style.width = screen.availWidth;
 
 navBar.style.height = '100%';
@@ -65,12 +64,25 @@ function addAttribute(name){
 // OnClick function for the edit button
 function editClass(name) {
     if(document.getElementById('Relationships-' + name).style.display == 'block') {
+        let elements = document.getElementById('custom-select-' + name).options;
+        document.getElementById(name).classList.remove('activeEdit');
+        document.getElementById(name).classList.add('non-activeEdit');
         document.getElementById('attInput-' + name).value = "";
         document.getElementById('Relationships-' + name).style.display = 'none';
         document.getElementById('addAttributeForm-' + name).style.display = 'none';
+        document.getElementById('attInput-' + name).style.boxShadow = 'none';
         document.getElementById('attInput-' + name).blur();
+        document.getElementById('custom-select-' + name).blur();
+
+        // Deselecting the selected options when the user is done editing if they selected any
+        for(let i = 0; i < elements.length; i++)
+        {
+            elements[i].selected = false;
+        }
     }
     else if (document.getElementById('Relationships-' + name).style.display == 'none') {
+        document.getElementById(name).classList.remove('non-activeEdit');
+        document.getElementById(name).classList.add('activeEdit');
         document.getElementById('Relationships-' + name).style.display = 'block';
         document.getElementById('addAttributeForm-' + name).style.display = 'block';
     }
@@ -204,6 +216,7 @@ function renderLines(){
                             anchor:"Continuous",
                             endpoint:"Blank",
                             connector:"Flowchart",
+                            paintStyle:{ stroke: '#6B6E70', strokeWidth:2 },
                             overlays:[["PlainArrow", {location:1, width:10, length:10}]]
                         });
                     }
@@ -214,6 +227,7 @@ function renderLines(){
                             anchor:"Continuous",
                             endpoint:"Blank",
                             connector:"Bezier",
+                            paintStyle:{ stroke: '#6B6E70', strokeWidth:2 },
                             overlays:[["PlainArrow", {location:1, width:10, length:10}]]
                         });
                     }
