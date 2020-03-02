@@ -110,8 +110,8 @@ def core_load(data):
         for element in data:
             newClass = Class(
                 name=element["name"],
-                x=element["x"],
-                y=element["y"]
+                x=max(element["x"], 0),
+                y=max(element["y"], 0)
             )
             db.session.add(newClass)
         db.session.commit()

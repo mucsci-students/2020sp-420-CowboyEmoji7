@@ -36,6 +36,7 @@ jsPlumb.ready(function() {
 
     jsPlumb.draggable(document.querySelectorAll(".Class"), {
         stop: function(params) {
+            ensureValidCoords(params.el.getAttribute("id"));
             updateCoords(params.el.getAttribute("id"));
         }
     });
@@ -218,32 +219,30 @@ function renderLines(){
                 for(var i = 0; i < data.length; ++i) {
                     let from = data[i].from_name;
                     let to = data[i].to_name;
-                    if (from != to){
-                        jsPlumb.connect({
-                            source:from, 
-                            target:to,
-                            anchor:"Continuous",
-                            endpoint:"Blank",
-                            connector:"Flowchart",
-                            paintStyle:{ stroke: '#6B6E70', strokeWidth:2 },
-                            overlays:[["PlainArrow", {location:1, width:10, length:10}]]
-                        });
-                    }
-                    else{
-                        jsPlumb.connect({
-                            source:from, 
-                            target:to,
-                            anchor:"Continuous",
-                            endpoint:"Blank",
-                            connector:"Bezier",
-                            paintStyle:{ stroke: '#6B6E70', strokeWidth:2 },
-                            overlays:[["PlainArrow", {location:1, width:10, length:10}]]
-                        });
-                    }
+                    jsPlumb.connect({
+                        source:from, 
+                        target:to,
+                        anchor:"Continuous",
+                        endpoint:"Blank",
+                        connector:(from != to ? "Flowchart" : "Bezier"),
+                        paintStyle:{ stroke: '#6B6E70', strokeWidth:2 },
+                        overlays:[["PlainArrow", {location:1, width:10, length:10}]]
+                    });
                 }
             }
         }
     }
     xReq.open("POST", "/getRelationships/", true);
     xReq.send();
+}
+
+// Put the element back onto the screen if it gets dragged off
+function ensureValidCoords(name){
+    el = document.getElementById(name);
+    if (parseInt(el.style.top) < 0){
+        el.style.top = 0;
+    }
+    if (parseInt(el.style.left) < 0){
+        el.style.left = 0;
+    }
 }
