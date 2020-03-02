@@ -58,15 +58,9 @@ function navBarAction(){
 
 // A way that brings the class being moved or used forward to the front for editing or anything 
 // user wants to do with it.
-let val = 0
+let val = 250;
 function bringForward(name) {
     val += 5;
-    document.getElementById(name).style.zIndex = val;
-}
-
-function bringBack(name)
-{
-    val -= 5;
     document.getElementById(name).style.zIndex = val;
 }
 

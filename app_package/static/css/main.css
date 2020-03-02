@@ -51,7 +51,7 @@ body{
 .navBar{
     width: 255px;
     position: fixed;
-    z-index: 1250;
+    z-index: 125000;
     left: -257px;
     background-color: #6B6E70;
     transition: 0.5s;
