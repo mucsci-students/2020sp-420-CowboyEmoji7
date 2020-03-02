@@ -56,6 +56,21 @@ function navBarAction(){
     }
 }
 
+// A way that brings the class being moved or used forward to the front for editing or anything 
+// user wants to do with it.
+let val = 0
+function bringForward(name) {
+    val += 1;
+    document.getElementById(name).style.zIndex = val;
+}
+
+function bringBack(name)
+{
+    val -= 1;
+    document.getElementById(name).style.zIndex = val;
+}
+
+//Focuses the input field of the class you are in when you want to add attributes
 function addAttribute(name){
     document.getElementById(name).focus();
     document.getElementById(name).style.boxShadow = 'none';
