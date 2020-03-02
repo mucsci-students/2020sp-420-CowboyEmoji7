@@ -73,6 +73,11 @@ function addAttribute(name){
 
 // OnClick function for the edit button
 function editClass(name) {
+    let attrNames = document.getElementsByClassName('attrname-' + name);
+    let attrDels = document.getElementsByClassName('attrdel-' + name);
+    let attrEds = document.getElementsByClassName('attrupd-' + name);
+    let attrTexts = document.getElementsByClassName('attrtext-' + name);
+
     if(document.getElementById('Relationships-' + name).style.display == 'block') {
         let elements = document.getElementById('custom-select-' + name).options;
         document.getElementById(name).classList.remove('activeEdit');
@@ -83,6 +88,17 @@ function editClass(name) {
         document.getElementById('attInput-' + name).style.boxShadow = 'none';
         document.getElementById('attInput-' + name).blur();
         document.getElementById('custom-select-' + name).blur();
+        document.getElementById('class-' + name).display = "block";
+        document.getElementById('classtext-' + name).type = "hidden";
+        document.getElementById('classupd-' + name).type = "hidden";
+
+        for (let i = 0; i < attrNames.length; ++i)
+        {
+            attrNames[i].style.display = "block";
+            attrDels[i].type = "hidden";
+            attrEds[i].type = "hidden";
+            attrTexts[i].type = "hidden";
+        }
 
         // Deselecting the selected options when the user is done editing if they selected any
         for(let i = 0; i < elements.length; i++)
@@ -95,6 +111,17 @@ function editClass(name) {
         document.getElementById(name).classList.add('activeEdit');
         document.getElementById('Relationships-' + name).style.display = 'block';
         document.getElementById('addAttributeForm-' + name).style.display = 'block';
+        document.getElementById('class-' + name).display = "none";
+        document.getElementById('classtext-' + name).type = "text";
+        document.getElementById('classupd-' + name).type = "submit";
+
+        for (let i = 0; i < attrNames.length; ++i)
+        {
+            attrNames[i].style.display = "none";
+            attrDels[i].type = "submit";
+            attrEds[i].type = "submit";
+            attrTexts[i].type = "text";
+        }
     }
 }
 

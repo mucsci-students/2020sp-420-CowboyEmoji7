@@ -142,35 +142,33 @@ def updateCoords():
     except:
         return "Something has gone wrong in updating."
 
+@app.route("/manipAttribute/", methods=['POST'])
+def manipAttribute():
+    try:
+        class_name = request.form['class_name']
+        attribute = request.form['attribute']
+        action = request.form['action']
+        if (action == 'Delete'):
+            delAttribute(class_name, attribute)
+        elif (action == 'Rename'):
+            updateAttribute(class_name, attribute, request.form['new_attribute'])
+    except:
+        flash("Invalid arguments, try again", 'error')
+    
+    return redirect('/')
 
-@app.route("/delAttribute/", methods=['POST'])
-def delAttribute():
+def delAttribute(name, attr):
     """Deals with requests from GUI to remove attributes from class."""
-    try:
-        class_name = request.form['class_name']
-        attribute = request.form['attribute']
 
-        if core_del_attr(class_name, attribute):
-            flash("ERROR: Unable to remove attribute " + attribute + " from " + class_name, 'error')
-    except:
-        flash("Invalid arguments, try again", 'error')
-    
-    return redirect('/')
+    if core_del_attr(name, attr):
+        flash("ERROR: Unable to remove attribute " + attr + " from " + name, 'error')
 
-@app.route("/updateAttribute", methods=['POST'])
-def updateAttribute():
+def updateAttribute(name, oldAttr, newAttr):
     """Deals with requests from GUI to update attributes in class."""
-    try:
-        class_name = request.form['class_name']
-        attribute = request.form['attribute']
-        new_attr = request.form['new_attribute']
 
-        if core_update_attr(class_name, attribute, new_attr):
-            flash("ERROR: Unable to update attribute " + attribute + " in " + class_name + " to " + new_attr, 'error')
-    except:
-        flash("Invalid arguments, try again", 'error')
-    
-    return redirect('/')
+    if core_update_attr(name, oldAttr, newAttr):
+        flash("ERROR: Unable to update attribute " + oldAttr + " in " + name + " to " + newAttr, 'error')
+
 
 @app.route("/manipRelationship/", methods=['POST'])
 def manipRelationship():
@@ -181,9 +179,10 @@ def manipRelationship():
     try:
         fro = request.form['class_name']
         to = request.form.getlist('relationship')
-        if (request.form['action'] == 'delete'):
+        action = request.form['action']
+        if (action == 'delete'):
             delRelationship(fro, to)
-        else:
+        elif (action == 'add'):
             addRelationship(fro, to)
     except:
         flash("Invalid arguments, try again", 'error')

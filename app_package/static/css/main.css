@@ -554,6 +554,11 @@ body{
     border-bottom: none;
 }
 
+.classRename {
+    text-align: center;
+}
+
+
 @-webkit-keyframes fadeIn {
     from {opacity: 0;}
     to {opacity: 1;}
