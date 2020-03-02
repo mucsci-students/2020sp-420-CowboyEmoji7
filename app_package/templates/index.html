@@ -10,7 +10,7 @@
 {% for class in classes %}
 
 <!-- No matter what IntelliSense tries to tell you, the moustaches in the next line are not errors. -->
-<div id="{{ class.name }}" class="draggable Class" style="top: {{ class.y }}px; left: {{ class.x }}px;">
+<div id="{{ class.name }}" class="draggable Class non-activeEdit" onmouseover="bringForward('{{ class.name }}')" style="top: {{ class.y }}px; left: {{ class.x }}px;">
     <div id="DeleteClass">
         <form action="/delete/" method="POST">
             <button type="submit" id="DeleteClass" class="btn" name="delete" value="{{ class.name }}" onclick="return confirm('Are you sure you want to delete this class?')"><i class="fa fa-close"></i></button>
@@ -49,16 +49,16 @@
         <hr class="divider">
         <h4 class="headings">Relationships</h4>
         <ul class="relationshipList">
-            <form action="/manipRelationship/" method="POST">
+            <form id="relSelect" action="/manipRelationship/" method="POST">
                 <input type="hidden" name="class_name" value="{{ class.name }}">
-                <select class="custom-select" multiple style="width: 70%;" onclick="document.querySelector('.custom-select').focus()" name="relationship">
+                <select id="custom-select-{{ class.name }}" multiple style="width: 70%; box-shadow: none;" onclick="document.getElementById('custom-select-{{ class.name }}').focus()" name="relationship" required>
                     {% for child in classes %}
-                    <option value="{{ child.name }}">{{ child.name }}</option>
+                    <option class="relOptions" value="{{ child.name }}">{{ child.name }}</option>
                     {% endfor %}
                 </select>
                 <br>
-                <button type="submit" name="action" value="delete">Delete</button>
-                <button type="submit" name="action" value="add">Add</button>
+                <button class="outline" type="submit" name="action" value="delete">Delete</button>
+                <button class="outline" type="submit" name="action" value="add">Add</button>
             </form>
         </ul>
         <button id="RelationshipButton" class="relButton"><i class="fa fa-link"></i> Add Child</button>
