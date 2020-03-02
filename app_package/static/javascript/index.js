@@ -37,8 +37,8 @@ jsPlumb.ready(function() {
 
     jsPlumb.draggable(document.querySelectorAll(".Class"), {
         stop: function(params) {
-            updateCoords(params.el.getAttribute("id"));
             ensureValidCoords(params.el.getAttribute("id"));
+            updateCoords(params.el.getAttribute("id"));
         }
     });
 });
