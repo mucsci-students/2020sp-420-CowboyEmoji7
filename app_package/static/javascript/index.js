@@ -60,13 +60,13 @@ function navBarAction(){
 // user wants to do with it.
 let val = 0
 function bringForward(name) {
-    val += 1;
+    val += 5;
     document.getElementById(name).style.zIndex = val;
 }
 
 function bringBack(name)
 {
-    val -= 1;
+    val -= 5;
     document.getElementById(name).style.zIndex = val;
 }
 
