@@ -1,23 +1,25 @@
 import cmd
 from app_package.core_func import (core_add, core_delete, core_save, core_update,
                                    core_load, core_add_attr, core_del_attr, 
-                                   core_update_attr, core_add_rel, core_del_rel)
+                                   core_update_attr, core_add_rel, core_del_rel,
+                                   core_parse)
 from app_package.models import Class, Attribute, Relationship
 from app_package import app
 import webbrowser
 import json
 
 class replShell(cmd.Cmd):
-    intro = 'Welcome to the UML editor shell.   Type help or ? to list commands. \nType web to open web app.\n'
+    intro = 'Welcome to the UML editor shell.\nType help or ? to list commands.\nType web to open web app.\n'
     prompt = '(UML): '
     file = None
 
 ################################# Class level ############################################
 
     def do_add(self, args):
-        """Accepts a single class name OR a list separated by spaces and adds them to the database
-    ex: add dog cat fish  <-- will add all three classes to database"""
-        argList = args.split()
+        """Accepts a single class name OR a list separated by commas and adds them to the database.
+    Usage: add <class_name1>, <class_name2>, ... , <class_nameN>
+    """
+        argList = core_parse(args)
         if argList:
             for name in argList:
                 if core_add(name):
@@ -25,12 +27,13 @@ class replShell(cmd.Cmd):
                 else:
                     print('Successfully added class \'' + name + '\'')
         else:
-            print("Please provide a class name")
+            print("Usage: add <class_name1>, <class_name2>, ... , <class_nameN>")
 
     def do_delete(self, args):
-        """Accepts a single class name OR a list separated by spaces and removes them from the database
-    ex: delete dog cat fish  <-- will delete all three classes from database"""
-        argList = args.split()
+        """Accepts a single class name OR a list separated by commas and removes them from the database.
+    Usage: delete <class_name1>, <class_name2>, ... , <class_nameN>
+    """
+        argList = core_parse(args)
         if argList:
             for name in argList:
                 if core_delete(name):
@@ -38,14 +41,14 @@ class replShell(cmd.Cmd):
                 else:
                     print('Successfully deleted class \'' + name + '\'')
         else:
-            print("Please provide a class name")
+            print("Usage: delete <class_name1>, <class_name2>, ... , <class_nameN>")
 
     def do_edit(self, args):
-        """Accepts a single class name followed by a replacement name and changes instances of old class
-      name in database with new
-    ex: edit kitten cat <-- will rename kitten to cat in database"""
-        argList = args.split()
-        if len(argList) > 1:
+        """Accepts a single class name followed by a replacement name, separated by commas, and changes instances of old name in database with new name.
+    Usage: edit <old_name>, <new_name>
+    """
+        argList = core_parse(args)
+        if len(argList) == 2:
             old_name = argList.pop(0)
             new_name = argList.pop(0)
             if core_update(old_name, new_name):
@@ -53,15 +56,15 @@ class replShell(cmd.Cmd):
             else:
                 print('Successfully updated class \'' + old_name + '\' to \'' + new_name + '\'')
         else:
-            print("Please provide a class name, followed by a new class name")
+            print("Usage: edit <old_name>, <new_name>")
 
 ######################################## Attribute level #########################################
 
     def do_addAttr(self, args):
-        """Accepts a single class name followed by a list of attribute names separated by spaces
-      and adds them to the database
-    ex: addAttr zoo dog cat catDog <-- will add all three attributes to the class "zoo" in database"""
-        argList = args.split()
+        """Accepts a single class name followed by a list of attribute names separated by commas and adds them to the class.
+    Usage: addAttr <class_name>, <attribute1>, <attribute2>, ... , <attributeN>
+    """
+        argList = core_parse(args)
         if len(argList) > 1:
             class_name = argList.pop(0)
             for attr in argList:
@@ -70,13 +73,13 @@ class replShell(cmd.Cmd):
                 else:
                     print('Successfully added attribute \'' + attr + '\'')
         else:
-            print("Please provide a class name and at least one attribute")
+            print("Usage: addAttr <class_name>, <attribute1>, <attribute2>, ... , <attributeN>")
 
     def do_delAttr(self, args):
-        """Accepts a single class name followed by a list of attribute names separated by spaces
-      and removes them from the database
-    ex: delAttr zoo dog cat catDog <-- will remove all three attributes from the class "zoo" in database"""
-        argList = args.split()
+        """Accepts a single class name followed by a list of attribute names separated by commas and removes them from the class.
+    Usage: delAttr <class_name>, <attribute1>, <attribute2>, ... , <attributeN>
+    """
+        argList = core_parse(args)
         if len(argList) > 1:
             class_name = argList.pop(0)
             for attr in argList:
@@ -85,14 +88,14 @@ class replShell(cmd.Cmd):
                 else:
                     print('Successfully deleted attribute \'' + attr + '\'')
         else:
-            print("Please provide a class name and at least one attribute")
+            print("Usage: delAttr <class_name>, <attribute1>, <attribute2>, ... , <attributeN>")
 
     def do_editAttr(self, args):
-        """Accepts a single class name followed by an existing attribute within said class and a
-      new name which will replace said attribute in the database
-    ex: editAttr zoo dog cat <-- will update attribute 'dog' in class 'zoo' with the name 'cat'"""
-        argList = args.split()
-        if len(argList) > 2:
+        """Accepts a single class name followed by an existing attribute within and a new name which will replace said attribute in the class, all separated by commas.
+    Usage: editAttr <class_name>, <old_attribute>, <new_attribute>
+    """
+        argList = core_parse(args)
+        if len(argList) == 3:
             class_name = argList.pop(0)
             old_name = argList.pop(0)
             new_name = argList.pop(0)
@@ -101,15 +104,15 @@ class replShell(cmd.Cmd):
             else:
                 print('Successfully updated attribute \'' + old_name + '\' to \'' + new_name + '\'')
         else:
-            print("Please provide a class name, followed by two attribute names")
+            print("Usage: editAttr <class_name>, <old_attribute>, <new_attribute>")
 
 ########################################## Relationship level ########################################
 
     def do_addRel(self, args):
-        """Accepts a single parent class name followed by a list of child class names separated by spaces
-      and adds relationships from parents to children in database
-    ex: addRel cat kitten catDog <-- will add both relationships to the class "cat" in database"""
-        argList = args.split()
+        """Accepts a single parent class name followed by a list of child class names separated by commas and adds relationships from parents to children in database.
+    Usage: addRel <class_name>, <relationship1>, <relationship2>, ... , <relationshipN>
+    """
+        argList = core_parse(args)
         if len(argList) > 1:
             class_name = argList.pop(0)
             for rel in argList:
@@ -118,13 +121,13 @@ class replShell(cmd.Cmd):
                 else:
                     print('Successfully added relationship from \'' + class_name + '\' to \'' + rel + '\'')
         else:
-            print("Please provide a class name and at least one relationship")
+            print("Usage: addRel <class_name>, <relationship1>, <relationship2>, ... , <relationshipN>")
 
     def do_delRel(self, args):
-        """Accepts a single parent class name followed by a list of child class names separated by spaces
-      and removes relationships from parents to children in database
-    ex: delRel cat kitten catDog <-- will delete both relationships from the class "cat" in database"""
-        argList = args.split()
+        """Accepts a single parent class name followed by a list of child class names separated by commas and removes relationships from parents to children in database.
+    Usage: delRel <class_name>, <relationship1>, <relationship2>, ... , <relationshipN>
+    """
+        argList = core_parse(args)
         if len(argList) > 1:
             class_name = argList.pop(0)
             for rel in argList:
@@ -133,17 +136,21 @@ class replShell(cmd.Cmd):
                 else:
                     print('Successfully deleted relationship from \'' + class_name + '\' to \'' + rel + '\'')
         else:
-            print("Please provide a class name and at least one relationship")
+            print("Usage: delRel <class_name>, <relationship1>, <relationship2>, ... , <relationshipN>")
 
 #################################### Other ############################################
 
     def do_web(self, args):
-        """Starts the web app in the user's default browser."""
+        """Starts the web app in the user's default browser.
+    Usage: web
+    """
         webbrowser.open_new_tab("http://127.0.0.1:5000")
         app.run(port=5000, debug=False)
 
     def do_list(self, args):
-        """Lists every class in the database"""
+        """Lists every class in the database.
+    Usage: list
+    """
         classes = Class.query.order_by(Class.date_created).all()
         listStr = ""
 
@@ -176,8 +183,11 @@ class replShell(cmd.Cmd):
         print(listStr)
 
     def do_save(self, args):
+        """Saves the contents of the database into a requested file.
+    Usage: save <file_location>
+    """
         if len(args.split()) != 1:
-            print("Please provide one file name.")
+            print("Usage: save <file_location>")
         else:
             try:
                 Jfile = open(args, "w+")
@@ -187,8 +197,11 @@ class replShell(cmd.Cmd):
                 print("ERROR: Unable to save file as \'" + args + '\'')
 
     def do_load(self, args):
+        """Loads the contents of a previously saved diagram into the database.
+    Usage: load <file_location>
+    """
         if len(args.split()) != 1:
-            print("Please provide one file name.")
+            print("Usage: load <file_location>")
         else:
             try:
                 Jfile = open(args, "r")
@@ -201,7 +214,9 @@ class replShell(cmd.Cmd):
 
 
     def do_exit(self, args):
-        'Exits the UML shell'
+        """Exits the UML shell.
+    Usage: exit
+    """
         print('Thank you for using our UML editor')
         self.close()
         return True

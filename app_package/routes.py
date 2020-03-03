@@ -9,7 +9,8 @@ from flask import render_template, json, url_for, request, redirect, flash, Resp
 from app_package import app, db
 from app_package.core_func import (core_add, core_delete, core_save, core_update,
                                    core_load, core_add_attr, core_del_attr, 
-                                   core_update_attr, core_add_rel, core_del_rel)
+                                   core_update_attr, core_add_rel, core_del_rel,
+                                   core_parse)
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -28,7 +29,7 @@ def index():
         if class_name == '':
             return redirect('/')
 
-        classList = class_name.split()
+        classList = core_parse(class_name)
         for class_ in classList:
             if core_add(class_):
                 flash('ERROR: Unable to add class ' + class_, 'error')
@@ -49,7 +50,7 @@ def add_attr():
     """
     name = request.form['class_name']
     attrName = request.form['attribute']
-    attrList = attrName.split()
+    attrList = core_parse(attrName)
     for attr in attrList:
         if core_add_attr(name, attr):
             flash('ERROR: Unable to add attribute ' + attr + " to " + name, 'error')

@@ -232,3 +232,34 @@ def core_del_rel(from_name, to_name):
     except:
         db.session.rollback()
         return 1
+
+def core_parse (string):
+    parensUnmatched = 0
+    stringBuf = ""
+    listBuf = []
+
+    for el in string:
+        if el == '(':
+            parensUnmatched += 1
+        elif el == ')' and parensUnmatched > 0:
+            parensUnmatched -= 1
+        elif el == ',' and parensUnmatched == 0:
+            if stringBuf != "":
+                stringBuf = removeTrailingWhitespace(stringBuf)
+                listBuf.append(stringBuf)
+                stringBuf = ""
+                
+            continue
+        if not ((el == ' ' or el == '\t') and stringBuf == ""):
+            stringBuf += el
+
+    if stringBuf != "": 
+        stringBuf = removeTrailingWhitespace(stringBuf)
+        listBuf.append(stringBuf)
+        
+    return listBuf
+
+def removeTrailingWhitespace(string):
+    while (string[-1] == ' ' or string[-1] == '\t'):
+        string = string[0:-1]
+    return string
