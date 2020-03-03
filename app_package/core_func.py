@@ -10,6 +10,8 @@ def core_add(class_name):
     Returns 0 on success, 1 on failure
     """
     try:
+        if "'" in class_name or '"' in class_name:
+            return 1
         new_class = Class(name=class_name)
         db.session.add(new_class)
         db.session.commit()
@@ -54,6 +56,8 @@ def core_update(old_name, new_name):
     """
 
     try:
+        if "'" in new_name or '"' in new_name:
+            return 1
         class_to_update = Class.query.get(old_name)
         if (class_to_update is None):
             return 1
@@ -108,6 +112,9 @@ def core_load(data):
             db.session.delete(item)
         
         for element in data:
+            if "'" in element["name"] or '"' in element["name"]:
+                raise ValueError("Double and single quotes are disallowed in class names.")
+                return 1
             newClass = Class(
                 name=element["name"],
                 x=max(element["x"], 0),
