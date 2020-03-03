@@ -152,10 +152,10 @@ class replShell(cmd.Cmd):
 
         for classObj in classes:
             # Code in if else prevents a comma from coming after the last element
-            attributes = Attribute.query.filter_by(class_name=classObj.name).all()
-            relationships = Relationship.query.filter_by(from_name=classObj.name).all()
 
             listStr += classObj.name + '\n'
+            attributes = classObj.class_attributes
+
             if len(attributes) > 0:
                 listStr += '  > Attributes: '
                 for attr in attributes:
@@ -163,6 +163,8 @@ class replShell(cmd.Cmd):
                         listStr += attr.attribute + '\n'
                     else:
                         listStr += (attr.attribute + ", ")
+
+            relationships = classObj.class_relationships
             if len(relationships) > 0:
                 listStr += '  > Children: '
                 for rel in relationships:
