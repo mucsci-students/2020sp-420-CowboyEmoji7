@@ -2,7 +2,7 @@ import cmd
 from app_package.core_func import (core_add, core_delete, core_save, core_update,
                                    core_load, core_add_attr, core_del_attr, 
                                    core_update_attr, core_add_rel, core_del_rel)
-from app_package.models import Class
+from app_package.models import Class, Attribute, Relationship
 from app_package import app
 import webbrowser
 import json
@@ -152,10 +152,24 @@ class replShell(cmd.Cmd):
 
         for classObj in classes:
             # Code in if else prevents a comma from coming after the last element
-            if classObj == classes[-1]:
-                listStr += classObj.name
-            else:
-                listStr += (classObj.name + ", ")
+            attributes = Attribute.query.filter_by(class_name=classObj.name).all()
+            relationships = Relationship.query.filter_by(from_name=classObj.name).all()
+
+            listStr += classObj.name + '\n'
+            if len(attributes) > 0:
+                listStr += '  > Attributes: '
+                for attr in attributes:
+                    if attr == attributes[-1]:
+                        listStr += attr.attribute + '\n'
+                    else:
+                        listStr += (attr.attribute + ", ")
+            if len(relationships) > 0:
+                listStr += '  > Children: '
+                for rel in relationships:
+                    if rel == relationships[-1]:
+                        listStr += rel.to_name + '\n'
+                    else:
+                        listStr += (rel.to_name + ", ")
         
         print(listStr)
 
