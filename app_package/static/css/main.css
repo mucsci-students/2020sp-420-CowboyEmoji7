@@ -10,8 +10,6 @@ body{
     margin: 0px;
 }
 
-
-
 .flash-error {
     outline: none;
     cursor: pointer;
@@ -526,6 +524,7 @@ body{
 
 .attributeList li {
     font-size: 14px;
+    margin-bottom: 5px;
     color: white;
 }
 
