@@ -145,6 +145,10 @@ def updateCoords():
 
 @app.route("/manipAttribute/", methods=['POST'])
 def manipAttribute():
+    """Deals with requests from GUI to manipulate attributes within a class.
+    
+    Delegates to helper functions
+    """
     try:
         class_name = request.form['class_name']
         attribute = request.form['attribute']
@@ -159,13 +163,13 @@ def manipAttribute():
     return redirect('/')
 
 def delAttribute(name, attr):
-    """Deals with requests from GUI to remove attributes from class."""
+    """Helper to remove attributes from class."""
 
     if core_del_attr(name, attr):
         flash("ERROR: Unable to remove attribute " + attr + " from " + name, 'error')
 
 def updateAttribute(name, oldAttr, newAttr):
-    """Deals with requests from GUI to update attributes in class."""
+    """Helper to update attributes in class."""
 
     if core_update_attr(name, oldAttr, newAttr):
         flash("ERROR: Unable to update attribute " + oldAttr + " in " + name + " to " + newAttr, 'error')
