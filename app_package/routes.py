@@ -99,8 +99,6 @@ def save():
     try:
         name = request.form['save_name']
         contents = core_save()
-        if contents is None:
-            flash("There was a problem saving. Try again.", 'error')
         return Response(contents, mimetype="application/json", headers={"Content-disposition": "attachment; filename=" + name + ".json;"})
     except:
         flash("There was a problem saving. Try again.", 'error')
@@ -129,19 +127,17 @@ def load():
 @app.route("/updateCoords/", methods=['POST'])
 def updateCoords():
     """Deals with requests from GUI to save dragged coordinates."""
-    try:
-        name = request.form['name']
-        x = request.form['left']
-        y = request.form['top']
 
-        updatee = Class.query.get_or_404(name)
-        updatee.x = x
-        updatee.y = y
+    name = request.form['name']
+    x = request.form['left']
+    y = request.form['top']
 
-        db.session.commit()
-        return "success"
-    except:
-        return "Something has gone wrong in updating."
+    updatee = Class.query.get_or_404(name)
+    updatee.x = x
+    updatee.y = y
+
+    db.session.commit()
+    return "Name: " + updatee.name + "\nX: " + str(updatee.x) + "\nY: " + str(updatee.y)
 
 @app.route("/manipAttribute/", methods=['POST'])
 def manipAttribute():
@@ -190,7 +186,7 @@ def manipRelationship():
         elif (action == 'add'):
             addRelationship(fro, to)
     except:
-        flash("Invalid arguments, try again", 'error')
+        flash("Invalid arguments, try again.", 'error')
     
     return redirect('/')
 
@@ -209,12 +205,9 @@ def delRelationship(fro, to):
 @app.route("/getRelationships/", methods=['POST'])
 def getRelationship():
     """Helper route to give relationship information to JS."""
-    try:
-        rels = Relationship.query.all()
+    rels = Relationship.query.all()
 
-        rel_schema = RelationshipSchema(many=True)
-        out = rel_schema.dump(rels)
+    rel_schema = RelationshipSchema(many=True)
+    out = rel_schema.dump(rels)
 
-        return json.dumps(out)
-    except:
-        return "Error: Unable to get relationship data"
+    return json.dumps(out)

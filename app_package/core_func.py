@@ -88,18 +88,15 @@ def core_save():
 
     Returns proper string on success, None on failure
     """
-    try:
-        classes = Class.query.all()
+    
+    classes = Class.query.all()
 
-        # Use flask-marshmallow to "jsonify" current data
-        class_schema = ClassSchema(many=True)
-        out = class_schema.dump(classes)
+    # Use flask-marshmallow to "jsonify" current data
+    class_schema = ClassSchema(many=True)
+    out = class_schema.dump(classes)
 
-        # Options utilized strictly for readability of the resulting file
-        return json.dumps(out, ensure_ascii=False, indent=4)
-    except:
-        db.session.rollback()
-        return None
+    # Options utilized strictly for readability of the resulting file
+    return json.dumps(out, ensure_ascii=False, indent=4)
 
 def core_load(data):
     """Populates the database with the contents of passed data array.

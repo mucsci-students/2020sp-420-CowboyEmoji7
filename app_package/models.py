@@ -18,9 +18,6 @@ class Class(db.Model):
     y = db.Column(db.Integer())
     class_attributes = relationship("Attribute", back_populates="parent_class", primaryjoin='Class.name==Attribute.class_name', cascade='all,delete-orphan')
     class_relationships = relationship("Relationship", back_populates="parent_class", primaryjoin='Class.name==Relationship.from_name', cascade='all,delete-orphan')
-    
-    def __repr__(self):
-        return '<Class %r>' % self.name
 
 class Attribute(db.Model):
     """Data model for representation of attributes in current diagram.
