@@ -59,7 +59,7 @@
             <span id="addAttributeForm-{{ class.name }}" onclick="addAttribute('attInput-{{ class.name }}')" style="display: none; padding-right: 10px; padding-top: 5px;">
                 <form action="/addAttribute/" method="POST">
                     <input type="hidden" name="class_name" value="{{ class.name }}">
-                    <input type="text" id="attInput-{{ class.name }}" style="width: 70%;" placeholder="getCar() setColor() ..." name="attribute" required>
+                    <input type="text" id="attInput-{{ class.name }}" style="width: 70%;" placeholder="getColor(), setColor(), ..." name="attribute" required>
                     <button id="AddAttribute" type="submit">Add</button> 
                 </form>
             </span>

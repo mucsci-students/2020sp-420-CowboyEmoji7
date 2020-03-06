@@ -9,7 +9,8 @@ from flask import render_template, json, url_for, request, redirect, flash, Resp
 from app_package import app, db
 from app_package.core_func import (core_add, core_delete, core_save, core_update,
                                    core_load, core_add_attr, core_del_attr, 
-                                   core_update_attr, core_add_rel, core_del_rel)
+                                   core_update_attr, core_add_rel, core_del_rel,
+                                   core_parse)
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -28,7 +29,7 @@ def index():
         if class_name == '':
             return redirect('/')
 
-        classList = class_name.split()
+        classList = core_parse(class_name)
         for class_ in classList:
             if core_add(class_):
                 flash('ERROR: Unable to add class ' + class_, 'error')
@@ -49,7 +50,7 @@ def add_attr():
     """
     name = request.form['class_name']
     attrName = request.form['attribute']
-    attrList = attrName.split()
+    attrList = core_parse(attrName)
     for attr in attrList:
         if core_add_attr(name, attr):
             flash('ERROR: Unable to add attribute ' + attr + " to " + name, 'error')
@@ -98,8 +99,6 @@ def save():
     try:
         name = request.form['save_name']
         contents = core_save()
-        if contents is None:
-            flash("There was a problem saving. Try again.", 'error')
         return Response(contents, mimetype="application/json", headers={"Content-disposition": "attachment; filename=" + name + ".json;"})
     except:
         flash("There was a problem saving. Try again.", 'error')
@@ -128,22 +127,24 @@ def load():
 @app.route("/updateCoords/", methods=['POST'])
 def updateCoords():
     """Deals with requests from GUI to save dragged coordinates."""
-    try:
-        name = request.form['name']
-        x = request.form['left']
-        y = request.form['top']
 
-        updatee = Class.query.get_or_404(name)
-        updatee.x = x
-        updatee.y = y
+    name = request.form['name']
+    x = request.form['left']
+    y = request.form['top']
 
-        db.session.commit()
-        return "success"
-    except:
-        return "Something has gone wrong in updating."
+    updatee = Class.query.get_or_404(name)
+    updatee.x = x
+    updatee.y = y
+
+    db.session.commit()
+    return "Name: " + updatee.name + "\nX: " + str(updatee.x) + "\nY: " + str(updatee.y)
 
 @app.route("/manipAttribute/", methods=['POST'])
 def manipAttribute():
+    """Deals with requests from GUI to manipulate attributes within a class.
+    
+    Delegates to helper functions
+    """
     try:
         class_name = request.form['class_name']
         attribute = request.form['attribute']
@@ -158,13 +159,13 @@ def manipAttribute():
     return redirect('/')
 
 def delAttribute(name, attr):
-    """Deals with requests from GUI to remove attributes from class."""
+    """Helper to remove attributes from class."""
 
     if core_del_attr(name, attr):
         flash("ERROR: Unable to remove attribute " + attr + " from " + name, 'error')
 
 def updateAttribute(name, oldAttr, newAttr):
-    """Deals with requests from GUI to update attributes in class."""
+    """Helper to update attributes in class."""
 
     if core_update_attr(name, oldAttr, newAttr):
         flash("ERROR: Unable to update attribute " + oldAttr + " in " + name + " to " + newAttr, 'error')
@@ -185,7 +186,7 @@ def manipRelationship():
         elif (action == 'add'):
             addRelationship(fro, to)
     except:
-        flash("Invalid arguments, try again", 'error')
+        flash("Invalid arguments, try again.", 'error')
     
     return redirect('/')
 
@@ -204,12 +205,9 @@ def delRelationship(fro, to):
 @app.route("/getRelationships/", methods=['POST'])
 def getRelationship():
     """Helper route to give relationship information to JS."""
-    try:
-        rels = Relationship.query.all()
+    rels = Relationship.query.all()
 
-        rel_schema = RelationshipSchema(many=True)
-        out = rel_schema.dump(rels)
+    rel_schema = RelationshipSchema(many=True)
+    out = rel_schema.dump(rels)
 
-        return json.dumps(out)
-    except:
-        return "Error: Unable to get relationship data"
+    return json.dumps(out)

@@ -25,9 +25,42 @@ def test_add_nondupes(test_client, init_database):
     assert b"TestAddDerp0" in response.data
     assert b"TestAddDerp1" in response.data
 
+def test_add_nondupesbutwithaspace(test_client, init_database):
+    response = test_client.post('/', data=dict(class_name='TestAddDerp2, TestAddDerp3'), follow_redirects=True)
+    assert response.status_code == 200
+    assert b"TestAddDerp2" in response.data
+    assert b"TestAddDerp3" in response.data
+
 def test_add_no_name(test_client, init_database):
     response = test_client.post('/', data=dict(class_name=''), follow_redirects=True)
     assert not b'id=""' in response.data
+
+################################ TEST UPDATE ################################
+def test_update (test_client, init_database):
+    response = test_client.post('/', data=dict(class_name='TestOriginal'), follow_redirects=True)
+    assert b'TestOriginal' in response.data
+
+    response = test_client.post('/update/', data=dict(old_name='TestOriginal', new_name='TestUpdate'), follow_redirects=True)
+    assert b'TestUpdate' in response.data
+    assert not b'TestOriginal' in response.data
+
+def test_update_to_existo (test_client, init_database):
+    response = test_client.post('/', data=dict(class_name='TestOriginal, TestUpdate'), follow_redirects=True)
+    assert b'TestOriginal' in response.data
+    assert b'TestUpdate' in response.data
+
+    response = test_client.post('/update/', data=dict(old_name='TestOriginal', new_name='TestUpdate'), follow_redirects=True)
+    assert b'Unable to update class TestOriginal to TestUpdate'
+    assert b'TestOriginal' in response.data
+    assert b'TestUpdate' in response.data
+
+def test_update_invalid_args (test_client, init_database):
+    response = test_client.post('/', data=dict(class_name='TestOriginal'), follow_redirects=True)
+    assert b'TestOriginal' in response.data
+
+    response = test_client.post('/update/', data=dict(old_name='TestOriginal', new_name=None), follow_redirects=True)
+    assert b'Invalid arguments, try again.'
+    assert b'TestOriginal' in response.data
 
 ################################ TEST DELETE ################################
 def test_delete (test_client, init_database):
@@ -39,6 +72,10 @@ def test_delete (test_client, init_database):
 def test_delete_no_existo (test_client, init_database):
     response = test_client.post('/delete/', data=dict(delete='TestDelete'), follow_redirects=True)
     assert b"Unable to delete class TestDelete" in response.data
+
+def test_delete_no_name (test_client, init_database):
+    response = test_client.post('/delete/', data=dict(delete=None), follow_redirects=True)
+    assert b"Invalid name" in response.data
 
 ################################ TEST LOAD ################################
 
@@ -138,3 +175,140 @@ def test_save_no_name(test_client, init_database):
     response = test_client.post('/save/', data=dict(save_name=None), follow_redirects=True)
 
     assert b"There was a problem saving. Try again." in response.data
+
+################################ TEST ATTRIBUTE ################################
+
+def test_add_one_attribute(test_client, init_database):
+    test_client.post('/', data=dict(class_name='TestClass'), follow_redirects=True)
+    response = test_client.post('/addAttribute/', data=dict(class_name='TestClass',attribute='TestAttr'), follow_redirects=True)
+    assert response.status_code == 200
+    assert b"TestClass" in response.data
+    assert b"TestAttr" in response.data
+
+def test_add_duplicate_attribute(test_client, init_database):
+    test_client.post('/', data=dict(class_name='TestClass'), follow_redirects=True)
+    test_client.post('/addAttribute/', data=dict(class_name='TestClass', attribute='TestAttr'), follow_redirects=True)
+    response = test_client.post('/addAttribute/', data=dict(class_name='TestClass', attribute='TestAttr'), follow_redirects=True)
+    assert response.status_code == 200
+    assert b"TestClass" in response.data
+    assert b"TestAttr" in response.data
+    assert b"ERROR: Unable to add attribute TestAttr to TestClass" in response.data
+
+def test_add_one_attribute_but_then_delete_that_attribute(test_client, init_database):
+    test_client.post('/', data=dict(class_name='TestClass'), follow_redirects=True)
+    response = test_client.post('/addAttribute/', data=dict(class_name='TestClass', attribute='TestAttr'), follow_redirects=True)
+    assert b"TestAttr" in response.data
+
+    response = test_client.post('/manipAttribute/', data=dict(class_name='TestClass', attribute='TestAttr', action="Delete"), follow_redirects=True)
+    assert response.status_code == 200
+    assert b"TestClass" in response.data
+    assert not b"TestAttr" in response.data
+
+def test_delete_attribute_no_existo (test_client, init_database):
+    test_client.post('/', data=dict(class_name='TestClass'), follow_redirects=True)
+    response = test_client.post('/addAttribute/', data=dict(class_name='TestClass', attribute='TestAttr'), follow_redirects=True)
+    assert b"TestAttr" in response.data
+
+    response = test_client.post('/manipAttribute/', data=dict(class_name='TestClass', attribute='TestAttrAAA', action="Delete"), follow_redirects=True)
+    assert response.status_code == 200
+    assert b"TestClass" in response.data
+    assert b"TestAttr" in response.data
+    assert b"Unable to remove attribute TestAttrAAA from TestClass"
+
+def test_rename_attribute (test_client, init_database):
+    test_client.post('/', data=dict(class_name='TestClass'), follow_redirects=True)
+    response = test_client.post('/addAttribute/', data=dict(class_name='TestClass', attribute='TestAttr'), follow_redirects=True)
+    assert b'TestAttr' in response.data
+
+    response = test_client.post('/manipAttribute/', data=dict(class_name='TestClass', attribute='TestAttr', action='Rename', new_attribute='TestUpdate'), follow_redirects=True)
+    assert not b'TestAttr' in response.data
+    assert b'TestUpdate' in response.data
+
+def test_rename_attribute_no_existo (test_client, init_database):
+    test_client.post('/', data=dict(class_name='TestClass'), follow_redirects=True)
+    response = test_client.post('/addAttribute/', data=dict(class_name='TestClass', attribute='TestAttr'), follow_redirects=True)
+    assert b"TestAttr" in response.data
+
+    response = test_client.post('/manipAttribute/', data=dict(class_name='TestClass', attribute='TestAttrAAA', action="Rename", new_attribute='TestUpdate'), follow_redirects=True)
+    assert response.status_code == 200
+    assert b"TestClass" in response.data
+    assert b"TestAttr" in response.data
+    assert b"Unable to update attribute TestAttrAAA in TestClass to TestUpdate"
+
+def test_attribute_invalid_args (test_client, init_database):
+    test_client.post('/', data=dict(class_name='TestClass'), follow_redirects=True)
+    response = test_client.post('/addAttribute/', data=dict(class_name='TestClass', attribute='TestAttr'), follow_redirects=True)
+    assert b'TestAttr' in response.data
+
+    response = test_client.post('/manipAttribute/', data=dict(class_name='TestClass', attribute='TestAttr', action='Rename', new_attribute=None), follow_redirects=True)
+    assert b'TestAttr' in response.data
+    assert b'Invalid arguments, try again' in response.data
+
+################################ TEST RELATIONSHIPS ################################
+
+def test_add_one_relationship(test_client, init_database):
+    test_client.post('/', data=dict(class_name='TestClass1, TestClass2'), follow_redirects=True)
+    test_client.post('/manipRelationship/', data=dict(class_name='TestClass1', relationship=['TestClass2'], action="add"), follow_redirects=True)
+    response = test_client.post('/getRelationships/', follow_redirects=True)
+    assert response.status_code == 200
+    assert b'{"from_name": "TestClass1", "to_name": "TestClass2"}' in response.data
+
+def test_add_many_relationships(test_client, init_database):
+    test_client.post('/', data=dict(class_name='TestClass1, TestClass2'), follow_redirects=True)
+    test_client.post('/manipRelationship/', data=dict(class_name='TestClass1', relationship=['TestClass2', 'TestClass1'], action="add"), follow_redirects=True)
+    test_client.post('/manipRelationship/', data=dict(class_name='TestClass2', relationship=['TestClass1', 'TestClass2'], action="add"), follow_redirects=True)
+    response = test_client.post('/getRelationships/', follow_redirects=True)
+    assert response.status_code == 200
+    assert b'{"from_name": "TestClass1", "to_name": "TestClass2"}' in response.data
+    assert b'{"from_name": "TestClass2", "to_name": "TestClass1"}' in response.data
+    assert b'{"from_name": "TestClass1", "to_name": "TestClass1"}' in response.data
+    assert b'{"from_name": "TestClass2", "to_name": "TestClass2"}' in response.data
+
+def test_add_two_relationships(test_client, init_database):
+    test_client.post('/', data=dict(class_name='TestClass1, TestClass2'), follow_redirects=True)
+    test_client.post('/manipRelationship/', data=dict(class_name='TestClass1', relationship=['TestClass2','TestClass1'], action="add"), follow_redirects=True)
+    response = test_client.post('/getRelationships/', follow_redirects=True)
+    assert response.status_code == 200
+    assert b'{"from_name": "TestClass1", "to_name": "TestClass2"}' in response.data
+    assert b'{"from_name": "TestClass1", "to_name": "TestClass1"}' in response.data
+
+def test_add_one_relationship_but_then_delete_that_relationship(test_client, init_database):
+    test_client.post('/', data=dict(class_name='TestClass1, TestClass2'), follow_redirects=True)
+    test_client.post('/manipRelationship/', data=dict(class_name='TestClass1', relationship=['TestClass2'], action="add"), follow_redirects=True)
+    response = test_client.post('/getRelationships/', follow_redirects=True)
+    assert response.status_code == 200
+    assert b'{"from_name": "TestClass1", "to_name": "TestClass2"}' in response.data
+
+    response = test_client.post('/manipRelationship/', data=dict(class_name='TestClass1', relationship=['TestClass2'], action="delete"), follow_redirects=True)
+    assert response.status_code == 200
+    assert not b'{"from_name": "TestClass1", "to_name": "TestClass2"}' in response.data
+
+def test_add_one_relationship_but_its_for_a_class_that_doesnt_exist(test_client, init_database):
+    test_client.post('/', data=dict(class_name='TestClass1, TestClass2'), follow_redirects=True)
+    response = test_client.post('/manipRelationship/', data=dict(class_name='TestClass2', relationship=['TestClass69'], action="add"), follow_redirects=True)
+    assert b"ERROR: Unable to add relationship from" in response.data
+
+    response = test_client.post('/getRelationships/', follow_redirects=True)
+    assert response.status_code == 200
+    assert not b'{"from_name": "TestClass1", "to_name": "TestClass69"}' in response.data
+
+def test_delete_a_relationship_that_didnt_exist_in_the_first_place(test_client, init_database):
+    test_client.post('/', data=dict(class_name='TestClass1 TestClass2'), follow_redirects=True)
+    response = test_client.post('/manipRelationship/', data=dict(class_name='TestClass2', relationship=['TestClass69'], action="delete"), follow_redirects=True)
+    assert b"ERROR: Unable to delete relationship from" in response.data
+
+def test_manip_relationship_invalid_args (test_client, init_database):
+    test_client.post('/', data=dict(class_name='TestClass1, TestClass2'), follow_redirects=True)
+    response = test_client.post('/manipRelationship/', data=dict(class_name=None, relationship=[], action="add"), follow_redirects=True)
+    assert b"Invalid arguments, try again." in response.data
+
+################################ TEST COORDINATES ################################
+
+def test_update_coords (test_client, init_database):
+    test_client.post('/', data=dict(class_name='TestClass1'), follow_redirects=True)
+    response = test_client.post('/updateCoords/', data=dict(name='TestClass1', left=500, top=42), follow_redirects=True)
+    assert b"Name: TestClass1\nX: 500\nY: 42" in response.data
+
+    response = test_client.get('/', follow_redirects=True)
+    assert b"left: 500px;" in response.data
+    assert b"top: 42px;" in response.data
