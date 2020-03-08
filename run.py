@@ -9,6 +9,7 @@ from app_package import app, cmd_stack
 import webbrowser
 import json
 
+
 class replShell(cmd.Cmd):
     intro = 'Welcome to the UML editor shell.\nType help or ? to list commands.\nType web to open web app.\n'
     prompt = '(UML): '
