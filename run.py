@@ -3,10 +3,9 @@ from app_package.core_func import (core_add, core_delete, core_save, core_update
                                    core_load, core_add_attr, core_del_attr, 
                                    core_update_attr, core_add_rel, core_del_rel,
                                    core_parse)
-from app_package.memento.command_stack import command_stack
 from app_package.memento.func_objs import add_class, delete_class
 from app_package.models import Class, Attribute, Relationship
-from app_package import app
+from app_package import app, cmd_stack
 import webbrowser
 import json
 
@@ -14,7 +13,6 @@ class replShell(cmd.Cmd):
     intro = 'Welcome to the UML editor shell.\nType help or ? to list commands.\nType web to open web app.\n'
     prompt = '(UML): '
     file = None
-    cmd_stack = command_stack()
 
 ################################# Class level ############################################
 
@@ -26,7 +24,7 @@ class replShell(cmd.Cmd):
         if argList:
             for name in argList:
                 addCmd = add_class(name)
-                if self.cmd_stack.execute(addCmd):
+                if cmd_stack.execute(addCmd):
                     print('ERROR: Unable to add class \'' + name + '\'')
                 else:
                     print('Successfully added class \'' + name + '\'')
@@ -41,7 +39,7 @@ class replShell(cmd.Cmd):
         if argList:
             for name in argList:
                 deleteCmd = delete_class(name)
-                if self.cmd_stack.execute(deleteCmd):
+                if cmd_stack.execute(deleteCmd):
                     print('ERROR: Unable to delete class \'' + name + '\'')
                 else:
                     print('Successfully deleted class \'' + name + '\'')
@@ -156,7 +154,7 @@ class replShell(cmd.Cmd):
         """Reverses your last action.
     Usage: undo
     """
-        self.cmd_stack.undo()
+        cmd_stack.undo()
         print('undid action')
 
     # could add arg for amount, to undo/redo X times in a row
@@ -164,7 +162,7 @@ class replShell(cmd.Cmd):
         """Reverse of undo.  Will execute undone command again.
     Usage: redo
     """
-        self.cmd_stack.redo()
+        cmd_stack.redo()
         print('redid action')
 
     def do_list(self, args):

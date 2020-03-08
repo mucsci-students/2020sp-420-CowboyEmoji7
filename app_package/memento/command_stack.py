@@ -1,4 +1,3 @@
-
 # could (should) be a singleton.
 
 
@@ -7,10 +6,9 @@ class command_stack:
     redoStack = []
 
     def execute(self, command):
-
         if command.execute():
             return 1
-            
+
         self.commandStack.insert(0, command)
         self.redoStack.clear()
         return 0
