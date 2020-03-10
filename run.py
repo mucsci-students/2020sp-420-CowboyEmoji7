@@ -1,7 +1,6 @@
 import cmd
-from app_package.core_func import (core_save, core_load, core_add_rel, core_del_rel,
-                                   core_parse)
-from app_package.memento.func_objs import add_class, delete_class, edit_class, add_attr, del_attr, edit_attr
+from app_package.core_func import (core_save, core_load, core_parse)
+from app_package.memento.func_objs import add_class, delete_class, edit_class, add_attr, del_attr, edit_attr, add_rel, del_rel
 from app_package.models import Class, Attribute, Relationship
 from app_package import app, cmd_stack
 import webbrowser
@@ -122,7 +121,8 @@ class replShell(cmd.Cmd):
         if len(argList) > 1:
             class_name = argList.pop(0)
             for rel in argList:
-                if core_add_rel(class_name, rel):
+                addRelCmd = add_rel(class_name, rel)
+                if cmd_stack.execute(addRelCmd):
                     print('ERROR: Unable to add relationship from \'' + class_name + '\' to \'' + rel + '\'')
                 else:
                     print('Successfully added relationship from \'' + class_name + '\' to \'' + rel + '\'')
@@ -137,7 +137,8 @@ class replShell(cmd.Cmd):
         if len(argList) > 1:
             class_name = argList.pop(0)
             for rel in argList:
-                if core_del_rel(class_name, rel):
+                delRelCmd = del_rel(class_name, rel)
+                if cmd_stack.execute(delRelCmd):
                     print('ERROR: Unable to delete relationship from \'' + class_name + '\' to \'' + rel + '\'')
                 else:
                     print('Successfully deleted relationship from \'' + class_name + '\' to \'' + rel + '\'')

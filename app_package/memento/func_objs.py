@@ -1,4 +1,4 @@
-from ..core_func import (core_add, core_delete, core_add_attr, core_update, core_add_attr, core_del_attr, core_update_attr)
+from ..core_func import (core_add, core_delete, core_add_attr, core_update, core_add_attr, core_del_attr, core_update_attr, core_add_rel, core_del_rel)
 from ..models import Attribute
 
 
@@ -95,7 +95,7 @@ class add_attr(Command):
 
 
 class del_attr(Command):
-    """Command class for core_add_attr.  Accepts a class name and the name of an attribute"""
+    """Command class for core_del_attr.  Accepts a class name and the name of an attribute to remove"""
     className = ''
     attrName = ''
 
@@ -114,7 +114,7 @@ class del_attr(Command):
 
 
 class edit_attr(Command):
-    """Command class for core_update.  Accepts a class name and a new name"""
+    """Command class for edit_attr.  Accepts a class name and a new name"""
     className = ''
     oldAttrName = ''
     newAttrName = ''
@@ -131,3 +131,41 @@ class edit_attr(Command):
 
     def redo(self):
         return core_update_attr(self.className, self.oldAttrName, self.newAttrName)
+
+
+class add_rel(Command):
+    """Command class for core_add_rel.  Accepts a class name and the name of the child"""
+    parentName = ''
+    childName = ''
+
+    def __init__(self, parentName, childName):
+        self.parentName = parentName
+        self.childName = childName
+
+    def execute(self):
+        return core_add_rel(self.parentName, self.childName)
+
+    def undo(self):
+        return core_del_rel(self.parentName, self.childName)
+
+    def redo(self):
+        return core_add_rel(self.parentName, self.childName)
+
+
+class del_rel(Command):
+    """Command class for core_del_rel.  Accepts a class name and the name of the child"""
+    parentName = ''
+    childName = ''
+
+    def __init__(self, parentName, childName):
+        self.parentName = parentName
+        self.childName = childName
+
+    def execute(self):
+        return core_del_rel(self.parentName, self.childName)
+
+    def undo(self):
+        return core_add_rel(self.parentName, self.childName)
+
+    def redo(self):
+        return core_del_rel(self.parentName, self.childName)
