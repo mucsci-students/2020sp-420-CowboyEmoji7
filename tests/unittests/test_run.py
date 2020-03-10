@@ -5,20 +5,45 @@ import run
 
 ################################## CMD SETUP ################################
 app = run.replShell()
+
 ################################ TEST COMMANDS ##############################
+# Test list and maybe save/load
+
+################################### CLASS ###################################
 ################################## TEST ADD #################################
 def test_do_add_empty():
-    assert app.do_add("TestAddEmpty") == "Successfully added class \'' + name + '\'"
+    app.do_add("TestAddEmpty")
+    assert app.do_list() == "TestAddEmpty"
 
 def test_do_add_dup():
-    assert app.do_add("TestAddEmpty") == "ERROR: Unable to add class \'' + name + '\'"
+    app.do_add("TestAddEmpty")
+    assert app.do_list() == "TestAddEmpty"
 
 def test_do_add_more():
-    assert app.do_add("TestAddMore") == "Successfully added class \'' + name + '\'"
-    assert app.do_add("TestAdd1More") == "Successfully added class \'' + name + '\'"
+    app.do_add("TestAddMore")
+    app.do_add("TestAdd1More")
+    assert app.do_list() == "TestAddEmpty, TestAddMore, TestAdd1More"
 
 def test_do_add_none():
-    assert app.do_add("") == "Please provide a class name"
+    app.do_add("")
+    assert app.do_list() == "TestAddEmpty, TestAddMore, TestAdd1More"
 
-# write a test for adding multiple classes at a time (use list once its finished)
+def test_do_add_multi():
+    app.do_add("Multi1, Multi2, Multi3")
+    assert app.do_list() == "TestAddEmpty, TestAddMore, TestAdd1More, Multi1, Multi2, Multi3"
+
 ################################ TEST DELETE ################################
+
+################################# TEST EDIT #################################
+
+################################# ATTRIBUTES ################################
+################################ TEST addAttr ###############################
+
+################################ TEST delAttr ###############################
+
+############################### TEST editAttr ###############################
+
+############################### RELATIONSHIPS ###############################
+################################ TEST addRel ################################
+
+################################ TEST delRel ################################

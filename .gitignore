@@ -3,4 +3,3 @@ app_package/database.db
 env
 .vscode
 **/*.pyc
-__pycache__/run.cpython-36.pyc
