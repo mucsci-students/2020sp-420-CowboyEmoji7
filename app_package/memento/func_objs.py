@@ -1,4 +1,4 @@
-from ..core_func import core_add, core_delete, core_add_attr
+from ..core_func import (core_add, core_delete, core_add_attr, core_update, core_add_attr, core_del_attr)
 from ..models import Attribute
 
 
@@ -17,40 +17,97 @@ class Command:
 
 class add_class(Command):
     """Command class for core_add.  Accepts a class name"""
-    class_name = ''
+    className = ''
 
     def __init__(self, name):
-        self.class_name = name
+        self.className = name
 
     def execute(self):
-        return core_add(self.class_name)
+        return core_add(self.className)
 
     def undo(self):
-        return core_delete(self.class_name)
+        return core_delete(self.className)
 
     def redo(self):
-        return core_add(self.class_name)
+        return core_add(self.className)
 
 
 class delete_class(Command):
     """Command class for core_delete.  Accepts a class name"""
-    class_name = ''
+    className = ''
     attributes = []
 
     def __init__(self, name):
-        self.class_name = name
+        self.className = name
 
     def execute(self):
-        self.attributes = Attribute.query.filter(self.class_name == Attribute.class_name).all()
-        return core_delete(self.class_name)
+        self.attributes = Attribute.query.filter(self.className == Attribute.class_name).all()
+        return core_delete(self.className)
 
     def undo(self):
-        result = core_add(self.class_name)
+        result = core_add(self.className)
         if result == 0:
             for attr in self.attributes:
-                core_add_attr(self.class_name, attr.attribute)
+                core_add_attr(self.className, attr.attribute)
             
         return result
 
     def redo(self):
-        return core_delete(self.class_name)
+        return core_delete(self.className)
+
+
+class edit_class(Command):
+    """Command class for core_update.  Accepts a class name and a new name"""
+    oldClassName = ''
+    newClassName = ''
+
+    def __init__(self, oldName, newName):
+        self.oldClassName = oldName
+        self.newClassName = newName
+
+    def execute(self):
+        return core_update(self.oldClassName, self.newClassName)
+
+    def undo(self):
+        return core_update(self.newClassName, self.oldClassName)
+
+    def redo(self):
+        return core_update(self.oldClassName, self.newClassName)
+
+
+class add_attr(Command):
+    """Command class for core_add_attr.  Accepts a class name and the name of an attribute"""
+    className = ''
+    attrName = ''
+
+    def __init__(self, className, attrName):
+        self.className = className
+        self.attrName = attrName
+
+    def execute(self):
+        return core_add_attr(self.className, self.attrName)
+
+    def undo(self):
+        return core_del_attr(self.className, self.attrName)
+
+    def redo(self):
+        return core_add_attr(self.className, self.attrName)
+
+
+class del_attr(Command):
+    """Command class for core_add_attr.  Accepts a class name and the name of an attribute"""
+    className = ''
+    attrName = ''
+
+    def __init__(self, className, attrName):
+        self.className = className
+        self.attrName = attrName
+
+    def execute(self):
+        return core_del_attr(self.className, self.attrName)
+
+    def undo(self):
+        return core_add_attr(self.className, self.attrName)
+
+    def redo(self):
+        return core_del_attr(self.className, self.attrName)
