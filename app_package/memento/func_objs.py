@@ -1,4 +1,4 @@
-from ..core_func import (core_add, core_delete, core_add_attr, core_update, core_add_attr, core_del_attr)
+from ..core_func import (core_add, core_delete, core_add_attr, core_update, core_add_attr, core_del_attr, core_update_attr)
 from ..models import Attribute
 
 
@@ -111,3 +111,23 @@ class del_attr(Command):
 
     def redo(self):
         return core_del_attr(self.className, self.attrName)
+
+
+class edit_attr(Command):
+    """Command class for core_update.  Accepts a class name and a new name"""
+    className = ''
+    oldAttrName = ''
+    newAttrName = ''
+
+    def __init__(self, className, oldName, newName):
+        self.oldAttrName = oldName
+        self.newAttrName = newName
+
+    def execute(self):
+        return core_update_attr(self.className, self.oldAttrName, self.newAttrName)
+
+    def undo(self):
+        return core_update_attr(self.className, self.newAttrName, self.oldAttrName)
+
+    def redo(self):
+        return core_update_attr(self.className, self.oldAttrName, self.newAttrName)

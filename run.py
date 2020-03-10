@@ -1,9 +1,7 @@
 import cmd
-from app_package.core_func import (core_add, core_delete, core_save, core_update,
-                                   core_load, core_add_attr, core_del_attr, 
-                                   core_update_attr, core_add_rel, core_del_rel,
+from app_package.core_func import (core_save, core_load, core_add_rel, core_del_rel,
                                    core_parse)
-from app_package.memento.func_objs import add_class, delete_class, edit_class, add_attr, del_attr
+from app_package.memento.func_objs import add_class, delete_class, edit_class, add_attr, del_attr, edit_attr
 from app_package.models import Class, Attribute, Relationship
 from app_package import app, cmd_stack
 import webbrowser
@@ -106,7 +104,8 @@ class replShell(cmd.Cmd):
             class_name = argList.pop(0)
             old_name = argList.pop(0)
             new_name = argList.pop(0)
-            if core_update_attr(class_name, old_name, new_name):
+            editAttrCmd = edit_attr(class_name, old_name, new_name)
+            if cmd_stack.execute(editAttrCmd):
                 print('ERROR: Unable to update attribute \'' + old_name + '\' to \'' + new_name + '\'')
             else:
                 print('Successfully updated attribute \'' + old_name + '\' to \'' + new_name + '\'')
