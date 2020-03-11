@@ -1,5 +1,6 @@
 from ..core_func import (core_add, core_delete, core_add_attr, core_update, core_add_attr, core_del_attr, core_update_attr, core_add_rel, core_del_rel)
-from ..models import Attribute
+from ..models import Attribute, Class, Relationship
+from app_package import db
 
 
 class Command:
@@ -18,6 +19,8 @@ class Command:
 class add_class(Command):
     """Command class for core_add.  Accepts a class name"""
     className = ''
+    xPos = 0
+    yPos = 0
 
     def __init__(self, name):
         self.className = name
@@ -26,22 +29,38 @@ class add_class(Command):
         return core_add(self.className)
 
     def undo(self):
+        class_ = Class.query.get_or_404(self.className)
+        self.xPos = class_.x
+        self.yPos = class_.y
         return core_delete(self.className)
 
     def redo(self):
-        return core_add(self.className)
+        result = core_add(self.className)
+        class_ = Class.query.get_or_404(self.className)
+        class_.x = self.xPos
+        class_.y = self.yPos
+        db.session.commit()
+        return result
 
 
 class delete_class(Command):
     """Command class for core_delete.  Accepts a class name"""
     className = ''
     attributes = []
+    relationships = []
+    xPos = 0
+    yPos = 0
 
     def __init__(self, name):
         self.className = name
 
     def execute(self):
+        class_ = Class.query.get_or_404(self.className)
+        self.xPos = class_.x
+        self.yPos = class_.y
         self.attributes = Attribute.query.filter(self.className == Attribute.class_name).all()
+        self.relationships = Relationship.query.filter(self.className == Relationship.from_name).all()
+        self.relationships += Relationship.query.filter(self.className == Relationship.to_name).all()
         return core_delete(self.className)
 
     def undo(self):
@@ -49,10 +68,24 @@ class delete_class(Command):
         if result == 0:
             for attr in self.attributes:
                 core_add_attr(self.className, attr.attribute)
+            print(self.relationships)
+            for rel in self.relationships:
+                print(rel.from_name)
+                
+                core_add_rel(rel.from_name, rel.to_name)
+        
+            class_ = Class.query.get_or_404(self.className)
+            class_.x = self.xPos
+            class_.y = self.yPos
+
+            db.session.commit()
             
         return result
 
     def redo(self):
+        class_ = Class.query.get_or_404(self.className)
+        self.xPos = class_.x
+        self.yPos = class_.y
         return core_delete(self.className)
 
 
@@ -169,3 +202,48 @@ class del_rel(Command):
 
     def redo(self):
         return core_del_rel(self.parentName, self.childName)
+
+
+class move(Command):
+    """Command class for core_del_rel.  Accepts a class name and the name of the child"""
+    oldX = 0
+    oldY = 0
+    newX = 0
+    newY = 0
+    name = ''
+
+    def __init__(self, name,  x, y):
+        self.newX = x
+        self.newY = y
+        self.name = name
+
+    def execute(self):
+        updatee = Class.query.get_or_404(self.name)
+        self.oldX = updatee.x
+        self.oldY = updatee.y
+
+        updatee.x = self.newX
+        updatee.y = self.newY
+        db.session.commit()
+
+        return 0
+
+    def undo(self):
+        updatee = Class.query.get_or_404(self.name)
+        
+        updatee.x = self.oldX
+        updatee.y = self.oldY
+
+        db.session.commit()
+
+        return 0
+
+    def redo(self):
+        updatee = Class.query.get_or_404(self.name)
+        
+        updatee.x = self.newX
+        updatee.y = self.newY
+        
+        db.session.commit()
+
+        return 0
