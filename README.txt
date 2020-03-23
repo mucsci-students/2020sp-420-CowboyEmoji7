@@ -36,7 +36,7 @@ To run the application:
 Install all dependencies:
     - Navigate to the main project folder ('220 cowboy')
     - Activate environment.
-        - Type 'env/Scripts/activate'
+        - Type 'env\Scripts\activate'
     - Type 'pip install -r requirements.txt' to install libraries
 
 * Both operations below assume you are inside of the activated enviroment *
