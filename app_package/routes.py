@@ -6,12 +6,20 @@ Contains routes through which requests from
 
 from app_package.models import Class, ClassSchema, Relationship, RelationshipSchema, Attribute
 from flask import render_template, json, url_for, request, redirect, flash, Response
+<<<<<<< HEAD
 from app_package import app, db
 from app_package.core_func import (core_add, core_delete, core_save, core_update,
                                    core_load, core_add_attr, core_del_attr, 
                                    core_update_attr, core_add_rel, core_del_rel,
                                    core_parse)
 from parse import *
+=======
+from app_package import app, db, cmd_stack
+from app_package.core_func import core_save, core_load, core_parse
+from app_package.memento.func_objs import (add_class, delete_class, edit_class, 
+                                           add_attr, del_attr, edit_attr, add_rel,
+                                           del_rel, move)
+>>>>>>> 207270b5a320c3b55d928e2ad34879a9409e7e14
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -32,7 +40,8 @@ def index():
 
         classList = core_parse(class_name)
         for class_ in classList:
-            if core_add(class_):
+            addCmd = add_class(class_)
+            if cmd_stack.execute(addCmd):
                 flash('ERROR: Unable to add class ' + class_, 'error')
         return redirect('/')
 
@@ -40,9 +49,28 @@ def index():
         # grab all entries in order
         classes = Class.query.order_by(Class.date_created).all()
         attributes = Attribute.query.order_by(Attribute.date_created).all()
-        return render_template('index.html', classes=classes, attributes=attributes)
+        return render_template('index.html', classes=classes, attributes=attributes, cmd_stack=cmd_stack)
 
 
+<<<<<<< HEAD
+=======
+@app.route('/addAttribute/', methods=['POST'])
+def add_attribute():
+    """Deals with requests to add an attribute to a class.
+    
+    Adds the requested attribute to the database, if successful
+    """
+    name = request.form['class_name']
+    attrName = request.form['attribute']
+    attrList = core_parse(attrName)
+    for attr in attrList:
+        addAttrCmd = add_attr(name, attr)
+        if cmd_stack.execute(addAttrCmd):
+            flash('ERROR: Unable to add attribute ' + attr + " to " + name, 'error')
+    return redirect('/')
+
+
+>>>>>>> 207270b5a320c3b55d928e2ad34879a9409e7e14
 @app.route('/delete/', methods=['POST'])
 def delete():
     """Deals with requests to remove a class.
@@ -51,13 +79,36 @@ def delete():
     """
     try:
         name = request.form['delete']
-        if core_delete(name):
+        deleteCmd = delete_class(name)
+        if cmd_stack.execute(deleteCmd):
             flash('ERROR: Unable to delete class ' + name, 'error')
     except:
         flash("Invalid name", 'error')
 
     return redirect('/')
 
+<<<<<<< HEAD
+=======
+
+@app.route('/update/', methods=['POST'])
+def update():
+    """Deals with requests to update a class.
+
+    Edits the requested class in database, if successful
+    """
+    try:
+        oldName = request.form['old_name']
+        newName = request.form['new_name']
+        editCmd = edit_class(oldName, newName)
+        if cmd_stack.execute(editCmd):
+            flash("ERROR: Unable to update class " + oldName + " to " + newName, 'error')
+    except:
+        flash("Invalid arguments, try again.", 'error')
+    
+    return redirect('/')
+
+
+>>>>>>> 207270b5a320c3b55d928e2ad34879a9409e7e14
 @app.route('/save/', methods=['POST'])
 def save():
     """Deals with requests to save current data locally.
@@ -102,15 +153,22 @@ def updateCoords():
     y = request.form['top']
 
     updatee = Class.query.get_or_404(name)
-    updatee.x = x
-    updatee.y = y
+    moveCmd = move(name,  x, y)
+    cmd_stack.execute(moveCmd)
 
     db.session.commit()
     return "Name: " + updatee.name + "\nX: " + str(updatee.x) + "\nY: " + str(updatee.y)
 
+<<<<<<< HEAD
 @app.route("/manipCharacteristics/", methods=['POST'])
 def manipCharacteristics():
     """Deals with requests from GUI to manipulate characteristics of a class.
+=======
+
+@app.route("/manipAttribute/", methods=['POST'])
+def manipAttribute():
+    """Deals with requests from GUI to manipulate attributes within a class.
+>>>>>>> 207270b5a320c3b55d928e2ad34879a9409e7e14
     
     Delegates to helper functions
     """
@@ -144,21 +202,27 @@ def manipCharacteristics():
     
     return redirect('/')
 
+<<<<<<< HEAD
 def update(oldName, newName):
     """Helper to update a class's name."""
     if core_update(oldName, newName):
         flash("ERROR: Unable to update class " + oldName + " to " + newName, 'error')
+=======
+>>>>>>> 207270b5a320c3b55d928e2ad34879a9409e7e14
 
 def delAttribute(name, attr):
     """Helper to remove attributes from class."""
 
-    if core_del_attr(name, attr):
+    delAttrCmd = del_attr(name, attr)
+    if cmd_stack.execute(delAttrCmd):
         flash("ERROR: Unable to remove attribute " + attr + " from " + name, 'error')
+
 
 def updateAttribute(name, oldAttr, newAttr):
     """Helper to update attributes in class."""
 
-    if core_update_attr(name, oldAttr, newAttr):
+    editAttrCmd = edit_attr(name, oldAttr, newAttr)
+    if cmd_stack.execute(editAttrCmd):
         flash("ERROR: Unable to update attribute " + oldAttr + " in " + name + " to " + newAttr, 'error')
 
 def addAttributes(name, attrString):
@@ -188,17 +252,22 @@ def manipRelationship():
     
     return redirect('/')
 
+
 def addRelationship(fro, to):
     """Helper function to add relationships to class."""
     for child in to:
-        if core_add_rel(fro, child):
+        addRelCmd = add_rel(fro, child)
+        if cmd_stack.execute(addRelCmd):
             flash("ERROR: Unable to add relationship from " + fro + " to " + child, 'error')
+
 
 def delRelationship(fro, to):
     """Helper function to remove relationships from class."""
     for child in to:
-        if core_del_rel(fro, child):
+        delRelCmd = del_rel(fro, child)
+        if cmd_stack.execute(delRelCmd):
             flash("ERROR: Unable to delete relationship from " + fro + " to " + child, 'error')
+
 
 @app.route("/getRelationships/", methods=['POST'])
 def getRelationship():
@@ -209,3 +278,15 @@ def getRelationship():
     out = rel_schema.dump(rels)
 
     return json.dumps(out)
+
+
+@app.route("/undo/", methods=['POST'])
+def undo():
+    cmd_stack.undo()
+    return redirect('/')
+
+
+@app.route("/redo/", methods=['POST'])
+def redo():
+    cmd_stack.redo()
+    return redirect('/')
