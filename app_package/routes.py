@@ -40,7 +40,7 @@ def index():
         # grab all entries in order
         classes = Class.query.order_by(Class.date_created).all()
         attributes = Attribute.query.order_by(Attribute.date_created).all()
-        return render_template('index.html', classes=classes, attributes=attributes)
+        return render_template('index.html', classes=classes, attributes=attributes, cmd_stack=cmd_stack)
 
 
 @app.route('/addAttribute/', methods=['POST'])
