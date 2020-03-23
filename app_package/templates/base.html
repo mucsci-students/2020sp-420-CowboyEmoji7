@@ -13,6 +13,19 @@
 </head>
 
 <body>
+    <div>
+        <span>
+            <form action="/redo/" method="POST">
+                <button type="submit" class="undo-redo">&#11177</button>
+            </form>
+        </span>
+        <span>
+            <form action="/undo/" method="POST">
+                <button type="submit" class="undo-redo">&#11176</button>
+            </form>
+        </span>
+    </div>
+
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
     {% for category, message in messages %}

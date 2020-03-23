@@ -1,12 +1,11 @@
 import cmd
-from app_package.core_func import (core_add, core_delete, core_save, core_update,
-                                   core_load, core_add_attr, core_del_attr, 
-                                   core_update_attr, core_add_rel, core_del_rel,
-                                   core_parse)
+from app_package.core_func import (core_save, core_load, core_parse)
+from app_package.memento.func_objs import add_class, delete_class, edit_class, add_attr, del_attr, edit_attr, add_rel, del_rel
 from app_package.models import Class, Attribute, Relationship
-from app_package import app
+from app_package import app, cmd_stack
 import webbrowser
 import json
+
 
 class replShell(cmd.Cmd):
     intro = 'Welcome to the UML editor shell.\nType help or ? to list commands.\nType web to open web app.\n'
@@ -22,7 +21,8 @@ class replShell(cmd.Cmd):
         argList = core_parse(args)
         if argList:
             for name in argList:
-                if core_add(name):
+                addCmd = add_class(name)
+                if cmd_stack.execute(addCmd):
                     print('ERROR: Unable to add class \'' + name + '\'')
                 else:
                     print('Successfully added class \'' + name + '\'')
@@ -36,7 +36,8 @@ class replShell(cmd.Cmd):
         argList = core_parse(args)
         if argList:
             for name in argList:
-                if core_delete(name):
+                deleteCmd = delete_class(name)
+                if cmd_stack.execute(deleteCmd):
                     print('ERROR: Unable to delete class \'' + name + '\'')
                 else:
                     print('Successfully deleted class \'' + name + '\'')
@@ -51,7 +52,8 @@ class replShell(cmd.Cmd):
         if len(argList) == 2:
             old_name = argList.pop(0)
             new_name = argList.pop(0)
-            if core_update(old_name, new_name):
+            editCmd = edit_class(old_name, new_name)
+            if cmd_stack.execute(editCmd):
                 print('ERROR: Unable to update class \'' + old_name + '\' to \'' + new_name + '\'')
             else:
                 print('Successfully updated class \'' + old_name + '\' to \'' + new_name + '\'')
@@ -68,7 +70,8 @@ class replShell(cmd.Cmd):
         if len(argList) > 1:
             class_name = argList.pop(0)
             for attr in argList:
-                if core_add_attr(class_name, attr):
+                addAttrCmd = add_attr(class_name, attr)
+                if cmd_stack.execute(addAttrCmd):
                     print('ERROR: Unable to add attribute \'' + attr + '\'')
                 else:
                     print('Successfully added attribute \'' + attr + '\'')
@@ -83,7 +86,8 @@ class replShell(cmd.Cmd):
         if len(argList) > 1:
             class_name = argList.pop(0)
             for attr in argList:
-                if core_del_attr(class_name, attr):
+                delAttrCmd = del_attr(class_name, attr)
+                if cmd_stack.execute(delAttrCmd):
                     print('ERROR: Unable to delete attribute \'' + attr + '\'')
                 else:
                     print('Successfully deleted attribute \'' + attr + '\'')
@@ -99,7 +103,8 @@ class replShell(cmd.Cmd):
             class_name = argList.pop(0)
             old_name = argList.pop(0)
             new_name = argList.pop(0)
-            if core_update_attr(class_name, old_name, new_name):
+            editAttrCmd = edit_attr(class_name, old_name, new_name)
+            if cmd_stack.execute(editAttrCmd):
                 print('ERROR: Unable to update attribute \'' + old_name + '\' to \'' + new_name + '\'')
             else:
                 print('Successfully updated attribute \'' + old_name + '\' to \'' + new_name + '\'')
@@ -116,7 +121,8 @@ class replShell(cmd.Cmd):
         if len(argList) > 1:
             class_name = argList.pop(0)
             for rel in argList:
-                if core_add_rel(class_name, rel):
+                addRelCmd = add_rel(class_name, rel)
+                if cmd_stack.execute(addRelCmd):
                     print('ERROR: Unable to add relationship from \'' + class_name + '\' to \'' + rel + '\'')
                 else:
                     print('Successfully added relationship from \'' + class_name + '\' to \'' + rel + '\'')
@@ -131,7 +137,8 @@ class replShell(cmd.Cmd):
         if len(argList) > 1:
             class_name = argList.pop(0)
             for rel in argList:
-                if core_del_rel(class_name, rel):
+                delRelCmd = del_rel(class_name, rel)
+                if cmd_stack.execute(delRelCmd):
                     print('ERROR: Unable to delete relationship from \'' + class_name + '\' to \'' + rel + '\'')
                 else:
                     print('Successfully deleted relationship from \'' + class_name + '\' to \'' + rel + '\'')
@@ -145,7 +152,22 @@ class replShell(cmd.Cmd):
     Usage: web
     """
         webbrowser.open_new_tab("http://127.0.0.1:5000")
-        app.run(port=5000, debug=False)
+        app.run(port=5000, debug=True)
+
+    def do_undo(self, args):
+        """Reverses your last action. Optionally provide amount.
+    Usage: undo <# of undo's>
+    """
+        cmd_stack.undo()
+        print('undid action')
+
+    # could add arg for amount, to undo/redo X times in a row
+    def do_redo(self, args):
+        """Reverse of undo.  Will execute undone command again.
+    Usage: redo
+    """
+        cmd_stack.redo()
+        print('redid action')
 
     def do_list(self, args):
         """Lists every class in the database.
@@ -179,7 +201,7 @@ class replShell(cmd.Cmd):
                         listStr += rel.to_name + '\n'
                     else:
                         listStr += (rel.to_name + ", ")
-        
+      
         print(listStr)
 
     def do_save(self, args):
@@ -211,7 +233,6 @@ class replShell(cmd.Cmd):
                     print("Successfully loaded file \'" + args + '\'')
             except:
                 print("ERROR: Unable to open file \'" + args + '\'')
-
 
     def do_exit(self, args):
         """Exits the UML shell.
