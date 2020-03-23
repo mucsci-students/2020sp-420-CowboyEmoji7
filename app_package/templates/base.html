@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <!-- Contains display information for base index -->
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,20 +9,21 @@
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico')}}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link href="https://fonts.googleapis.com/css?family=Ubuntu&display=swap" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/ubuntu.css') }}" rel="stylesheet">
     <title>UML Editor</title>
 </head>
+
 <body>
     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="flash-{{ category }} flash">
-                    <span>{{ message }}</span>
-                </div>
-            {% endfor %}
-        {% endif %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="flash-{{ category }} flash">
+        <span>{{ message }}</span>
+    </div>
+    {% endfor %}
+    {% endif %}
     {% endwith %}
-    <div class="navBar">    
+    <div class="navBar">
         <div id="navTab" onclick="navBarAction()">
             <span class="line1"></span>
             <span class="line2"></span>
@@ -38,7 +40,7 @@
                     </form>
                 </span>
             </li>
-            <li><button id="SaveButton" class="non-active" onclick="openSaveBox()"><i class="fa fa-save"></i>  Save</button>
+            <li><button id="SaveButton" class="non-active" onclick="openSaveBox()"><i class="fa fa-save"></i> Save</button>
                 <span class="savePopup" id="saveForm">
                     <form action="/save/" class="form-container" method="POST" onsubmit="closeSaveBox()">
                         <h1>Save File</h1>
@@ -50,7 +52,7 @@
             </li>
             <li><button id="LoadButton" class="non-active" onclick="openLoadBox()"><i class="fa fa-folder"></i> Load</button>
                 <span class="loadPopup" id="loadForm">
-                    <form action="/load/" class="form-container" method="POST" enctype= "multipart/form-data" onsubmit="closeLoadBox()">
+                    <form action="/load/" class="form-container" method="POST" enctype="multipart/form-data" onsubmit="closeLoadBox()">
                         <h1>Load File</h1>
                         <input id="loadInput" type="file" name="file" required>
                         <button type="submit" class="btn loadButton">Load</button>
@@ -63,7 +65,8 @@
     <div class="main-body">
         {% block elements %} {% endblock %}
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.12.11/js/jsplumb.min.js"></script>
+    <script src="{{ url_for('static', filename='javascript//jsplumb.min.js') }}"></script>
     <script src="{{ url_for('static', filename='javascript/index.js') }}"></script>
 </body>
+
 </html>
