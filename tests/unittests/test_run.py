@@ -11,26 +11,44 @@ app = run.replShell()
 
 ################################### CLASS ###################################
 ################################## TEST ADD #################################
-def test_do_add_empty():
+def test_do_add(capsys):
+    ##### TEST EMPTY #####
     app.do_add("TestAddEmpty")
-    assert app.do_list() == "TestAddEmpty"
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully added class 'TestAddEmpty'\n"
+    app.do_list("")
+    captured = capsys.readouterr()
+    assert captured.out == "TestAddEmpty\n"
 
-def test_do_add_dup():
+def test_do_add_duplicate(capsys):
     app.do_add("TestAddEmpty")
-    assert app.do_list() == "TestAddEmpty"
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully added class 'TestAddEmpty'\n"
+    app.do_add("TestAddEmpty")
+    captured = capsys.readouterr()
+    assert captured.out == "ERROR: Unable to add class 'TestAddEmpty'\n"
+    app.do_list("")
+    captured = capsys.readouterr()
+    assert captured.out == "TestAddEmpty\n"
 
-def test_do_add_more():
+def test_do_add_more(capsys):
     app.do_add("TestAddMore")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully added class 'TestAddMore'\n"
     app.do_add("TestAdd1More")
-    assert app.do_list() == "TestAddEmpty, TestAddMore, TestAdd1More"
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully added class 'TestAdd1More'\n"
+    app.do_list("")
+    captured = capsys.readouterr()
+    assert captured.out == "TestAddMore, TestAdd1More\n"
 
-def test_do_add_none():
+def test_do_add_none(capsys):
     app.do_add("")
-    assert app.do_list() == "TestAddEmpty, TestAddMore, TestAdd1More"
+    
 
-def test_do_add_multi():
+def test_do_add_multi(capsys):
     app.do_add("Multi1, Multi2, Multi3")
-    assert app.do_list() == "TestAddEmpty, TestAddMore, TestAdd1More, Multi1, Multi2, Multi3"
+    assert app.do_list("") == "TestAddEmpty, TestAddMore, TestAdd1More, Multi1, Multi2, Multi3"
 
 ################################ TEST DELETE ################################
 
