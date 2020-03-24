@@ -4,7 +4,7 @@ NOTE: use 'pytest' to run unit tests while in virtual env
     In event of module errors, you may need to add '.' to PYTHONPATH
 """
 import sys, os
-myPath = os.path.dirname(os.path.abspath(file))
+myPath = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, myPath + '/../')
 
 from app_package import app, db
