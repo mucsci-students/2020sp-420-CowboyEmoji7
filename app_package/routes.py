@@ -11,6 +11,7 @@ from app_package.core_func import core_save, core_load, core_parse
 from app_package.memento.func_objs import (add_class, delete_class, edit_class, 
                                            add_attr, del_attr, edit_attr, add_rel,
                                            del_rel, move)
+from parse import *
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -43,22 +44,6 @@ def index():
         return render_template('index.html', classes=classes, attributes=attributes, cmd_stack=cmd_stack)
 
 
-@app.route('/addAttribute/', methods=['POST'])
-def add_attribute():
-    """Deals with requests to add an attribute to a class.
-    
-    Adds the requested attribute to the database, if successful
-    """
-    name = request.form['class_name']
-    attrName = request.form['attribute']
-    attrList = core_parse(attrName)
-    for attr in attrList:
-        addAttrCmd = add_attr(name, attr)
-        if cmd_stack.execute(addAttrCmd):
-            flash('ERROR: Unable to add attribute ' + attr + " to " + name, 'error')
-    return redirect('/')
-
-
 @app.route('/delete/', methods=['POST'])
 def delete():
     """Deals with requests to remove a class.
@@ -74,25 +59,6 @@ def delete():
         flash("Invalid name", 'error')
 
     return redirect('/')
-
-
-@app.route('/update/', methods=['POST'])
-def update():
-    """Deals with requests to update a class.
-
-    Edits the requested class in database, if successful
-    """
-    try:
-        oldName = request.form['old_name']
-        newName = request.form['new_name']
-        editCmd = edit_class(oldName, newName)
-        if cmd_stack.execute(editCmd):
-            flash("ERROR: Unable to update class " + oldName + " to " + newName, 'error')
-    except:
-        flash("Invalid arguments, try again.", 'error')
-    
-    return redirect('/')
-
 
 @app.route('/save/', methods=['POST'])
 def save():
@@ -144,30 +110,50 @@ def updateCoords():
     db.session.commit()
     return "Name: " + updatee.name + "\nX: " + str(updatee.x) + "\nY: " + str(updatee.y)
 
-
-@app.route("/manipAttribute/", methods=['POST'])
-def manipAttribute():
-    """Deals with requests from GUI to manipulate attributes within a class.
+@app.route("/manipCharacteristics/", methods=['POST'])
+def manipCharacteristics():
+    """Deals with requests from GUI to manipulate characteristics of a class.
     
     Delegates to helper functions
     """
+
     try:
-        class_name = request.form['class_name']
-        attribute = request.form['attribute']
-        action = request.form['action']
-        if (action == 'Delete'):
-            delAttribute(class_name, attribute)
-        elif (action == 'Rename'):
-            updateAttribute(class_name, attribute, request.form['new_attribute'])
+        theDict = {}
+        for key, value in request.form.to_dict().items():
+            field = parse ("field[{}][{}]", key)
+            theDict.setdefault(field[0], {}).update({field[1]: value})
+
+        class_name = theDict[' super ']['class_name']
+        for el in theDict:
+            if 'action' not in theDict[el]:
+                if theDict[el]['new_attribute'] != theDict[el]['attribute']:
+                    #rename
+                    if theDict[el]['new_attribute'] != "":
+                        updateAttribute(class_name, theDict[el]['attribute'], theDict[el]['new_attribute'])
+            else:
+                action = theDict[el]['action']
+
+                if action == "Add":
+                    addAttributes(class_name, theDict[el]['attrs'])
+                elif action == "Delete":
+                    delAttribute(class_name, theDict[el]['attribute'])
+                elif action == "RenameClass":
+                    update(class_name, theDict[el]['new_name'])
+                    class_name = theDict[el]['new_name']
+
     except:
         flash("Invalid arguments, try again", 'error')
     
     return redirect('/')
 
+def update(oldName, newName):
+    """Helper to update a class's name."""
+    updateCmd = edit_class(oldName, newName)
+    if cmd_stack.execute(updateCmd):
+        flash("ERROR: Unable to update class " + oldName + " to " + newName, 'error')
 
 def delAttribute(name, attr):
     """Helper to remove attributes from class."""
-
     delAttrCmd = del_attr(name, attr)
     if cmd_stack.execute(delAttrCmd):
         flash("ERROR: Unable to remove attribute " + attr + " from " + name, 'error')
@@ -179,6 +165,14 @@ def updateAttribute(name, oldAttr, newAttr):
     editAttrCmd = edit_attr(name, oldAttr, newAttr)
     if cmd_stack.execute(editAttrCmd):
         flash("ERROR: Unable to update attribute " + oldAttr + " in " + name + " to " + newAttr, 'error')
+
+def addAttributes(name, attrString):
+    """Helper to add attributes to class."""
+    attrList = core_parse(attrString)
+    for attr in attrList:
+        addAttrCmd = add_attr(name, attr)
+        if cmd_stack.execute(addAttrCmd):
+            flash('ERROR: Unable to add attribute ' + attr + " to " + name, 'error')
 
 
 @app.route("/manipRelationship/", methods=['POST'])
