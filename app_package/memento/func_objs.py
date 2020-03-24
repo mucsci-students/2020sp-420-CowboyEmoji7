@@ -55,7 +55,9 @@ class delete_class(Command):
         self.className = name
 
     def execute(self):
-        class_ = Class.query.get_or_404(self.className)
+        class_ = Class.query.get(self.className)
+        if class_ is None:
+            return 1
         self.xPos = class_.x
         self.yPos = class_.y
         self.attributes = Attribute.query.filter(self.className == Attribute.class_name).all()
@@ -153,6 +155,7 @@ class edit_attr(Command):
     newAttrName = ''
 
     def __init__(self, className, oldName, newName):
+        self.className = className
         self.oldAttrName = oldName
         self.newAttrName = newName
 

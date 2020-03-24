@@ -152,7 +152,7 @@ class replShell(cmd.Cmd):
     Usage: web
     """
         webbrowser.open_new_tab("http://127.0.0.1:5000")
-        app.run(port=5000, debug=True)
+        app.run(port=5000, debug=False)
 
     def do_undo(self, args):
         """Reverses your last action. Optionally provide amount.
