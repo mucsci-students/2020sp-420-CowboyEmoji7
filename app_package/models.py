@@ -40,7 +40,9 @@ class Relationship(db.Model):
     __relationship__ = 'relationship'
     from_name = db.Column(db.String(200), db.ForeignKey('class.name'), primary_key=True)
     to_name = db.Column(db.String(200), db.ForeignKey('class.name'), primary_key=True)
+    rel_type = db.Column(db.String(40)) # agg,comp,gen,none
     parent_class = relationship("Class", back_populates="class_relationships", foreign_keys=[from_name, to_name], primaryjoin='Class.name==Relationship.from_name')
+    
 
 class ClassSchema(ma.ModelSchema):
     """Meta model used by flask-marshmallow in jsonification."""
@@ -51,7 +53,7 @@ class ClassSchema(ma.ModelSchema):
 class RelationshipSchema(ma.ModelSchema):
     member_of = ma.Nested(ClassSchema)
     class Meta:
-        fields = ("from_name", "to_name")
+        fields = ("from_name", "to_name", "rel_type")
         model = Relationship
 
 class AttributeSchema(ma.ModelSchema):

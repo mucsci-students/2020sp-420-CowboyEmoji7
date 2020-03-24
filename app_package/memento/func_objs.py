@@ -173,38 +173,42 @@ class add_rel(Command):
     """Command class for core_add_rel.  Accepts a class name and the name of the child"""
     parentName = ''
     childName = ''
+    relType = ''
 
-    def __init__(self, parentName, childName):
+    def __init__(self, parentName, childName, relType):
         self.parentName = parentName
         self.childName = childName
-
+        self.relType = relType
+        
     def execute(self):
-        return core_add_rel(self.parentName, self.childName)
+        return core_add_rel(self.parentName, self.childName, self.relType)
 
     def undo(self):
-        return core_del_rel(self.parentName, self.childName)
+        return core_del_rel(self.parentName, self.childName, self.relType)
 
     def redo(self):
-        return core_add_rel(self.parentName, self.childName)
+        return core_add_rel(self.parentName, self.childName, self.relType)
 
 
 class del_rel(Command):
     """Command class for core_del_rel.  Accepts a class name and the name of the child"""
     parentName = ''
     childName = ''
+    relType = ''
 
-    def __init__(self, parentName, childName):
+    def __init__(self, parentName, childName, relType):
         self.parentName = parentName
         self.childName = childName
+        self.relType = relType
 
     def execute(self):
-        return core_del_rel(self.parentName, self.childName)
+        return core_del_rel(self.parentName, self.childName, self.relType)
 
     def undo(self):
-        return core_add_rel(self.parentName, self.childName)
+        return core_add_rel(self.parentName, self.childName, self.relType)
 
     def redo(self):
-        return core_del_rel(self.parentName, self.childName)
+        return core_del_rel(self.parentName, self.childName, self.relType)
 
 
 class move(Command):

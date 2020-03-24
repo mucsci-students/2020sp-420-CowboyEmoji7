@@ -185,28 +185,29 @@ def manipRelationship():
         fro = request.form['class_name']
         to = request.form.getlist('relationship')
         action = request.form['action']
+        rel_type = request.form['rel_type']
         if (action == 'delete'):
-            delRelationship(fro, to)
+            delRelationship(fro, to, rel_type)
         elif (action == 'add'):
-            addRelationship(fro, to)
+            addRelationship(fro, to, rel_type)
     except:
         flash("Invalid arguments, try again.", 'error')
     
     return redirect('/')
 
 
-def addRelationship(fro, to):
+def addRelationship(fro, to, rel_type):
     """Helper function to add relationships to class."""
     for child in to:
-        addRelCmd = add_rel(fro, child)
+        addRelCmd = add_rel(fro, child, rel_type)
         if cmd_stack.execute(addRelCmd):
             flash("ERROR: Unable to add relationship from " + fro + " to " + child, 'error')
 
 
-def delRelationship(fro, to):
+def delRelationship(fro, to, rel_type):
     """Helper function to remove relationships from class."""
     for child in to:
-        delRelCmd = del_rel(fro, child)
+        delRelCmd = del_rel(fro, child, rel_type)
         if cmd_stack.execute(delRelCmd):
             flash("ERROR: Unable to delete relationship from " + fro + " to " + child, 'error')
 

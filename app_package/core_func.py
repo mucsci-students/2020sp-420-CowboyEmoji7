@@ -195,7 +195,7 @@ def core_update_attr(pName, attr, newAttr):
         db.session.rollback()
         return 1
 
-def core_add_rel(from_name, to_name):
+def core_add_rel(from_name, to_name, rel_type):
     """Adds a relationship to class with given name in the database
 
     Returns 0 on success, 1 on failure
@@ -204,7 +204,7 @@ def core_add_rel(from_name, to_name):
     try:
         if (Class.query.get(from_name) is None or Class.query.get(to_name) is None):
             return 1
-        new_rel = Relationship(from_name=from_name, to_name=to_name)
+        new_rel = Relationship(from_name=from_name, to_name=to_name, rel_type=rel_type)
         db.session.add(new_rel)
         db.session.commit()
         return 0
@@ -212,14 +212,14 @@ def core_add_rel(from_name, to_name):
         db.session.rollback()
         return 1
 
-def core_del_rel(from_name, to_name):
+def core_del_rel(from_name, to_name, rel_type):
     """Deletes a relationship from class with given target in the database
 
     Returns 0 on success, 1 on failure
     """
 
     try:
-        rel_to_delete = Relationship.query.get({"from_name": from_name, "to_name": to_name})
+        rel_to_delete = Relationship.query.get({"from_name": from_name, "to_name": to_name, "rel_type": rel_type})
         if (rel_to_delete is None):
             return 1
         
