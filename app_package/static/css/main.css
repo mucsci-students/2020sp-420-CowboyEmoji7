@@ -25,6 +25,7 @@ body{
     padding-right: 10px;
     padding-left: 10px;
     position: absolute;
+    top: 40px;
     right: 20px;
 }
 
@@ -43,7 +44,29 @@ body{
     padding-right: 10px;
     padding-left: 10px;
     position: absolute;
+    top: 40px;
     right: 20px;
+}
+
+.undo {
+    background-color: #1c79c0;
+}
+
+.redo {
+    background-color: #1c79c0;
+}
+
+.undo-redo {
+    float: right;
+    background-color: #424649;
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 30pt;
+    margin-right: 4px;
+    margin-top: 4px;
+    cursor: pointer;
 }
 
 .navBar{
@@ -444,7 +467,7 @@ body{
     box-shadow: 0px 0px 15px #61892F;
 }
 
-#EditClass {
+.EditClass {
     position: absolute;
     left: 0px;
     top: 0px;
@@ -463,6 +486,27 @@ body{
 
 .EditButton:hover {
     background-color: #61892F;
+}
+
+.SaveClass {
+    position: absolute;
+    left: 33px;
+    top: 0px;
+}
+
+.SaveButton {
+    cursor: pointer;
+    background-color: #3194f7;
+    outline: none;
+    color: #222629;
+    font-size: 16px;
+    border: none;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.SaveButton:hover {
+    background-color: #1c5c9c;
 }
 
 .non-activeEdit {
@@ -528,6 +572,33 @@ body{
     color: white;
 }
 
+.checked {
+    cursor: pointer;
+    color: red;
+}
+
+.unchecked {
+    cursor: pointer;
+    color: #eee;
+}
+
+.container input[type="checkbox"],
+.container .checked {
+    display: none;
+}
+
+.container input[type="checkbox"]:checked ~ .checked {
+    display: inline-block;
+}
+
+.container input[type="checkbox"]:checked ~ .unchecked {
+    display: none;
+}
+
+.container:hover input[type="checkbox"] ~ .unchecked {
+    color: #888;
+}
+
 .relationshipList {
     list-style: none;
     color: white;
@@ -544,11 +615,10 @@ body{
 }
 
 .className {
-    padding-left: 75px;
-    padding-right: 75px;
+    padding-left: 40px;
+    padding-right: 40px;
     padding-top: 5px;
     padding-bottom: 5px;
-    display: block;
     text-align: center;
     border-bottom: none;
 }

@@ -37,9 +37,15 @@ jsPlumb.ready(function() {
     jsPlumb.draggable(document.querySelectorAll(".Class"), {
         stop: function(params) {
             ensureValidCoords(params.el.getAttribute("id"));
+            ensureNoOverlap(params.el.getAttribute("id"), "none");
+            jsPlumb.repaintEverything();
             updateCoords(params.el.getAttribute("id"));
         }
     });
+
+    window.onresize = function (){
+        jsPlumb.repaintEverything();
+    };
 });
 
 // Toggles the navBar sliding in and out from left
@@ -74,30 +80,26 @@ function addAttribute(name){
 // OnClick function for the edit button
 function editClass(name) {
     let attrNames = document.getElementsByClassName('attrname-' + name);
-    let attrDels = document.getElementsByClassName('attrdel-' + name);
-    let attrEds = document.getElementsByClassName('attrupd-' + name);
     let attrTexts = document.getElementsByClassName('attrtext-' + name);
+    let attrChecks = document.getElementsByClassName('container-' + name);
+    
 
     if(document.getElementById('Relationships-' + name).style.display == 'block') {
         let elements = document.getElementById('custom-select-' + name).options;
         document.getElementById(name).classList.remove('activeEdit');
         document.getElementById(name).classList.add('non-activeEdit');
-        document.getElementById('attInput-' + name).value = "";
         document.getElementById('Relationships-' + name).style.display = 'none';
         document.getElementById('addAttributeForm-' + name).style.display = 'none';
-        document.getElementById('attInput-' + name).style.boxShadow = 'none';
-        document.getElementById('attInput-' + name).blur();
         document.getElementById('custom-select-' + name).blur();
-        document.getElementById('class-' + name).display = "block";
+        document.getElementById('class-' + name).style.display = "block";
         document.getElementById('classtext-' + name).type = "hidden";
-        document.getElementById('classupd-' + name).type = "hidden";
+        document.getElementById('attrsave-' + name).style.display = "none";
 
         for (let i = 0; i < attrNames.length; ++i)
         {
             attrNames[i].style.display = "block";
-            attrDels[i].type = "hidden";
-            attrEds[i].type = "hidden";
             attrTexts[i].type = "hidden";
+            attrChecks[i].style.display = "none";
         }
 
         // Deselecting the selected options when the user is done editing if they selected any
@@ -111,18 +113,18 @@ function editClass(name) {
         document.getElementById(name).classList.add('activeEdit');
         document.getElementById('Relationships-' + name).style.display = 'block';
         document.getElementById('addAttributeForm-' + name).style.display = 'block';
-        document.getElementById('class-' + name).display = "none";
+        document.getElementById('class-' + name).style.display = "none";
         document.getElementById('classtext-' + name).type = "text";
-        document.getElementById('classupd-' + name).type = "submit";
+        document.getElementById('attrsave-' + name).style.display = "inline-block";
 
         for (let i = 0; i < attrNames.length; ++i)
         {
             attrNames[i].style.display = "none";
-            attrDels[i].type = "submit";
-            attrEds[i].type = "submit";
             attrTexts[i].type = "text";
+            attrChecks[i].style.display = "inline";
         }
     }
+    jsPlumb.repaintEverything();
 }
 
 // Displays "Add Class" popup, closes all other popups
@@ -265,11 +267,85 @@ function renderLines(){
 
 // Put the element back onto the screen if it gets dragged off
 function ensureValidCoords(name){
-    el = document.getElementById(name);
+    let el = document.getElementById(name);
     if (parseInt(el.style.top) < 0){
         el.style.top = 0;
     }
     if (parseInt(el.style.left) < 0){
         el.style.left = 0;
+    }
+}
+
+function ensureNoOverlap(name, lastMove){
+    let el = document.getElementById(name);
+    let rect1 = el.getBoundingClientRect();
+    let classes = document.getElementsByClassName("Class");
+    for (let i = 0; i < classes.length; ++i){
+        if (classes[i] !== el){
+            let rect2 = classes[i].getBoundingClientRect();
+            var localMove = "none";
+
+            if (!(rect1.right < rect2.left || rect1.left > rect2.right || rect1.bottom < rect2.top || rect1.top > rect2.bottom)){
+                let distanceRight = rect2.right - rect1.right;
+                let distanceLeft = rect1.left - rect2.left;
+                let distanceTop = rect1.top - rect2.top;
+                let distanceBottom = rect2.bottom - rect1.bottom;
+                
+                if (distanceRight < 0){
+                    if (lastMove != "left"){
+                        el.style.left = (rect2.right + 1) + "px";
+                        localMove = "right";
+                    }
+                    else{
+                        el.style.top = (rect2.bottom + 1) + "px";
+                        localMove = "down";
+                    }
+                }
+                else if (distanceBottom < 0){
+                    if (lastMove != "up"){
+                        el.style.top = (rect2.bottom + 1) + "px";
+                        localMove = "down";
+                    }
+                    else{
+                        el.style.left = (rect2.right + 1) + "px";
+                        localMove = "right";
+                    }
+                }
+                else{
+                    if (distanceTop < 0 && (rect2.top - rect1.height - 1) > 0 ){
+                        if (lastMove != "down"){
+                            el.style.top = (rect2.top - rect1.height - 1) + "px";
+                            localMove = "up";
+                        }
+                        else{
+                            el.style.left = (rect2.right + 1) + "px";
+                            localMove = "right";
+                        }
+                    }
+                    else if (distanceLeft < 0 && (rect2.left - rect1.width - 1) > 0){
+                        if (lastMove != "right"){
+                            el.style.left = (rect2.left - rect1.width - 1) + "px";
+                            localMove = "left";
+                        }
+                        else{
+                            el.style.top = (rect2.bottom + 1) + "px";
+                            localMove = "down";
+                        }
+                    }
+                    else{
+                        if (lastMove != "left"){
+                            el.style.left = (rect2.right + 1) + "px";
+                            localMove = "right";
+                        }
+                        else{
+                            el.style.top = (rect2.bottom + 1) + "px";
+                            localMove = "down";
+                        }
+                    }
+                }
+
+                ensureNoOverlap(name, localMove);
+            }
+        }
     }
 }
