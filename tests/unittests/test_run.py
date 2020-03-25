@@ -3,8 +3,14 @@
 import pytest
 import run
 
-################################## CMD SETUP ################################
+#################################### SETUP ##################################
 app = run.replShell()
+
+# lazy mans way of capturing list
+def captureList(capsys):
+    app.do_list("")
+    captured = capsys.readouterr()
+    return captured
 
 ################################ TEST COMMANDS ##############################
 # Test list and maybe save/load
@@ -15,30 +21,32 @@ def test_do_add(capsys):
     app.do_add("TestAddEmpty")
     captured = capsys.readouterr()
     assert captured.out == "Successfully added class 'TestAddEmpty'\n"
-    app.do_list("")
-    captured = capsys.readouterr()
+
+    captured = captureList(capsys)
     assert captured.out == "TestAddEmpty\n\n"
 
 def test_do_add_duplicate(capsys):
     app.do_add("TestAddEmpty")
     captured = capsys.readouterr()
     assert captured.out == "Successfully added class 'TestAddEmpty'\n"
+
     app.do_add("TestAddEmpty")
     captured = capsys.readouterr()
     assert captured.out == "ERROR: Unable to add class 'TestAddEmpty'\n"
-    app.do_list("")
-    captured = capsys.readouterr()
+
+    captured = captureList(capsys)
     assert captured.out == "TestAddEmpty\n\n"
 
 def test_do_add_more(capsys):
     app.do_add("TestAddMore")
     captured = capsys.readouterr()
     assert captured.out == "Successfully added class 'TestAddMore'\n"
+
     app.do_add("TestAdd1More")
     captured = capsys.readouterr()
     assert captured.out == "Successfully added class 'TestAdd1More'\n"
-    app.do_list("")
-    captured = capsys.readouterr()
+
+    captured = captureList(capsys)
     assert captured.out == "TestAddMore\nTestAdd1More\n\n"
 
 def test_do_add_none(capsys):
@@ -46,16 +54,14 @@ def test_do_add_none(capsys):
     captured = capsys.readouterr()
     assert captured.out == "Usage: add <class_name1>, <class_name2>, ... , <class_nameN>\n"
     
-    #TODO 
-    # test the list with no classes added (shouldn't output a giant error msg like it does now)
+    
 
 def test_do_add_multi(capsys):
     app.do_add("Multi1, Multi2, Multi3")
     captured = capsys.readouterr()
     assert captured.out == "Successfully added class 'Multi1'\nSuccessfully added class 'Multi2'\nSuccessfully added class 'Multi3'\n"
 
-    app.do_list("")
-    captured = capsys.readouterr()
+    captured = captureList(capsys)
     assert captured.out == "Multi1\nMulti2\nMulti3\n\n"
 
 ################################ TEST DELETE ################################
@@ -68,11 +74,68 @@ def test_do_delete(capsys):
     captured = capsys.readouterr()
     assert captured.out == "Successfully deleted class 'TestDelete'\n"
 
-    #TODO
-    #test do_list on the empty editor (rn it crashes the program)
+    captured = captureList(capsys)
+    assert captured.out == "No Classes\n\n"
 
-def test_do_delete(capsys):
+def test_do_delete_none(capsys):
+    app.do_delete("")
+    captured = capsys.readouterr()
+    assert captured.out == "Usage: delete <class_name1>, <class_name2>, ... , <class_nameN>\n"
 
+def test_do_delete_nonexistant(capsys):
+    app.do_delete("test")
+    captured = capsys.readouterr()
+    assert captured.out == "ERROR: Unable to delete class 'test'\n"
+
+def test_do_delete_some(capsys):
+    #Need to capture adding messages before delete message
+    app.do_add("test1, test2, test3")
+    captured = capsys.readouterr()
+
+    app.do_delete("test2")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully deleted class 'test2'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test1\ntest3\n\n"
+
+# TESTS DELETING ONE AT A TIME !!! NOT USING MULTI DELETE !!!
+def test_do_delete_all_1(capsys):
+    app.do_add("test1, test2, test3")
+    captured = capsys.readouterr()
+
+    app.do_delete("test1")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully deleted class 'test1'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test2\ntest3\n\n"
+
+    app.do_delete("test2")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully deleted class 'test2'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test3\n\n"
+
+    app.do_delete("test3")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully deleted class 'test3'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "No Classes\n\n"
+
+def test_do_delete_all_many(capsys):
+    # Once again, get rid of the add output
+    app.do_add("one, two, three, four")
+    captured = capsys.readouterr()
+    
+    app.do_delete("one, two, three, four")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully deleted class 'one'\nSuccessfully deleted class 'two'\nSuccessfully deleted class 'three'\nSuccessfully deleted class 'four'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "No Classes\n\n"
 ################################# TEST EDIT #################################
 
 ################################# ATTRIBUTES ################################
