@@ -226,10 +226,8 @@ def getRelationship():
 
 @app.route("/updateTheme/", methods=['POST', 'GET'])
 def updateTheme():
-    newThemeName =  request.form['theme']
-
     oldTheme = Theme.query.filter(Theme.active == True).all()
-    newTheme = Theme.query.get({"name": newThemeName})
+    newTheme = Theme.query.get({"name": request.form['theme']})
 
     for theme in oldTheme:
         theme.active = False

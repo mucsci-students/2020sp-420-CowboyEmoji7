@@ -78,7 +78,11 @@
                     <input type="hidden" name="theme_name" value="">
                     <select style="width: 70%; box-shadow: none;" name="theme" required>
                         {% for theme in themes %}
+                        {% if theme.active == True %}
+                        <option class="relOptions" selected value="{{ theme.name }}">{{ theme.name }}</option>
+                        {% else %}
                         <option class="relOptions" value="{{ theme.name }}">{{ theme.name }}</option>
+                        {% endif %}
                         {% endfor %}
                     </select>
                     <br>
