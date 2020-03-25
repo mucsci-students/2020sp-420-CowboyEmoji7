@@ -131,13 +131,13 @@ body{
     font-size: 22px;
     font-weight: bold;
     font-family: 'Ubuntu', sans-serif;
-    border: 2px solid #86C232;
+    border: 2px solid rgb(0, 204, 255);
     width: 150px;
     height: 45px;
 }
 
 #AddButton:hover {
-    color: #86C232;
+    color: rgb(0, 204, 255);
     box-shadow: 5px 8px 8px rgb(36, 36, 36);
 }
 
@@ -149,7 +149,7 @@ body{
     font-size: 16px;
     font-weight: bold;
     font-family: 'Ubuntu', sans-serif;
-    border: 1px solid #86C232;
+    border: 1px solid rgb(0, 204, 255);
     border-radius: 5px;
     width: 150px;
     height: 25px;
@@ -164,7 +164,7 @@ body{
 }
 
 .active{
-    color: #86C232;
+    color: rgb(0, 204, 255);
     border-radius: 5px 5px 0px 0px;
     box-shadow: 5px 8px 8px rgb(36, 36, 36);
 }
@@ -182,13 +182,13 @@ body{
     font-weight: bold;
     font-size: 22px;
     font-family: 'ubuntu', sans-serif;
-    border: 2px solid #86C232;
+    border: 2px solid rgb(0, 204, 255);
     width: 150px;
     height: 45px;
 }
 
 #SaveButton:hover{
-    color: #86C232;
+    color: rgb(0, 204, 255);
     box-shadow: 5px 8px 8px rgb(36, 36, 36);
 }
 
@@ -199,13 +199,13 @@ body{
     font-weight: bold;
     font-size: 22px;
     font-family: 'Ubuntu', sans-serif;
-    border: 2px solid #86C232;
+    border: 2px solid rgb(0, 204, 255);
     width: 150px;
     height: 45px;
 }
 
 #LoadButton:hover {
-    color: #86C232;
+    color: rgb(0, 204, 255);
     box-shadow: 5px 8px 8px rgb(36, 36, 36);
 }
 
@@ -267,7 +267,7 @@ body{
     position: sticky;
     z-index: 1;
     background-color: #474B4F;
-    border: 1px solid #86C232;
+    border: 1px solid rgb(0, 204, 255);
     text-align: center;
     width: 200px;
     height: 130px;
@@ -303,7 +303,7 @@ body{
 .SubmitButton {
     outline: none;
     cursor: pointer;
-    border: 1px solid #86C232;
+    border: 1px solid rgb(0, 204, 255);
     background-color: #474B4F;
     box-shadow: 2px 2px 1px rgb(36, 36, 36);
     color: white;
@@ -324,7 +324,7 @@ body{
     text-align: center;
     width: 200px;
     height: 130px;
-    border: 1px solid #86C232;
+    border: 1px solid rgb(0, 204, 255);
     font-size: 16px;
     font-family: 'Ubuntu', sans-serif;
     border-radius: 0px 0px 5px 5px;
@@ -357,7 +357,7 @@ body{
 .saveButton {
     outline: none;
     cursor: pointer;
-    border: 1px solid #86C232;
+    border: 1px solid rgb(0, 204, 255);
     background-color: #474B4F;
     box-shadow: 2px 2px 1px rgb(36, 36, 36);
     color: white;
@@ -375,7 +375,7 @@ body{
     position: sticky;
     z-index: 1;
     background-color: #474B4F;
-    border: 1px solid #86C232;
+    border: 1px solid rgb(0, 204, 255);
     text-align: center;
     width: 200px;
     height: 130px;
@@ -420,7 +420,7 @@ body{
 .loadButton {
     outline: none;
     cursor: pointer;
-    border: 1px solid #86C232;
+    border: 1px solid rgb(0, 204, 255);
     background-color: #474B4F;
     box-shadow: 2px 2px 1px rgb(36, 36, 36);
     color: white;
@@ -444,7 +444,7 @@ body{
     text-align: center;
     padding-top: 25px;
     border-radius: 5px;
-    border: 2px solid #86C232;
+    border: 2px solid rgb(0, 204, 255);
     width: 250px;
     height: 50px;
     background-color: #222629;
@@ -464,7 +464,7 @@ body{
 }
 
 .Class:hover {
-    box-shadow: 0px 0px 15px #61892F;
+    box-shadow: 0px 0px 15px #025eff;
 }
 
 .EditClass {
@@ -475,7 +475,7 @@ body{
 
 .EditButton {
     cursor: pointer;
-    background-color: #86C232;
+    background-color: rgb(0, 204, 255);
     outline: none;
     color: #222629;
     font-size: 16px;
@@ -485,7 +485,7 @@ body{
 }
 
 .EditButton:hover {
-    background-color: #61892F;
+    background-color: rgb(0, 98, 163);
 }
 
 .SaveClass {
@@ -518,7 +518,7 @@ body{
 }
 
 #AddAttribute {
-    border: 1px solid #86C232;
+    border: 1px solid rgb(0, 204, 255);
     background-color: #474B4F;
     color: white;
     box-shadow: 5px 3px 3px rgb(36, 36, 36);
@@ -533,7 +533,7 @@ body{
 
 .outline {
     margin-top: 1px;
-    border: 1px solid #86C232;
+    border: 1px solid rgb(0, 204, 255);
     background-color: #474B4F;
     color: white;
     box-shadow: 5px 3px 3px rgb(36, 36, 36);

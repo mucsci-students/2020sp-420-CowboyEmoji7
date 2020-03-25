@@ -485,7 +485,7 @@ body{
 }
 
 .EditButton:hover {
-    background-color: #61892F;
+    background-color: rgb(0, 98, 163);
 }
 
 .SaveClass {
@@ -514,7 +514,7 @@ body{
 }
 
 .activeEdit{
-    box-shadow: 0px 0px 15px #61892F;
+    box-shadow: 0px 0px 15px #025eff;
 }
 
 #AddAttribute {
