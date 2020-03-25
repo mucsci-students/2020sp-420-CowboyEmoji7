@@ -11,8 +11,7 @@ app = run.replShell()
 
 ################################### CLASS ###################################
 ################################## TEST ADD #################################
-def test_do_add(capsys):
-    ##### TEST EMPTY #####
+def test_do_add(capsys): 
     app.do_add("TestAddEmpty")
     captured = capsys.readouterr()
     assert captured.out == "Successfully added class 'TestAddEmpty'\n"
@@ -47,16 +46,32 @@ def test_do_add_none(capsys):
     captured = capsys.readouterr()
     assert captured.out == "Usage: add <class_name1>, <class_name2>, ... , <class_nameN>\n"
     
+    #TODO 
+    # test the list with no classes added (shouldn't output a giant error msg like it does now)
 
 def test_do_add_multi(capsys):
     app.do_add("Multi1, Multi2, Multi3")
     captured = capsys.readouterr()
     assert captured.out == "Successfully added class 'Multi1'\nSuccessfully added class 'Multi2'\nSuccessfully added class 'Multi3'\n"
+
     app.do_list("")
     captured = capsys.readouterr()
     assert captured.out == "Multi1\nMulti2\nMulti3\n\n"
 
 ################################ TEST DELETE ################################
+def test_do_delete(capsys):
+    #Need to capture the add text first to isolate only the delete output
+    app.do_add("TestDelete")
+    captured = capsys.readouterr()
+
+    app.do_delete("TestDelete")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully deleted class 'TestDelete'\n"
+
+    #TODO
+    #test do_list on the empty editor (rn it crashes the program)
+
+def test_do_delete(capsys):
 
 ################################# TEST EDIT #################################
 
