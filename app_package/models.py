@@ -42,6 +42,12 @@ class Relationship(db.Model):
     to_name = db.Column(db.String(200), db.ForeignKey('class.name'), primary_key=True)
     parent_class = relationship("Class", back_populates="class_relationships", foreign_keys=[from_name, to_name], primaryjoin='Class.name==Relationship.from_name')
 
+class Theme(db.Model):
+    __tablename__ = 'theme'
+    name = db.Column(db.String(200), primary_key=True)
+    active = db.Column(db.Boolean, default=True)
+    
+
 class ClassSchema(ma.ModelSchema):
     """Meta model used by flask-marshmallow in jsonification."""
     
@@ -58,3 +64,9 @@ class AttributeSchema(ma.ModelSchema):
     member_of = ma.Nested(ClassSchema)
     class Meta:
         model = Attribute
+
+class ThemeSchema(ma.ModelSchema):
+    """Meta model used by flask-marshmallow in jsonification."""
+    
+    class Meta:
+        model = Theme

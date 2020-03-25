@@ -4,7 +4,7 @@ Contains routes through which requests from
   the view are passed to interact with the data model.
 """
 
-from app_package.models import Class, ClassSchema, Relationship, RelationshipSchema, Attribute
+from app_package.models import Class, ClassSchema, Relationship, RelationshipSchema, Attribute, Theme
 from flask import render_template, json, url_for, request, redirect, flash, Response
 from app_package import app, db, cmd_stack
 from app_package.core_func import core_save, core_load, core_parse
@@ -41,7 +41,9 @@ def index():
         # grab all entries in order
         classes = Class.query.order_by(Class.date_created).all()
         attributes = Attribute.query.order_by(Attribute.date_created).all()
-        return render_template('index.html', classes=classes, attributes=attributes, cmd_stack=cmd_stack)
+        themes = Theme.query.all()
+        activeTheme = Theme.query.filter(Theme.active == True).first()
+        return render_template('index.html', classes=classes, attributes=attributes, cmd_stack=cmd_stack, themes=themes, activeTheme=activeTheme)
 
 
 @app.route('/delete/', methods=['POST'])
@@ -220,6 +222,21 @@ def getRelationship():
     out = rel_schema.dump(rels)
 
     return json.dumps(out)
+
+
+@app.route("/updateTheme/", methods=['POST', 'GET'])
+def updateTheme():
+    newThemeName =  request.form['theme']
+
+    oldTheme = Theme.query.filter(Theme.active == True).all()
+    newTheme = Theme.query.get({"name": newThemeName})
+
+    for theme in oldTheme:
+        theme.active = False
+
+    newTheme.active = True
+    db.session.commit()
+    return redirect('/')
 
 
 @app.route("/undo/", methods=['POST'])
