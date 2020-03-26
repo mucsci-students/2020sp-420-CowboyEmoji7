@@ -180,15 +180,15 @@ def test_save_no_name(test_client, init_database):
 
 def test_add_one_attribute(test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass'), follow_redirects=True)
-    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
+    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][attr_type]":"field", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
     assert response.status_code == 200
     assert b"TestClass" in response.data
     assert b"TestAttr" in response.data
 
 def test_add_duplicate_attribute(test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass'), follow_redirects=True)
-    test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
-    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
+    test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][attr_type]":"field", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
+    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][attr_type]":"field", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
     assert response.status_code == 200
     assert b"TestClass" in response.data
     assert b"TestAttr" in response.data
@@ -196,7 +196,7 @@ def test_add_duplicate_attribute(test_client, init_database):
 
 def test_add_one_attribute_but_then_delete_that_attribute(test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass'), follow_redirects=True)
-    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
+    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][attr_type]":"field", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
     assert b"TestAttr" in response.data
 
     response = test_client.post('/manipCharacteristics/', data={"field[TestAttr][attribute]":"TestAttr", "field[TestAttr][action]":"Delete", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
@@ -206,7 +206,7 @@ def test_add_one_attribute_but_then_delete_that_attribute(test_client, init_data
 
 def test_delete_attribute_no_existo (test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass'), follow_redirects=True)
-    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
+    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][attr_type]":"field", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
     assert b"TestAttr" in response.data
 
     response = test_client.post('/manipCharacteristics/', data={"field[TestAttr][attribute]":"TestAttrAAA", "field[TestAttr][action]":"Delete", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
@@ -217,7 +217,7 @@ def test_delete_attribute_no_existo (test_client, init_database):
 
 def test_rename_attribute (test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass'), follow_redirects=True)
-    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
+    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][attr_type]":"field", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
     assert b'TestAttr' in response.data
 
     response = test_client.post('/manipCharacteristics/', data={"field[TestAttr][attribute]":"TestAttr", "field[TestAttr][action]":None, "field[ super ][class_name]":"TestClass", "field[TestAttr][new_attribute]":"TestUpdate"}, follow_redirects=True)
@@ -226,7 +226,7 @@ def test_rename_attribute (test_client, init_database):
 
 def test_rename_attribute_no_existo (test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass'), follow_redirects=True)
-    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
+    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][attr_type]":"field", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
     assert b"TestAttr" in response.data
 
     response = test_client.post('/manipCharacteristics/', data={"field[TestAttr][attribute]":"TestAttrAAA", "field[TestAttr][action]":None, "field[ super ][class_name]":"TestClass", "field[TestAttr][new_attribute]":"TestUpdate"}, follow_redirects=True)
@@ -237,7 +237,7 @@ def test_rename_attribute_no_existo (test_client, init_database):
 
 def test_attribute_invalid_args (test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass'), follow_redirects=True)
-    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
+    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][attr_type]":"field", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
     assert b'TestAttr' in response.data
 
     response = test_client.post('/manipCharacteristics/', data={"field[TestAttr][attribute]":"TestAttr", "field[TestAttr][action]":None, "field[ super ][class_name]":"TestClass", "field[TestAttr][new_attribute]":None}, follow_redirects=True)
