@@ -1,6 +1,5 @@
 """ Unit tests for run.py/Command Line Interface """
 
-import pytest
 import run
 
 #################################### SETUP ##################################
@@ -16,7 +15,7 @@ def captureList(capsys):
 # Test list and maybe save/load
 
 ################################### CLASS ###################################
-################################## TEST ADD #################################
+################################## TEST add #################################
 def test_do_add(capsys): 
     app.do_add("TestAddEmpty")
     captured = capsys.readouterr()
@@ -54,8 +53,6 @@ def test_do_add_none(capsys):
     captured = capsys.readouterr()
     assert captured.out == "Usage: add <class_name1>, <class_name2>, ... , <class_nameN>\n"
     
-    
-
 def test_do_add_multi(capsys):
     app.do_add("Multi1, Multi2, Multi3")
     captured = capsys.readouterr()
@@ -64,7 +61,7 @@ def test_do_add_multi(capsys):
     captured = captureList(capsys)
     assert captured.out == "Multi1\nMulti2\nMulti3\n\n"
 
-################################ TEST DELETE ################################
+################################ TEST delete ################################
 def test_do_delete(capsys):
     #Need to capture the add text first to isolate only the delete output
     app.do_add("TestDelete")
@@ -125,6 +122,7 @@ def test_do_delete_all_1(capsys):
     captured = captureList(capsys)
     assert captured.out == "No Classes\n\n"
 
+# Tests deleting many using MULTI DELETE
 def test_do_delete_all_many(capsys):
     # Once again, get rid of the add output
     app.do_add("one, two, three, four")
@@ -136,7 +134,41 @@ def test_do_delete_all_many(capsys):
 
     captured = captureList(capsys)
     assert captured.out == "No Classes\n\n"
-################################# TEST EDIT #################################
+
+################################# TEST edit #################################
+def test_do_edit(capsys):
+    #Capture add class
+    app.do_add("test")
+    captured = capsys.readouterr()
+
+    app.do_edit("test, newtest")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully updated class 'test' to 'newtest'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "newtest\n\n"
+
+def test_do_edit_none(capsys):
+    app.do_edit("test")
+    captured = capsys.readouterr()
+    assert captured.out == "Usage: edit <old_name>, <new_name>\n"
+
+def test_do_edit_deleted_class(capsys):
+    #Capture add class
+    app.do_add("test, ooga, booga")
+    captured = capsys.readouterr()
+
+    #Capture delete
+    app.do_delete("test")
+    captured = capsys.readouterr()
+
+    app.do_edit("test, thisshouldntexist")
+    app.do_edit("ooga, thisexists")
+    captured = capsys.readouterr()
+    assert captured.out == "ERROR: Unable to update class 'test' to 'thisshouldntexist'\nSuccessfully updated class 'ooga' to 'thisexists'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "thisexists\nbooga\n\n"
 
 ################################# ATTRIBUTES ################################
 ################################ TEST addAttr ###############################
@@ -149,3 +181,5 @@ def test_do_delete_all_many(capsys):
 ################################ TEST addRel ################################
 
 ################################ TEST delRel ################################
+
+################################# UNDO/REDO #################################
