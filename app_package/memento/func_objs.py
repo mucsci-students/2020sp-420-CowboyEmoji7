@@ -114,19 +114,21 @@ class add_attr(Command):
     """Command class for core_add_attr.  Accepts a class name and the name of an attribute"""
     className = ''
     attrName = ''
+    attrType = ''
 
-    def __init__(self, className, attrName):
+    def __init__(self, className, attrName, attrType):
         self.className = className
         self.attrName = attrName
+        self.attrType = attrType
 
     def execute(self):
-        return core_add_attr(self.className, self.attrName)
+        return core_add_attr(self.className, self.attrName, self.attrType)
 
     def undo(self):
-        return core_del_attr(self.className, self.attrName)
+        return core_del_attr(self.className, self.attrName, self.attrType)
 
     def redo(self):
-        return core_add_attr(self.className, self.attrName)
+        return core_add_attr(self.className, self.attrName, self.attrType)
 
 
 class del_attr(Command):
@@ -184,7 +186,7 @@ class add_rel(Command):
         return core_add_rel(self.parentName, self.childName, self.relType)
 
     def undo(self):
-        return core_del_rel(self.parentName, self.childName, self.relType)
+        return core_del_rel(self.parentName, self.childName)
 
     def redo(self):
         return core_add_rel(self.parentName, self.childName, self.relType)
@@ -194,21 +196,19 @@ class del_rel(Command):
     """Command class for core_del_rel.  Accepts a class name and the name of the child"""
     parentName = ''
     childName = ''
-    relType = ''
 
-    def __init__(self, parentName, childName, relType):
+    def __init__(self, parentName, childName):
         self.parentName = parentName
         self.childName = childName
-        self.relType = relType
 
     def execute(self):
-        return core_del_rel(self.parentName, self.childName, self.relType)
+        return core_del_rel(self.parentName, self.childName)
 
     def undo(self):
         return core_add_rel(self.parentName, self.childName, self.relType)
 
     def redo(self):
-        return core_del_rel(self.parentName, self.childName, self.relType)
+        return core_del_rel(self.parentName, self.childName)
 
 
 class move(Command):

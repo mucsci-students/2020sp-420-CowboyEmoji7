@@ -134,7 +134,8 @@ def manipCharacteristics():
                 action = theDict[el]['action']
 
                 if action == "Add":
-                    addAttributes(class_name, theDict[el]['attrs'])
+                    if 'attr_type' in theDict[el]:
+                        addAttributes(class_name, theDict[el]['attrs'], theDict[el]['attr_type'])
                 elif action == "Delete":
                     delAttribute(class_name, theDict[el]['attribute'])
                 elif action == "RenameClass":
@@ -166,11 +167,11 @@ def updateAttribute(name, oldAttr, newAttr):
     if cmd_stack.execute(editAttrCmd):
         flash("ERROR: Unable to update attribute " + oldAttr + " in " + name + " to " + newAttr, 'error')
 
-def addAttributes(name, attrString):
+def addAttributes(name, attrString, attrType):
     """Helper to add attributes to class."""
     attrList = core_parse(attrString)
     for attr in attrList:
-        addAttrCmd = add_attr(name, attr)
+        addAttrCmd = add_attr(name, attr, attrType)
         if cmd_stack.execute(addAttrCmd):
             flash('ERROR: Unable to add attribute ' + attr + " to " + name, 'error')
 
@@ -187,7 +188,7 @@ def manipRelationship():
         action = request.form['action']
         rel_type = request.form['rel_type']
         if (action == 'delete'):
-            delRelationship(fro, to, rel_type)
+            delRelationship(fro, to)
         elif (action == 'add'):
             addRelationship(fro, to, rel_type)
     except:
@@ -204,10 +205,10 @@ def addRelationship(fro, to, rel_type):
             flash("ERROR: Unable to add relationship from " + fro + " to " + child, 'error')
 
 
-def delRelationship(fro, to, rel_type):
+def delRelationship(fro, to):
     """Helper function to remove relationships from class."""
     for child in to:
-        delRelCmd = del_rel(fro, child, rel_type)
+        delRelCmd = del_rel(fro, child)
         if cmd_stack.execute(delRelCmd):
             flash("ERROR: Unable to delete relationship from " + fro + " to " + child, 'error')
 
