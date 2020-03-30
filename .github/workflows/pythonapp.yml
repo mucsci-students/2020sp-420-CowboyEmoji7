@@ -18,6 +18,7 @@ jobs:
         python-version: 3.8
     - name: Install dependencies
       run: |
+        sudo apt-get install libncurses5-dev
         python3 install.py
         
     - name: Lint with flake8
