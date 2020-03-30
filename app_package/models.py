@@ -27,6 +27,7 @@ class Attribute(db.Model):
 
     __tablename__ = 'attribute'
     attribute = db.Column(db.String(200), primary_key=True)
+    attr_type = db.Column(db.String(10)) #field, method
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
     class_name = db.Column(db.String(200), db.ForeignKey('class.name'), primary_key=True)
     parent_class = relationship("Class", back_populates="class_attributes", foreign_keys=[class_name], primaryjoin='Class.name==Attribute.class_name')
@@ -40,7 +41,9 @@ class Relationship(db.Model):
     __relationship__ = 'relationship'
     from_name = db.Column(db.String(200), db.ForeignKey('class.name'), primary_key=True)
     to_name = db.Column(db.String(200), db.ForeignKey('class.name'), primary_key=True)
+    rel_type = db.Column(db.String(10)) # agg,comp,gen,none
     parent_class = relationship("Class", back_populates="class_relationships", foreign_keys=[from_name, to_name], primaryjoin='Class.name==Relationship.from_name')
+    
 
 class Theme(db.Model):
     __tablename__ = 'theme'
@@ -57,7 +60,7 @@ class ClassSchema(ma.ModelSchema):
 class RelationshipSchema(ma.ModelSchema):
     member_of = ma.Nested(ClassSchema)
     class Meta:
-        fields = ("from_name", "to_name")
+        fields = ("from_name", "to_name", "rel_type")
         model = Relationship
 
 class AttributeSchema(ma.ModelSchema):
