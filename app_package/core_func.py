@@ -142,7 +142,7 @@ def core_load(data):
         db.session.rollback()
         return 1
 
-def core_add_attr(pName, attr):
+def core_add_attr(pName, attr, attrType):
     """Adds an attribute to class with given name in the database
 
     Returns 0 on success, 1 on failure
@@ -151,9 +151,19 @@ def core_add_attr(pName, attr):
     try:
         if Class.query.get(pName) is None:
             return 1
-        new_attr = Attribute(attribute=attr, class_name=pName)
+        new_attr = Attribute(attribute=attr, class_name=pName, attr_type=attrType)
         db.session.add(new_attr)
         db.session.commit()
+        
+        parsedType = parseType(attr)
+        if parsedType is not None:
+            # link it to the related class if applicable
+            ClassList = Class.query.all()
+            for CurrentClass in ClassList:
+                if CurrentClass.name == parsedType:
+                    core_add_rel(pName, CurrentClass.name, "agg")
+                    break
+        
         return 0
     except:
         db.session.rollback()
@@ -190,12 +200,22 @@ def core_update_attr(pName, attr, newAttr):
 
         attr_to_update.attribute = newAttr
         db.session.commit()
+        
+        parsedType = parseType(newAttr)
+        if parsedType is not None:
+            # link it to the related class if applicable
+            ClassList = Class.query.all()
+            for CurrentClass in ClassList:
+                if CurrentClass.name == parsedType:
+                    core_add_rel(pName, CurrentClass.name, "agg")
+                    break
+                
         return 0
     except:
         db.session.rollback()
         return 1
 
-def core_add_rel(from_name, to_name):
+def core_add_rel(from_name, to_name, rel_type):
     """Adds a relationship to class with given name in the database
 
     Returns 0 on success, 1 on failure
@@ -204,7 +224,7 @@ def core_add_rel(from_name, to_name):
     try:
         if (Class.query.get(from_name) is None or Class.query.get(to_name) is None):
             return 1
-        new_rel = Relationship(from_name=from_name, to_name=to_name)
+        new_rel = Relationship(from_name=from_name, to_name=to_name, rel_type=rel_type)
         db.session.add(new_rel)
         db.session.commit()
         return 0
@@ -260,3 +280,18 @@ def removeTrailingWhitespace(string):
     while (string[-1] == ' ' or string[-1] == '\t'):
         string = string[0:-1]
     return string
+
+def parseType(input):
+    # remove the crap in parens
+    front = input.split('(', 1)[0]
+    tipe = ""
+    try:
+        # if it uses a colon
+        tipe = front.split(':',1)[1]
+    except:
+        # if it doesn't use a colon
+        tipe = front.split(' ')[0]
+    # if it doesn't have a type
+    if tipe == front:
+        tipe = None
+    return(tipe)
