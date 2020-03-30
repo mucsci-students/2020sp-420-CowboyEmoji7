@@ -1,4 +1,14 @@
-""" Unit tests for run.py/Command Line Interface """
+""" Unit tests for run.py/Command Line Interface 
+
+    Tests:
+    [X] add
+    [X] delete
+    [X] edit
+    [] relationships
+    [] undo/redo
+    [] fields
+    [] methods
+"""
 
 import run
 
@@ -170,12 +180,7 @@ def test_do_edit_deleted_class(capsys):
     captured = captureList(capsys)
     assert captured.out == "thisexists\nbooga\n\n"
 
-################################# ATTRIBUTES ################################
-################################ TEST addAttr ###############################
-
-################################ TEST delAttr ###############################
-
-############################### TEST editAttr ###############################
+############################### FIELDS/METHODS ##############################
 
 ############################### RELATIONSHIPS ###############################
 ################################ TEST addRel ################################
