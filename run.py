@@ -1,8 +1,10 @@
 import cmd
 from app_package.core_func import (core_save, core_load, core_parse)
 from app_package.memento.func_objs import add_class, delete_class, edit_class, add_attr, del_attr, edit_attr, add_rel, del_rel
-from app_package.models import Class, Attribute, Relationship
+from app_package.models import Class, Attribute, Relationship, Theme
 from app_package import app, cmd_stack, db
+from cleardb import populateThemes
+from sqlalchemy import event
 import webbrowser
 import json
 
@@ -286,5 +288,15 @@ class replShell(cmd.Cmd):
 
 
 if __name__ == '__main__':
+
+    try:
+        a = Theme.query.all()
+        print(a)
+    except:
+        populateThemes()
+    
     db.create_all()
+
     replShell().cmdloop()
+
+
