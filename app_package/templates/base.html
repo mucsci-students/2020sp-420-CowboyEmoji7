@@ -1,26 +1,42 @@
 <!DOCTYPE html>
 <!-- Contains display information for base index -->
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/themes/' + activeTheme.name + '.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link href="https://fonts.googleapis.com/css?family=Ubuntu&display=swap" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/ubuntu.css') }}" rel="stylesheet">
     <title>UML Editor</title>
 </head>
+
 <body>
+    <div>
+        <span>
+            <form action="/redo/" method="POST">
+                <button type="submit" class="undo-redo">&#11177</button>
+            </form>
+        </span>
+        <span>
+            <form action="/undo/" method="POST">
+                <button type="submit" class="undo-redo">&#11176</button>
+            </form>
+        </span>
+    </div>
+
     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="flash-{{ category }} flash">
-                    <span>{{ message }}</span>
-                </div>
-            {% endfor %}
-        {% endif %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="flash-{{ category }} flash">
+        <span>{{ message }}</span>
+    </div>
+    {% endfor %}
+    {% endif %}
     {% endwith %}
-    <div class="navBar">    
+    <div class="navBar">
         <div id="navTab" onclick="navBarAction()">
             <span class="line1"></span>
             <span class="line2"></span>
@@ -31,13 +47,13 @@
                 <span class="classPopup" id="AddClassForm">
                     <form action="/" class="form-container" method="POST" onsubmit="closeAddClass()">
                         <h1>Add Class</h1>
-                        <input type="text" placeholder="Class1 Class2 Class3 ..." id="ClassInput" name="class_name" required>
+                        <input type="text" placeholder="Class1, Class2, Class3, ..." id="ClassInput" name="class_name" required>
                         <button type="submit" class="btn SubmitButton">Add</button>
                         <button id="DeleteAdd" class="btn" onclick="closeAddClassBeforeSubmit()"><i class="fa fa-close"></i></button>
                     </form>
                 </span>
             </li>
-            <li><button id="SaveButton" class="non-active" onclick="openSaveBox()"><i class="fa fa-save"></i>  Save</button>
+            <li><button id="SaveButton" class="non-active" onclick="openSaveBox()"><i class="fa fa-save"></i> Save</button>
                 <span class="savePopup" id="saveForm">
                     <form action="/save/" class="form-container" method="POST" onsubmit="closeSaveBox()">
                         <h1>Save File</h1>
@@ -49,7 +65,7 @@
             </li>
             <li><button id="LoadButton" class="non-active" onclick="openLoadBox()"><i class="fa fa-folder"></i> Load</button>
                 <span class="loadPopup" id="loadForm">
-                    <form action="/load/" class="form-container" method="POST" enctype= "multipart/form-data" onsubmit="closeLoadBox()">
+                    <form action="/load/" class="form-container" method="POST" enctype="multipart/form-data" onsubmit="closeLoadBox()">
                         <h1>Load File</h1>
                         <input id="loadInput" type="file" name="file" required>
                         <button type="submit" class="btn loadButton">Load</button>
@@ -57,14 +73,29 @@
                     </form>
                 </span>
             </li>
+            <li>
+                <form id="themeSelect" action="/updateTheme/" method="POST">
+                    <input type="hidden" name="theme_name" value="">
+                    <select style="width: 70%; box-shadow: none;" name="theme" required>
+                        {% for theme in themes %}
+                        {% if theme.active == True %}
+                        <option class="relOptions" selected value="{{ theme.name }}">{{ theme.name }}</option>
+                        {% else %}
+                        <option class="relOptions" value="{{ theme.name }}">{{ theme.name }}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                    <br>
+                    <button class="outline" type="submit" name="action" value="add">Add</button>
+                </form>
+            </li>
         </ul>
     </div>
     <div class="main-body">
         {% block elements %} {% endblock %}
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.1.0/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.0.5/Draggable.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.12.11/js/jsplumb.min.js"></script>
+    <script src="{{ url_for('static', filename='javascript//jsplumb.min.js') }}"></script>
     <script src="{{ url_for('static', filename='javascript/index.js') }}"></script>
 </body>
+
 </html>
