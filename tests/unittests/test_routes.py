@@ -180,15 +180,15 @@ def test_save_no_name(test_client, init_database):
 
 def test_add_one_attribute(test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass'), follow_redirects=True)
-    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
+    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][attr_type]":"field", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
     assert response.status_code == 200
     assert b"TestClass" in response.data
     assert b"TestAttr" in response.data
 
 def test_add_duplicate_attribute(test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass'), follow_redirects=True)
-    test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
-    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
+    test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][attr_type]":"field", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
+    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][attr_type]":"field", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
     assert response.status_code == 200
     assert b"TestClass" in response.data
     assert b"TestAttr" in response.data
@@ -196,7 +196,7 @@ def test_add_duplicate_attribute(test_client, init_database):
 
 def test_add_one_attribute_but_then_delete_that_attribute(test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass'), follow_redirects=True)
-    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
+    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][attr_type]":"field", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
     assert b"TestAttr" in response.data
 
     response = test_client.post('/manipCharacteristics/', data={"field[TestAttr][attribute]":"TestAttr", "field[TestAttr][action]":"Delete", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
@@ -206,7 +206,7 @@ def test_add_one_attribute_but_then_delete_that_attribute(test_client, init_data
 
 def test_delete_attribute_no_existo (test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass'), follow_redirects=True)
-    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
+    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][attr_type]":"field", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
     assert b"TestAttr" in response.data
 
     response = test_client.post('/manipCharacteristics/', data={"field[TestAttr][attribute]":"TestAttrAAA", "field[TestAttr][action]":"Delete", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
@@ -217,7 +217,7 @@ def test_delete_attribute_no_existo (test_client, init_database):
 
 def test_rename_attribute (test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass'), follow_redirects=True)
-    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
+    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][attr_type]":"field", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
     assert b'TestAttr' in response.data
 
     response = test_client.post('/manipCharacteristics/', data={"field[TestAttr][attribute]":"TestAttr", "field[TestAttr][action]":None, "field[ super ][class_name]":"TestClass", "field[TestAttr][new_attribute]":"TestUpdate"}, follow_redirects=True)
@@ -226,7 +226,7 @@ def test_rename_attribute (test_client, init_database):
 
 def test_rename_attribute_no_existo (test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass'), follow_redirects=True)
-    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
+    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][attr_type]":"field", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
     assert b"TestAttr" in response.data
 
     response = test_client.post('/manipCharacteristics/', data={"field[TestAttr][attribute]":"TestAttrAAA", "field[TestAttr][action]":None, "field[ super ][class_name]":"TestClass", "field[TestAttr][new_attribute]":"TestUpdate"}, follow_redirects=True)
@@ -237,7 +237,7 @@ def test_rename_attribute_no_existo (test_client, init_database):
 
 def test_attribute_invalid_args (test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass'), follow_redirects=True)
-    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
+    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][attr_type]":"field", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
     assert b'TestAttr' in response.data
 
     response = test_client.post('/manipCharacteristics/', data={"field[TestAttr][attribute]":"TestAttr", "field[TestAttr][action]":None, "field[ super ][class_name]":"TestClass", "field[TestAttr][new_attribute]":None}, follow_redirects=True)
@@ -248,44 +248,44 @@ def test_attribute_invalid_args (test_client, init_database):
 
 def test_add_one_relationship(test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass1, TestClass2'), follow_redirects=True)
-    test_client.post('/manipRelationship/', data=dict(class_name='TestClass1', relationship=['TestClass2'], action="add"), follow_redirects=True)
+    test_client.post('/manipRelationship/', data=dict(class_name='TestClass1', relationship=['TestClass2'], rel_type='agg', action="add"), follow_redirects=True)
     response = test_client.post('/getRelationships/', follow_redirects=True)
     assert response.status_code == 200
-    assert b'{"from_name": "TestClass1", "to_name": "TestClass2"}' in response.data
+    assert b'{"from_name": "TestClass1", "rel_type": "agg", "to_name": "TestClass2"}' in response.data
 
 def test_add_many_relationships(test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass1, TestClass2'), follow_redirects=True)
-    test_client.post('/manipRelationship/', data=dict(class_name='TestClass1', relationship=['TestClass2', 'TestClass1'], action="add"), follow_redirects=True)
-    test_client.post('/manipRelationship/', data=dict(class_name='TestClass2', relationship=['TestClass1', 'TestClass2'], action="add"), follow_redirects=True)
+    test_client.post('/manipRelationship/', data=dict(class_name='TestClass1', relationship=['TestClass2', 'TestClass1'], rel_type='agg',  action="add"), follow_redirects=True)
+    test_client.post('/manipRelationship/', data=dict(class_name='TestClass2', relationship=['TestClass1', 'TestClass2'], rel_type='agg',  action="add"), follow_redirects=True)
     response = test_client.post('/getRelationships/', follow_redirects=True)
     assert response.status_code == 200
-    assert b'{"from_name": "TestClass1", "to_name": "TestClass2"}' in response.data
-    assert b'{"from_name": "TestClass2", "to_name": "TestClass1"}' in response.data
-    assert b'{"from_name": "TestClass1", "to_name": "TestClass1"}' in response.data
-    assert b'{"from_name": "TestClass2", "to_name": "TestClass2"}' in response.data
+    assert b'{"from_name": "TestClass1", "rel_type": "agg", "to_name": "TestClass2"}' in response.data
+    assert b'{"from_name": "TestClass2", "rel_type": "agg", "to_name": "TestClass1"}' in response.data
+    assert b'{"from_name": "TestClass1", "rel_type": "agg", "to_name": "TestClass1"}' in response.data
+    assert b'{"from_name": "TestClass2", "rel_type": "agg", "to_name": "TestClass2"}' in response.data
 
 def test_add_two_relationships(test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass1, TestClass2'), follow_redirects=True)
-    test_client.post('/manipRelationship/', data=dict(class_name='TestClass1', relationship=['TestClass2','TestClass1'], action="add"), follow_redirects=True)
+    test_client.post('/manipRelationship/', data=dict(class_name='TestClass1', relationship=['TestClass2','TestClass1'], rel_type='agg',  action="add"), follow_redirects=True)
     response = test_client.post('/getRelationships/', follow_redirects=True)
     assert response.status_code == 200
-    assert b'{"from_name": "TestClass1", "to_name": "TestClass2"}' in response.data
-    assert b'{"from_name": "TestClass1", "to_name": "TestClass1"}' in response.data
+    assert b'{"from_name": "TestClass1", "rel_type": "agg", "to_name": "TestClass2"}' in response.data
+    assert b'{"from_name": "TestClass1", "rel_type": "agg", "to_name": "TestClass1"}' in response.data
 
 def test_add_one_relationship_but_then_delete_that_relationship(test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass1, TestClass2'), follow_redirects=True)
-    test_client.post('/manipRelationship/', data=dict(class_name='TestClass1', relationship=['TestClass2'], action="add"), follow_redirects=True)
+    test_client.post('/manipRelationship/', data=dict(class_name='TestClass1', relationship=['TestClass2'], rel_type='agg',  action="add"), follow_redirects=True)
     response = test_client.post('/getRelationships/', follow_redirects=True)
     assert response.status_code == 200
-    assert b'{"from_name": "TestClass1", "to_name": "TestClass2"}' in response.data
+    assert b'{"from_name": "TestClass1", "rel_type": "agg", "to_name": "TestClass2"}' in response.data
 
     response = test_client.post('/manipRelationship/', data=dict(class_name='TestClass1', relationship=['TestClass2'], action="delete"), follow_redirects=True)
     assert response.status_code == 200
-    assert not b'{"from_name": "TestClass1", "to_name": "TestClass2"}' in response.data
+    assert not b'{"from_name": "TestClass1", "rel_type": "agg", "to_name": "TestClass2"}' in response.data
 
 def test_add_one_relationship_but_its_for_a_class_that_doesnt_exist(test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass1, TestClass2'), follow_redirects=True)
-    response = test_client.post('/manipRelationship/', data=dict(class_name='TestClass2', relationship=['TestClass69'], action="add"), follow_redirects=True)
+    response = test_client.post('/manipRelationship/', data=dict(class_name='TestClass2', relationship=['TestClass69'], rel_type='agg', action="add"), follow_redirects=True)
     assert b"ERROR: Unable to add relationship from" in response.data
 
     response = test_client.post('/getRelationships/', follow_redirects=True)
@@ -294,12 +294,12 @@ def test_add_one_relationship_but_its_for_a_class_that_doesnt_exist(test_client,
 
 def test_delete_a_relationship_that_didnt_exist_in_the_first_place(test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass1 TestClass2'), follow_redirects=True)
-    response = test_client.post('/manipRelationship/', data=dict(class_name='TestClass2', relationship=['TestClass69'], action="delete"), follow_redirects=True)
+    response = test_client.post('/manipRelationship/', data=dict(class_name='TestClass2', relationship=['TestClass69'], rel_type="agg", action="delete"), follow_redirects=True)
     assert b"ERROR: Unable to delete relationship from" in response.data
 
 def test_manip_relationship_invalid_args (test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass1, TestClass2'), follow_redirects=True)
-    response = test_client.post('/manipRelationship/', data=dict(class_name=None, relationship=[], action="add"), follow_redirects=True)
+    response = test_client.post('/manipRelationship/', data=dict(class_name=None, relationship=[], rel_type='agg', action="add"), follow_redirects=True)
     assert b"Invalid arguments, try again." in response.data
 
 ################################ TEST COORDINATES ################################

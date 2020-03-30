@@ -2,7 +2,7 @@ import cmd
 from app_package.core_func import (core_save, core_load, core_parse)
 from app_package.memento.func_objs import add_class, delete_class, edit_class, add_attr, del_attr, edit_attr, add_rel, del_rel
 from app_package.models import Class, Attribute, Relationship
-from app_package import app, cmd_stack
+from app_package import app, cmd_stack, db
 import webbrowser
 import json
 
@@ -115,19 +115,24 @@ class replShell(cmd.Cmd):
 
     def do_addRel(self, args):
         """Accepts a single parent class name followed by a list of child class names separated by commas and adds relationships from parents to children in database.
-    Usage: addRel <class_name>, <relationship1>, <relationship2>, ... , <relationshipN>
+    Usage: addRel <class_name>, <relationship type>, <relationship1>, <relationship2>, ... , <relationshipN>
+        Valid relationship types: agg, comp, gen, none
     """
         argList = core_parse(args)
-        if len(argList) > 1:
+        if len(argList) > 2:
             class_name = argList.pop(0)
+            rel_type = argList.pop(0).lower()
+            if not rel_type in ["agg", "comp", "gen", "none"]:
+                print('ERROR: Invalid relationship type: ' + rel_type + "\n\tValid relationship types: agg, comp, gen, none")
+                return
             for rel in argList:
-                addRelCmd = add_rel(class_name, rel)
+                addRelCmd = add_rel(class_name, rel, rel_type)
                 if cmd_stack.execute(addRelCmd):
-                    print('ERROR: Unable to add relationship from \'' + class_name + '\' to \'' + rel + '\'')
+                    print('ERROR: Unable to add relationship from \'' + class_name + '\' to \'' + rel + '\' of type \'' + rel_type + '\'')
                 else:
-                    print('Successfully added relationship from \'' + class_name + '\' to \'' + rel + '\'')
+                    print('Successfully added relationship from \'' + class_name + '\' to \'' + rel + '\' of type \'' + rel_type + '\'')
         else:
-            print("Usage: addRel <class_name>, <relationship1>, <relationship2>, ... , <relationshipN>")
+            print("Usage: addRel <class_name>, <relationship type>, <relationship1>, <relationship2>, ... , <relationshipN>\n\tValid relationship types: agg, comp, gen, none")
 
     def do_delRel(self, args):
         """Accepts a single parent class name followed by a list of child class names separated by commas and removes relationships from parents to children in database.
@@ -186,21 +191,34 @@ class replShell(cmd.Cmd):
             attributes = classObj.class_attributes
 
             if len(attributes) > 0:
-                listStr += '  > Attributes: '
+                listStrFields = '  > Fields:'
+                showFields = False
                 for attr in attributes:
-                    if attr == attributes[-1]:
-                        listStr += attr.attribute + '\n'
-                    else:
-                        listStr += (attr.attribute + ", ")
+                    if attr.attr_type == "field":
+                        showFields = True
+                        listStrFields += (" " + attr.attribute + ",")
+                listStrFields = listStrFields[0:-1] + '\n'
+                if showFields:
+                    listStr += listStrFields
+                    
+                listStrMethods = '  > Methods:'
+                showMethods = False
+                for attr in attributes:
+                    if attr.attr_type == "method":
+                        showMethods = True
+                        listStrMethods += (" " + attr.attribute + ",")
+                listStrMethods = listStrMethods[0:-1] + '\n'
+                if showMethods:
+                    listStr += listStrMethods
 
             relationships = classObj.class_relationships
             if len(relationships) > 0:
-                listStr += '  > Children: '
+                listStr += '  > Relationships: '
                 for rel in relationships:
                     if rel == relationships[-1]:
-                        listStr += rel.to_name + '\n'
+                        listStr += rel.to_name + ' (' + rel.rel_type + ')\n'
                     else:
-                        listStr += (rel.to_name + ", ")
+                        listStr += (rel.to_name + ' (' + rel.rel_type + '), ')
       
         print(listStr)
 
@@ -268,4 +286,5 @@ class replShell(cmd.Cmd):
 
 
 if __name__ == '__main__':
+    db.create_all()
     replShell().cmdloop()
