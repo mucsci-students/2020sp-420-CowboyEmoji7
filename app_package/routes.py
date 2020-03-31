@@ -186,10 +186,10 @@ def manipRelationship():
         fro = request.form['class_name']
         to = request.form.getlist('relationship')
         action = request.form['action']
-        rel_type = request.form['rel_type']
         if (action == 'delete'):
             delRelationship(fro, to)
         elif (action == 'add'):
+            rel_type = request.form['rel_type']
             addRelationship(fro, to, rel_type)
     except:
         flash("Invalid arguments, try again.", 'error')
