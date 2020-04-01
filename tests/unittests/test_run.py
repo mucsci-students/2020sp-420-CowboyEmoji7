@@ -1,13 +1,11 @@
 """ Unit tests for run.py/Command Line Interface 
 
     Tests:
-    [X] add
-    [X] delete
-    [X] edit
-    [] relationships
-    [] undo/redo
-    [] fields
-    [] methods
+    [X] add             [] redo
+    [X] delete          [X] fields
+    [X] edit            [X] methods
+    [X] relationships   [] save
+    [] undo             [] load
 """
 
 import run
@@ -18,6 +16,14 @@ app = run.replShell()
 # lazy mans way of capturing list
 def captureList(capsys):
     app.do_list("")
+    captured = capsys.readouterr()
+    return captured
+
+# builds an editor frame for testing attributes
+# so I don't have to retype the same thing over and over again
+# also captures the add output for me
+def attribute_frame(capsys):
+    app.do_add("test, morestuff")
     captured = capsys.readouterr()
     return captured
 
@@ -181,6 +187,186 @@ def test_do_edit_deleted_class(capsys):
     assert captured.out == "thisexists\nbooga\n\n"
 
 ############################### FIELDS/METHODS ##############################
+################################ TEST addAttr ###############################
+
+# Fields
+def test_addAttr_one_field(capsys):
+    captured = attribute_frame(capsys)
+    app.do_addAttr("test, field, onefield")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully added field 'onefield'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test\n  > Fields: onefield\nmorestuff\n\n"
+
+def test_addAttr_multi_fields(capsys):
+    captured = attribute_frame(capsys)
+    app.do_addAttr("morestuff, field, onefield, twofields, redfield, bluefield")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully added field 'onefield'\nSuccessfully added field 'twofields'\nSuccessfully added field 'redfield'\nSuccessfully added field 'bluefield'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test\nmorestuff\n  > Fields: onefield, twofields, redfield, bluefield\n\n"
+
+def test_addAttr_no_fields(capsys):
+    captured = attribute_frame(capsys)
+    app.do_addAttr("test, field, ")
+    captured = capsys.readouterr()
+    assert captured.out == "Usage: addAttr <class_name>, <field/method>, <attribute1>, <attribute2>, ... , <attributeN>\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test\nmorestuff\n\n"
+
+def test_addAttr_dup_field(capsys):
+    captured = attribute_frame(capsys)
+    # first add a duplicate using multi add
+    app.do_addAttr("morestuff, field, dup, dup")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully added field 'dup'\nERROR: Unable to add field 'dup'\n"
+
+    app.do_addAttr("morestuff, field, dup")
+    captured = capsys.readouterr()
+    assert captured.out == "ERROR: Unable to add field 'dup'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test\nmorestuff\n  > Fields: dup\n\n"
+
+# Methods
+def test_addAttr_one_method(capsys):
+    captured = attribute_frame(capsys)
+    app.do_addAttr("test, method, onemethod")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully added method 'onemethod'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test\n  > Methods: onemethod\nmorestuff\n\n"
+
+def test_addAttr_multi_methods(capsys):
+    captured = attribute_frame(capsys)
+    app.do_addAttr("morestuff, method, onemethod, twomethods, redmethod, bluemethod")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully added method 'onemethod'\nSuccessfully added method 'twomethods'\nSuccessfully added method 'redmethod'\nSuccessfully added method 'bluemethod'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test\nmorestuff\n  > Methods: onemethod, twomethods, redmethod, bluemethod\n\n"
+
+def test_addAttr_no_method(capsys):
+    captured = attribute_frame(capsys)
+    app.do_addAttr("test, method, ")
+    captured = capsys.readouterr()
+    assert captured.out == "Usage: addAttr <class_name>, <field/method>, <attribute1>, <attribute2>, ... , <attributeN>\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test\nmorestuff\n\n"
+
+def test_addAttr_dup_method(capsys):
+    captured = attribute_frame(capsys)
+    # first add a duplicate using multi add
+    app.do_addAttr("morestuff, method, dup, dup")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully added method 'dup'\nERROR: Unable to add method 'dup'\n"
+
+    app.do_addAttr("morestuff, method, dup")
+    captured = capsys.readouterr()
+    assert captured.out == "ERROR: Unable to add method 'dup'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test\nmorestuff\n  > Methods: dup\n\n"
+
+################################ TEST delAttr ###############################
+def test_delAttr_one_field(capsys):
+    captured = attribute_frame(capsys)
+    app.do_addAttr("test, field, onefield")
+    captured = capsys.readouterr()
+
+    app.do_delAttr("test, onefield")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully deleted attribute 'onefield'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test\nmorestuff\n\n"
+
+def test_delAttr_one_method(capsys):
+    captured = attribute_frame(capsys)
+    app.do_addAttr("test, method, onemethod")
+    captured = capsys.readouterr()
+
+    app.do_delAttr("test, onemethod")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully deleted attribute 'onemethod'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test\nmorestuff\n\n"
+
+def test_delAttr_multi_fields(capsys):
+    captured = attribute_frame(capsys)
+    app.do_addAttr("test, field, onefield, twofields, redfield, bluefield")
+    captured = capsys.readouterr()
+
+    app.do_delAttr("test, onefield, twofields, redfield, bluefield")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully deleted attribute 'onefield'\nSuccessfully deleted attribute 'twofields'\nSuccessfully deleted attribute 'redfield'\nSuccessfully deleted attribute 'bluefield'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test\nmorestuff\n\n"
+
+def test_delAttr_multi_methods(capsys):
+    captured = attribute_frame(capsys)
+    app.do_addAttr("test, method, onemethod, twomethods, redmethod, bluemethod")
+    captured = capsys.readouterr()
+
+    app.do_delAttr("test, onemethod, twomethods, redmethod, bluemethod")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully deleted attribute 'onemethod'\nSuccessfully deleted attribute 'twomethods'\nSuccessfully deleted attribute 'redmethod'\nSuccessfully deleted attribute 'bluemethod'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test\nmorestuff\n\n"
+
+def test_delAttr_both_same_class(capsys):
+    captured = attribute_frame(capsys)
+    app.do_addAttr("test, field, onemethod")
+    app.do_addAttr("test, method, onefield")
+    captured = capsys.readouterr()
+
+    app.do_delAttr("test, onemethod, onefield")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully deleted attribute 'onemethod'\nSuccessfully deleted attribute 'onefield'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test\nmorestuff\n\n"
+
+def test_delAttr_both_diff_class(capsys):
+    captured = attribute_frame(capsys)
+    app.do_addAttr("test, field, onefield, twofields")
+    app.do_addAttr("morestuff, method, onemethod, twomethods")
+    captured = capsys.readouterr()
+
+    app.do_delAttr("test, onefield, twofields")
+    app.do_delAttr("morestuff, onemethod, twomethods")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully deleted attribute 'onefield'\nSuccessfully deleted attribute 'twofields'\nSuccessfully deleted attribute 'onemethod'\nSuccessfully deleted attribute 'twomethods'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test\nmorestuff\n\n"
+
+def test_delAttr_none(capsys):
+    captured = attribute_frame(capsys)
+
+    # first start when theres no attributes
+    app.do_delAttr("test, onefield")
+    captured = capsys.readouterr()
+    assert captured.out == "ERROR: Unable to delete attribute 'onefield'\n"
+
+    # now add an attribute and try to delete nothing
+    app.do_addAttr("test, field, onefield")
+    captured = capsys.readouterr()
+
+    app.do_delAttr("test, ")
+    captured = capsys.readouterr()
+    assert captured.out == "Usage: delAttr <class_name>, <attribute1>, <attribute2>, ... , <attributeN>\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test\n  > Fields: onefield\nmorestuff\n\n"
 
 ############################### RELATIONSHIPS ###############################
 ################################ TEST addRel ################################

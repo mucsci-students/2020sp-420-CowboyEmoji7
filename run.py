@@ -106,7 +106,7 @@ class replShell(cmd.Cmd):
                 else:
                     print('Successfully added ' + attr_type + ' \'' + attr + '\'')
         else:
-            print("Usage: addAttr <class_name>, <attribute1>, <attribute2>, ... , <attributeN>")
+            print("Usage: addAttr <class_name>, <field/method>, <attribute1>, <attribute2>, ... , <attributeN>")
         
     def complete_addAttr(self, text, line, begidx, endidx):
         btext = core_parse(line[7:])[-1]
