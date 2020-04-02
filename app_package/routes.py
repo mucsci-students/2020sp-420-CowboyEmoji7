@@ -157,7 +157,8 @@ def update(oldName, newName):
 
 def delAttribute(name, attr):
     """Helper to remove attributes from class."""
-    delAttrCmd = del_attr(name, attr)
+    att_to_del = Attribute.query.get({"name": name, "attribute": attr})
+    delAttrCmd = del_attr(name, attr, att_to_del.attr_type)
     if cmd_stack.execute(delAttrCmd):
         flash("ERROR: Unable to remove attribute " + attr + " from " + name, 'error')
 
@@ -188,10 +189,11 @@ def manipRelationship():
         fro = request.form['class_name']
         to = request.form.getlist('relationship')
         action = request.form['action']
-        rel_type = request.form['rel_type']
+        
         if (action == 'delete'):
             delRelationship(fro, to)
         elif (action == 'add'):
+            rel_type = request.form['rel_type']
             addRelationship(fro, to, rel_type)
     except:
         flash("Invalid arguments, try again.", 'error')
@@ -209,8 +211,10 @@ def addRelationship(fro, to, rel_type):
 
 def delRelationship(fro, to):
     """Helper function to remove relationships from class."""
+
     for child in to:
-        delRelCmd = del_rel(fro, child)
+        rel_to_del = Relationship.query.get({"from_name": fro, "to_name": to})
+        delRelCmd = del_rel(fro, child, rel_to_del.rel_type)
         if cmd_stack.execute(delRelCmd):
             flash("ERROR: Unable to delete relationship from " + fro + " to " + child, 'error')
 

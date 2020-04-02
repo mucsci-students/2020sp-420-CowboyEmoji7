@@ -125,7 +125,7 @@ class add_attr(Command):
         return core_add_attr(self.className, self.attrName, self.attrType)
 
     def undo(self):
-        return core_del_attr(self.className, self.attrName, self.attrType)
+        return core_del_attr(self.className, self.attrName)
 
     def redo(self):
         return core_add_attr(self.className, self.attrName, self.attrType)
@@ -136,15 +136,16 @@ class del_attr(Command):
     className = ''
     attrName = ''
 
-    def __init__(self, className, attrName):
+    def __init__(self, className, attrName, attrType):
         self.className = className
         self.attrName = attrName
+        self.attrType = attrType
 
     def execute(self):
         return core_del_attr(self.className, self.attrName)
 
     def undo(self):
-        return core_add_attr(self.className, self.attrName)
+        return core_add_attr(self.className, self.attrName, self.attrType)
 
     def redo(self):
         return core_del_attr(self.className, self.attrName)
@@ -196,10 +197,12 @@ class del_rel(Command):
     """Command class for core_del_rel.  Accepts a class name and the name of the child"""
     parentName = ''
     childName = ''
+    relType = ''
 
-    def __init__(self, parentName, childName):
+    def __init__(self, parentName, childName, relType):
         self.parentName = parentName
         self.childName = childName
+        self.relType = relType
 
     def execute(self):
         return core_del_rel(self.parentName, self.childName)
