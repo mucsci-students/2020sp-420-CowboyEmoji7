@@ -43,7 +43,7 @@ def index():
         attributes = Attribute.query.order_by(Attribute.date_created).all()
         themes = Theme.query.all()
         activeTheme = Theme.query.filter(Theme.active == True).first()
-        return render_template('index.html', classes=classes, attributes=attributes, cmd_stack=cmd_stack, themes=themes, activeTheme=activeTheme)
+        return render_template('index.html', classes=classes, attributes=attributes, cmd_stack=cmd_stack)
 
 
 @app.route('/delete/', methods=['POST'])
