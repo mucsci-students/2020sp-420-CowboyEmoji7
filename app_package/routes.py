@@ -157,7 +157,7 @@ def update(oldName, newName):
 
 def delAttribute(name, attr):
     """Helper to remove attributes from class."""
-    att_to_del = Attribute.query.get({"name": name, "attribute": attr})
+    att_to_del = Attribute.query.get({"class_name": name, "attribute": attr})
     delAttrCmd = del_attr(name, attr, att_to_del.attr_type)
     if cmd_stack.execute(delAttrCmd):
         flash("ERROR: Unable to remove attribute " + attr + " from " + name, 'error')
@@ -213,9 +213,13 @@ def delRelationship(fro, to):
     """Helper function to remove relationships from class."""
 
     for child in to:
-        rel_to_del = Relationship.query.get({"from_name": fro, "to_name": to})
-        delRelCmd = del_rel(fro, child, rel_to_del.rel_type)
-        if cmd_stack.execute(delRelCmd):
+        try:
+            rel_to_del = Relationship.query.get({"from_name": fro, "to_name": to})
+            tipe = rel_to_del.rel_type
+            delRelCmd = del_rel(fro, child, tipe)
+            if cmd_stack.execute(delRelCmd):
+                flash("ERROR: Unable to delete relationship from " + fro + " to " + child, 'error')
+        except:
             flash("ERROR: Unable to delete relationship from " + fro + " to " + child, 'error')
 
 
