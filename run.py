@@ -45,6 +45,7 @@ class replShell(cmd.Cmd):
             print("Usage: delete <class_name1>, <class_name2>, ... , <class_nameN>")
     
     def complete_delete(self, text, line, begidx, endidx):
+        """Provides tab completion data for delete"""
         btext = core_parse(line[7:])[-1]
         allClasses = Class.query.all()
         ClassNames = []
@@ -57,7 +58,6 @@ class replShell(cmd.Cmd):
                     tokens.pop(0)
                     classTokens.pop(0)
                     
-                
                 ClassNames.append(" ".join(classTokens))
                 
         return ClassNames
@@ -79,6 +79,7 @@ class replShell(cmd.Cmd):
             print("Usage: edit <old_name>, <new_name>")
 
     def complete_edit(self, text, line, begidx, endidx):
+        """Provides tab completion data for edit"""
         allClasses = Class.query.all()
         ClassNames = []
         for Klass in allClasses:
@@ -89,7 +90,7 @@ class replShell(cmd.Cmd):
 ######################################## Attribute level #########################################
 
     def do_addAttr(self, args):
-        """Accepts a single class name followed by a list of attribute names separated by commas and adds them to the class.
+        """Accepts a single class name and attribute type followed by a list of attribute names separated by commas and adds them to the class.
     Usage: addAttr <class_name>, <field/method>, <attribute1>, <attribute2>, ... , <attributeN>
     """
         argList = core_parse(args)
@@ -106,9 +107,10 @@ class replShell(cmd.Cmd):
                 else:
                     print('Successfully added ' + attr_type + ' \'' + attr + '\'')
         else:
-            print("Usage: addAttr <class_name>, <attribute1>, <attribute2>, ... , <attributeN>")
+            print("Usage: addAttr <class_name>, <field/method>, <attribute1>, <attribute2>, ... , <attributeN>")
         
     def complete_addAttr(self, text, line, begidx, endidx):
+        """Provides tab completion data for addAttr"""
         btext = core_parse(line[7:])[-1]
         allClasses = Class.query.all()
         allClassNames = []
@@ -136,7 +138,7 @@ class replShell(cmd.Cmd):
 
     def do_delAttr(self, args):
         """Accepts a single class name followed by a list of attribute names separated by commas and removes them from the class.
-    Usage: delAttr <class_name>, <field/method>, <attribute1>, <attribute2>, ... , <attributeN>
+    Usage: delAttr <class_name>, <attribute1>, <attribute2>, ... , <attributeN>
     """
         argList = core_parse(args)
         if len(argList) > 1:
@@ -151,6 +153,7 @@ class replShell(cmd.Cmd):
             print("Usage: delAttr <class_name>, <attribute1>, <attribute2>, ... , <attributeN>")
     
     def complete_delAttr(self, text, line, begidx, endidx):
+        """Provides tab completion data for delAttr"""
         bline = core_parse(line[8:])
         btext = bline[-1]
         possibleMatches = []
@@ -197,6 +200,7 @@ class replShell(cmd.Cmd):
             print("Usage: editAttr <class_name>, <old_attribute>, <new_attribute>")
     
     def complete_editAttr(self, text, line, begidx, endidx):
+        """Provides tab completion data for editAttr"""
         bline = core_parse(line[8:])
         btext = bline[-1]
         possibleMatches = []
@@ -228,7 +232,7 @@ class replShell(cmd.Cmd):
 ########################################## Relationship level ########################################
 
     def do_addRel(self, args):
-        """Accepts a single parent class name followed by a list of child class names separated by commas and adds relationships from parents to children in database.
+        """Accepts a single 'from' class name and relationship type followed by a list of 'to' class names separated by commas and adds these relationships to the database.
     Usage: addRel <class_name>, <relationship type>, <relationship1>, <relationship2>, ... , <relationshipN>
         Valid relationship types: agg, comp, gen, none
     """
@@ -237,7 +241,7 @@ class replShell(cmd.Cmd):
             class_name = argList.pop(0)
             rel_type = argList.pop(0).lower()
             if not rel_type in ["agg", "comp", "gen", "none"]:
-                print('ERROR: Invalid relationship type: ' + rel_type + "\n\tValid relationship types: agg, comp, gen, none")
+                print('ERROR: Invalid relationship type: ' + rel_type + "\n  Valid relationship types: agg, comp, gen, none")
                 return
             for rel in argList:
                 addRelCmd = add_rel(class_name, rel, rel_type)
@@ -246,9 +250,10 @@ class replShell(cmd.Cmd):
                 else:
                     print('Successfully added relationship from \'' + class_name + '\' to \'' + rel + '\' of type \'' + rel_type + '\'')
         else:
-            print("Usage: addRel <class_name>, <relationship type>, <relationship1>, <relationship2>, ... , <relationshipN>\n\tValid relationship types: agg, comp, gen, none")
+            print("Usage: addRel <class_name>, <relationship type>, <relationship1>, <relationship2>, ... , <relationshipN>\n  Valid relationship types: agg, comp, gen, none")
 
     def complete_addRel(self, text, line, begidx, endidx):
+        """Provides tab completion data for addRel"""
         btext = core_parse(line[7:])[-1]
         allClasses = Class.query.all()
         allClassNames = []
@@ -277,7 +282,7 @@ class replShell(cmd.Cmd):
         return ClassNames
     
     def do_delRel(self, args):
-        """Accepts a single parent class name followed by a list of child class names separated by commas and removes relationships from parents to children in database.
+        """Accepts a single 'from' class name followed by a list of 'to' class names separated by commas and removes these relationships from the database.
     Usage: delRel <class_name>, <relationship1>, <relationship2>, ... , <relationshipN>
     """
         argList = core_parse(args)
@@ -293,6 +298,7 @@ class replShell(cmd.Cmd):
             print("Usage: delRel <class_name>, <relationship1>, <relationship2>, ... , <relationshipN>")
             
     def complete_delRel(self, text, line, begidx, endidx):
+        """Provides tab completion data for delRel"""
         bline = core_parse(line[7:])
         btext = bline[-1]
         possibleMatches = []
@@ -381,15 +387,11 @@ class replShell(cmd.Cmd):
                 listStrMethods = listStrMethods[0:-1] + '\n'
                 if showMethods:
                     listStr += listStrMethods
-
-            relationships = classObj.class_relationships
-            if len(relationships) > 0:
-                listStr += '  > Relationships: '
-                for rel in relationships:
-                    if rel == relationships[-1]:
-                        listStr += rel.to_name + ' (' + rel.rel_type + ')\n'
-                    else:
-                        listStr += (rel.to_name + ' (' + rel.rel_type + '), ')
+            
+        relationships = Relationship.query.order_by(Relationship.from_name).all()
+        listStr += "Relationships:\n"
+        for rel in relationships:
+            listStr += "  " + rel.from_name + " -> " + rel.to_name + " (" + rel.rel_type + ")\n"
       
         print(listStr)
 

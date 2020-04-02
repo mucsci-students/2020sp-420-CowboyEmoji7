@@ -52,12 +52,14 @@ class ClassSchema(ma.ModelSchema):
         model = Class
 
 class RelationshipSchema(ma.ModelSchema):
+    """Meta model used by flask-marshmallow in jsonification."""
     member_of = ma.Nested(ClassSchema)
     class Meta:
         fields = ("from_name", "to_name", "rel_type")
         model = Relationship
 
 class AttributeSchema(ma.ModelSchema):
+    """Meta model used by flask-marshmallow in jsonification."""
     member_of = ma.Nested(ClassSchema)
     class Meta:
         model = Attribute

@@ -251,6 +251,7 @@ def core_del_rel(from_name, to_name):
         return 1
 
 def core_parse (string):
+    """Parses useful tokens for data manipulation from a string list with comma delimiters"""
     parensUnmatched = 0
     stringBuf = ""
     listBuf = []
@@ -277,11 +278,15 @@ def core_parse (string):
     return listBuf
 
 def removeTrailingWhitespace(string):
+    """Helper function which removes trailing whitespace from a string"""
     while (string[-1] == ' ' or string[-1] == '\t'):
         string = string[0:-1]
     return string
 
 def parseType(input):
+    """Parses type from a string attribute in the following formats:
+      <type> <name>
+      <name>:<type>"""
     # remove the crap in parens
     front = input.split('(', 1)[0]
     tipe = ""

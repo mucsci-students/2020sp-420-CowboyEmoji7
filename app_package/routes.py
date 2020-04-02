@@ -226,11 +226,13 @@ def getRelationship():
 
 @app.route("/undo/", methods=['POST'])
 def undo():
+    """Deals with requests from GUI to undo the last command executed by the user"""
     cmd_stack.undo()
     return redirect('/')
 
 
 @app.route("/redo/", methods=['POST'])
 def redo():
+    """Deals with requests from GUI to redo the last command undone by the user"""
     cmd_stack.redo()
     return redirect('/')
