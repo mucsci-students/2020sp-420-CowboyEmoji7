@@ -5,7 +5,7 @@ from app_package.models import Class, Attribute, Relationship
 from app_package import app, cmd_stack, db
 import webbrowser
 import json
-
+import readline
 
 class replShell(cmd.Cmd):
     intro = 'Welcome to the UML editor shell.\nType help or ? to list commands.\nType web to open web app.\n'
@@ -43,6 +43,24 @@ class replShell(cmd.Cmd):
                     print('Successfully deleted class \'' + name + '\'')
         else:
             print("Usage: delete <class_name1>, <class_name2>, ... , <class_nameN>")
+    
+    def complete_delete(self, text, line, begidx, endidx):
+        btext = core_parse(line[7:])[-1]
+        allClasses = Class.query.all()
+        ClassNames = []
+        for Klass in allClasses:
+            if Klass.name.startswith(btext):
+                tokens = btext.split(" ")
+                classTokens = Klass.name.split(" ")
+                
+                while tokens[0] == classTokens[0]:
+                    tokens.pop(0)
+                    classTokens.pop(0)
+                    
+                
+                ClassNames.append(" ".join(classTokens))
+                
+        return ClassNames
 
     def do_edit(self, args):
         """Accepts a single class name followed by a replacement name, separated by commas, and changes instances of old name in database with new name.
@@ -60,27 +78,65 @@ class replShell(cmd.Cmd):
         else:
             print("Usage: edit <old_name>, <new_name>")
 
+    def complete_edit(self, text, line, begidx, endidx):
+        allClasses = Class.query.all()
+        ClassNames = []
+        for Klass in allClasses:
+            if Klass.name.startswith(text):
+                ClassNames.append(Klass.name)
+        return ClassNames
+    
 ######################################## Attribute level #########################################
 
     def do_addAttr(self, args):
         """Accepts a single class name followed by a list of attribute names separated by commas and adds them to the class.
-    Usage: addAttr <class_name>, <attribute1>, <attribute2>, ... , <attributeN>
+    Usage: addAttr <class_name>, <field/method>, <attribute1>, <attribute2>, ... , <attributeN>
     """
         argList = core_parse(args)
-        if len(argList) > 1:
+        if len(argList) > 2:
             class_name = argList.pop(0)
+            attr_type = argList.pop(0).lower()
+            if not attr_type in ["field", "method"]:
+                print('ERROR: Invalid attribute type: ' + attr_type + "\n\tValid attribute types: field, method")
+                return
             for attr in argList:
-                addAttrCmd = add_attr(class_name, attr)
+                addAttrCmd = add_attr(class_name, attr, attr_type)
                 if cmd_stack.execute(addAttrCmd):
-                    print('ERROR: Unable to add attribute \'' + attr + '\'')
+                    print('ERROR: Unable to add ' + attr_type + ' \'' + attr + '\'')
                 else:
-                    print('Successfully added attribute \'' + attr + '\'')
+                    print('Successfully added ' + attr_type + ' \'' + attr + '\'')
         else:
             print("Usage: addAttr <class_name>, <attribute1>, <attribute2>, ... , <attributeN>")
+        
+    def complete_addAttr(self, text, line, begidx, endidx):
+        btext = core_parse(line[7:])[-1]
+        allClasses = Class.query.all()
+        allClassNames = []
+        
+        for Klass in allClasses:
+            allClassNames.append(Klass.name)
+            
+        allClassNames.append("field")
+        allClassNames.append("method")
+        
+        ClassNames = []
+        for Klass in allClassNames:
+            if Klass.startswith(btext):
+                tokens = btext.split(" ")
+                classTokens = Klass.split(" ")
+                
+                while tokens[0] == classTokens[0]:
+                    tokens.pop(0)
+                    classTokens.pop(0)
+                    
+                
+                ClassNames.append(" ".join(classTokens))
+                
+        return ClassNames
 
     def do_delAttr(self, args):
         """Accepts a single class name followed by a list of attribute names separated by commas and removes them from the class.
-    Usage: delAttr <class_name>, <attribute1>, <attribute2>, ... , <attributeN>
+    Usage: delAttr <class_name>, <field/method>, <attribute1>, <attribute2>, ... , <attributeN>
     """
         argList = core_parse(args)
         if len(argList) > 1:
@@ -93,6 +149,35 @@ class replShell(cmd.Cmd):
                     print('Successfully deleted attribute \'' + attr + '\'')
         else:
             print("Usage: delAttr <class_name>, <attribute1>, <attribute2>, ... , <attributeN>")
+    
+    def complete_delAttr(self, text, line, begidx, endidx):
+        bline = core_parse(line[8:])
+        btext = bline[-1]
+        possibleMatches = []
+        
+        if len(bline) < 2:
+            allClasses = Class.query.all()
+            for Klass in allClasses:
+                possibleMatches.append(Klass.name)
+        else:
+            allAttrs = Attribute.query.filter(bline[0] == Attribute.class_name).all()
+            for Attr in allAttrs:
+                possibleMatches.append(Attr.attribute)
+        
+        Matches = []
+        for PM in possibleMatches:
+            if PM.startswith(btext):
+                tokens = btext.split(" ")
+                PMTokens = PM.split(" ")
+                
+                while tokens[0] == PMTokens[0]:
+                    tokens.pop(0)
+                    PMTokens.pop(0)
+                    
+                
+                Matches.append(" ".join(PMTokens))
+                
+        return Matches
 
     def do_editAttr(self, args):
         """Accepts a single class name followed by an existing attribute within and a new name which will replace said attribute in the class, all separated by commas.
@@ -110,6 +195,35 @@ class replShell(cmd.Cmd):
                 print('Successfully updated attribute \'' + old_name + '\' to \'' + new_name + '\'')
         else:
             print("Usage: editAttr <class_name>, <old_attribute>, <new_attribute>")
+    
+    def complete_editAttr(self, text, line, begidx, endidx):
+        bline = core_parse(line[8:])
+        btext = bline[-1]
+        possibleMatches = []
+        
+        if len(bline) < 2:
+            allClasses = Class.query.all()
+            for Klass in allClasses:
+                possibleMatches.append(Klass.name)
+        elif len(bline) == 2:
+            allAttrs = Attribute.query.filter(bline[0] == Attribute.class_name).all()
+            for Attr in allAttrs:
+                possibleMatches.append(Attr.attribute)
+        
+        Matches = []
+        for PM in possibleMatches:
+            if PM.startswith(btext):
+                tokens = btext.split(" ")
+                PMTokens = PM.split(" ")
+                
+                while tokens[0] == PMTokens[0]:
+                    tokens.pop(0)
+                    PMTokens.pop(0)
+                    
+                
+                Matches.append(" ".join(PMTokens))
+                
+        return Matches
 
 ########################################## Relationship level ########################################
 
@@ -134,6 +248,34 @@ class replShell(cmd.Cmd):
         else:
             print("Usage: addRel <class_name>, <relationship type>, <relationship1>, <relationship2>, ... , <relationshipN>\n\tValid relationship types: agg, comp, gen, none")
 
+    def complete_addRel(self, text, line, begidx, endidx):
+        btext = core_parse(line[7:])[-1]
+        allClasses = Class.query.all()
+        allClassNames = []
+        
+        for Klass in allClasses:
+            allClassNames.append(Klass.name)
+            
+        allClassNames.append("agg")
+        allClassNames.append("comp")
+        allClassNames.append("gen")
+        allClassNames.append("none")
+        
+        ClassNames = []
+        for Klass in allClassNames:
+            if Klass.startswith(btext):
+                tokens = btext.split(" ")
+                classTokens = Klass.split(" ")
+                
+                while tokens[0] == classTokens[0]:
+                    tokens.pop(0)
+                    classTokens.pop(0)
+                    
+                
+                ClassNames.append(" ".join(classTokens))
+                
+        return ClassNames
+    
     def do_delRel(self, args):
         """Accepts a single parent class name followed by a list of child class names separated by commas and removes relationships from parents to children in database.
     Usage: delRel <class_name>, <relationship1>, <relationship2>, ... , <relationshipN>
@@ -149,6 +291,35 @@ class replShell(cmd.Cmd):
                     print('Successfully deleted relationship from \'' + class_name + '\' to \'' + rel + '\'')
         else:
             print("Usage: delRel <class_name>, <relationship1>, <relationship2>, ... , <relationshipN>")
+            
+    def complete_delRel(self, text, line, begidx, endidx):
+        bline = core_parse(line[7:])
+        btext = bline[-1]
+        possibleMatches = []
+        
+        if len(bline) < 2:
+            allClasses = Class.query.all()
+            for Klass in allClasses:
+                possibleMatches.append(Klass.name)
+        else:
+            allRels = Relationship.query.filter(bline[0] == Relationship.from_name).all()
+            for Rel in allRels:
+                possibleMatches.append(Rel.to_name)
+        
+        Matches = []
+        for PM in possibleMatches:
+            if PM.startswith(btext):
+                tokens = btext.split(" ")
+                PMTokens = PM.split(" ")
+                
+                while tokens[0] == PMTokens[0]:
+                    tokens.pop(0)
+                    PMTokens.pop(0)
+                    
+                
+                Matches.append(" ".join(PMTokens))
+                
+        return Matches
 
 #################################### Other ############################################
 

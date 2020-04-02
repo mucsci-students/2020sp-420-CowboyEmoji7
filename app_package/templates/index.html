@@ -87,12 +87,10 @@
                         <input type="text" placeholder="getColor(), setColor(), ..." name="field[ class ][attrs]">
                         <input type="hidden" name="field[ class ][action]" value="Add">
                     </li>
-                    <li>
-                        <input type="radio" name="field[ class ][attr_type]" id="field" value="field">
-                        <label for="field">Fields</label>
-                        <input type="radio" name="field[ class ][attr_type]" id="method" value="method">
-                        <label for="method">Methods</label>
-                    </li>
+                    <input type="radio" name="field[ class ][attr_type]" id="field" value="field" checked>
+                    <label for="field">Fields</label>
+                    <input type="radio" name="field[ class ][attr_type]" id="method" value="method">
+                    <label for="method">Methods</label>
                 </ul>
             </span>
         </div>
@@ -108,6 +106,18 @@
                     <option class="relOptions" value="{{ child.name }}">{{ child.name }}</option>
                     {% endfor %}
                 </select>
+                <br>
+                <input type="radio" name="rel_type" id="gen" value="gen">
+                <label for="gen">Generalization</label>
+                <br>
+                <input type="radio" name="rel_type" id="agg" value="agg">
+                <label for="agg">Aggregation</label>
+                <br>
+                <input type="radio" name="rel_type" id="comp" value="comp">
+                <label for="comp">Composition</label>
+                <br>
+                <input type="radio" name="rel_type" id="none" value="none" checked>
+                <label for="none">None</label>
                 <br>
                 <button class="outline" type="submit" name="action" value="delete">Delete</button>
                 <button class="outline" type="submit" name="action" value="add">Add</button>
