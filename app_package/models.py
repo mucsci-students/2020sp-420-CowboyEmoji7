@@ -58,7 +58,6 @@ class AttributeSchema(Schema):
     attr_type = fields.String()
     date_created = fields.DateTime()
     class_name = fields.String()
-    
 
 class ClassSchema(Schema):
     """Meta model used by flask-marshmallow in jsonification."""

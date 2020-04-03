@@ -1,5 +1,7 @@
+"""Install file for requirements"""
 import subprocess, sys
 
+################################### Generic Requirements ##################################
 requirements = [
     "Click==7.0",
     "Flask==1.1.1",
@@ -16,6 +18,7 @@ requirements = [
     "parse==1.15.0"
 ]
 
+################################### OS Specific ##################################
 windows = [
     "pyreadline"
 ]
@@ -27,8 +30,10 @@ linux = [
 mac = [
     "gnureadline"
 ]
+##################################################################################
 
 def install(list):
+    """Helper function to pip install all requirements"""
     for thing in list:
         subprocess.check_call([sys.executable, "-m", "pip", "install", thing])
         

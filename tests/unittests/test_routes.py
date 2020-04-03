@@ -1,4 +1,4 @@
-"""Unit tests for core route functionality."""
+"""Unit tests for core route functionality (GUI)."""
 
 import io
 ################################ TEST INDEX ################################

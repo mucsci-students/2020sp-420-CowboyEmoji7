@@ -1,3 +1,4 @@
+"""Command stack which allows undo/redo functionality"""
 # could (should) be a singleton.
 
 
