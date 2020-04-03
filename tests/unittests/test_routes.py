@@ -82,44 +82,40 @@ def test_delete_no_name (test_client, init_database):
 def test_load_good (test_client, init_database):
     jFile = io.BytesIO(b"""[
     {
-        "class_attributes": [],
+        "class_attributes": [
+            {
+                "attr_type": "field",
+                "attribute": "please help",
+                "class_name": "Friendship ended with SQLALCHEMY-MARSHMALLOW",
+                "date_created": "2020-04-03T03:10:40.883665"
+            }
+        ],
         "class_relationships": [],
-        "date_created": "2020-02-19T21:22:18.116981",
-        "name": "Plane",
-        "x": 542,
-        "y": 514
-    },
-    {
-        "class_attributes": [],
-        "class_relationships": [],
-        "date_created": "2020-02-19T21:22:18.116981",
-        "name": "pardner",
-        "x": 285,
-        "y": 201
+        "date_created": "2020-04-03T03:09:38.770317",
+        "name": "Friendship ended with SQLALCHEMY-MARSHMALLOW",
+        "x": 675,
+        "y": 42
     },
     {
         "class_attributes": [
             {
-                "attribute": "seven",
-                "class_name": "Howdy"
+                "attr_type": "method",
+                "attribute": "seriously though",
+                "class_name": "Now DEPRESSION is my best friend",
+                "date_created": "2020-04-03T03:11:00.813333"
             }
         ],
-        "class_relationships": [
-            {
-                "from_name": "Howdy",
-                "to_name": "Plane"
-            }
-        ],
-        "date_created": "2020-02-19T21:22:18.116981",
-        "name": "Howdy",
-        "x": 305,
-        "y": 413
+        "class_relationships": [],
+        "date_created": "2020-04-03T03:09:38.790341",
+        "name": "Now DEPRESSION is my best friend",
+        "x": 100,
+        "y": 74
     }
-    ]""")
+]""")
     response = test_client.post('/load/', data=dict(file=(jFile, 'temp.json')), content_type='multipart/form-data', follow_redirects=True)
-    assert b"Howdy" in response.data
-    assert b"pardner" in response.data
-    assert b"Plane" in response.data
+    assert b"Friendship ended" in response.data
+    assert b"please help" in response.data
+    assert b"DEPRESSION" in response.data
 
 def test_load_invalid_json_attributes (test_client, init_database):
     jFile = io.BytesIO(b"""[
@@ -295,7 +291,7 @@ def test_add_one_relationship_but_its_for_a_class_that_doesnt_exist(test_client,
 def test_delete_a_relationship_that_didnt_exist_in_the_first_place(test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass1 TestClass2'), follow_redirects=True)
     response = test_client.post('/manipRelationship/', data=dict(class_name='TestClass2', relationship=['TestClass69'], rel_type="agg", action="delete"), follow_redirects=True)
-    assert b"ERROR: Unable to delete relationship from" in response.data
+    assert b"ERROR: No such relationship from" in response.data
 
 def test_manip_relationship_invalid_args (test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass1, TestClass2'), follow_redirects=True)

@@ -12,7 +12,7 @@ def core_add(class_name):
     try:
         if "'" in class_name or '"' in class_name:
             return 1
-        new_class = Class(name=class_name)
+        new_class = Class(name=class_name, x=0, y=0)
         db.session.add(new_class)
         db.session.commit()
         return 0
@@ -124,7 +124,8 @@ def core_load(data):
             for attr in element["class_attributes"]:
                 newAttr = Attribute(
                     attribute=attr["attribute"],
-                    class_name=attr["class_name"]
+                    class_name=attr["class_name"],
+                    attr_type=attr["attr_type"]
                 )
                 db.session.add(newAttr)
 
@@ -132,7 +133,8 @@ def core_load(data):
             for rel in element["class_relationships"]:
                 newRel = Relationship(
                     from_name=rel["from_name"],
-                    to_name=rel["to_name"]
+                    to_name=rel["to_name"],
+                    rel_type=rel["rel_type"]
                 )
                 db.session.add(newRel)
 
