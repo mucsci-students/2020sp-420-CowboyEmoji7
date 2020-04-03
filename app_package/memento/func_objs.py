@@ -69,12 +69,12 @@ class delete_class(Command):
         result = core_add(self.className)
         if result == 0:
             for attr in self.attributes:
-                core_add_attr(self.className, attr.attribute)
+                core_add_attr(self.className, attr.attribute, attr.attr_type)
             print(self.relationships)
             for rel in self.relationships:
                 print(rel.from_name)
                 
-                core_add_rel(rel.from_name, rel.to_name)
+                core_add_rel(rel.from_name, rel.to_name, rel.rel_type)
         
             class_ = Class.query.get_or_404(self.className)
             class_.x = self.xPos
@@ -88,6 +88,8 @@ class delete_class(Command):
         class_ = Class.query.get_or_404(self.className)
         self.xPos = class_.x
         self.yPos = class_.y
+        self.attributes = Attribute.query.filter(self.className == Attribute.class_name).all()
+        self.relationships = Relationship.query.filter(self.className == Relationship.from_name).all()
         return core_delete(self.className)
 
 
