@@ -389,9 +389,10 @@ class replShell(cmd.Cmd):
                     listStr += listStrMethods
             
         relationships = Relationship.query.order_by(Relationship.from_name).all()
-        listStr += "Relationships:\n"
-        for rel in relationships:
-            listStr += "  " + rel.from_name + " -> " + rel.to_name + " (" + rel.rel_type + ")\n"
+        if len(relationships) > 0:
+            listStr += "Relationships:\n"
+            for rel in relationships:
+                listStr += "  " + rel.from_name + " -> " + rel.to_name + " (" + rel.rel_type + ")\n"
       
         print(listStr)
 
