@@ -12,7 +12,7 @@ def core_add(class_name):
     try:
         if "'" in class_name or '"' in class_name:
             return 1
-        new_class = Class(name=class_name)
+        new_class = Class(name=class_name, x=0, y=0)
         db.session.add(new_class)
         db.session.commit()
         return 0
@@ -124,7 +124,8 @@ def core_load(data):
             for attr in element["class_attributes"]:
                 newAttr = Attribute(
                     attribute=attr["attribute"],
-                    class_name=attr["class_name"]
+                    class_name=attr["class_name"],
+                    attr_type=attr["attr_type"]
                 )
                 db.session.add(newAttr)
 
@@ -132,7 +133,8 @@ def core_load(data):
             for rel in element["class_relationships"]:
                 newRel = Relationship(
                     from_name=rel["from_name"],
-                    to_name=rel["to_name"]
+                    to_name=rel["to_name"],
+                    rel_type=rel["rel_type"]
                 )
                 db.session.add(newRel)
 
@@ -142,7 +144,7 @@ def core_load(data):
         db.session.rollback()
         return 1
 
-def core_add_attr(pName, attr):
+def core_add_attr(pName, attr, attrType):
     """Adds an attribute to class with given name in the database
 
     Returns 0 on success, 1 on failure
@@ -151,9 +153,19 @@ def core_add_attr(pName, attr):
     try:
         if Class.query.get(pName) is None:
             return 1
-        new_attr = Attribute(attribute=attr, class_name=pName)
+        new_attr = Attribute(attribute=attr, class_name=pName, attr_type=attrType)
         db.session.add(new_attr)
         db.session.commit()
+        
+        parsedType = parseType(attr)
+        if parsedType is not None:
+            # link it to the related class if applicable
+            ClassList = Class.query.all()
+            for CurrentClass in ClassList:
+                if CurrentClass.name == parsedType:
+                    core_add_rel(pName, CurrentClass.name, "agg")
+                    break
+        
         return 0
     except:
         db.session.rollback()
@@ -190,12 +202,22 @@ def core_update_attr(pName, attr, newAttr):
 
         attr_to_update.attribute = newAttr
         db.session.commit()
+        
+        parsedType = parseType(newAttr)
+        if parsedType is not None:
+            # link it to the related class if applicable
+            ClassList = Class.query.all()
+            for CurrentClass in ClassList:
+                if CurrentClass.name == parsedType:
+                    core_add_rel(pName, CurrentClass.name, "agg")
+                    break
+                
         return 0
     except:
         db.session.rollback()
         return 1
 
-def core_add_rel(from_name, to_name):
+def core_add_rel(from_name, to_name, rel_type):
     """Adds a relationship to class with given name in the database
 
     Returns 0 on success, 1 on failure
@@ -204,7 +226,7 @@ def core_add_rel(from_name, to_name):
     try:
         if (Class.query.get(from_name) is None or Class.query.get(to_name) is None):
             return 1
-        new_rel = Relationship(from_name=from_name, to_name=to_name)
+        new_rel = Relationship(from_name=from_name, to_name=to_name, rel_type=rel_type)
         db.session.add(new_rel)
         db.session.commit()
         return 0
@@ -231,6 +253,7 @@ def core_del_rel(from_name, to_name):
         return 1
 
 def core_parse (string):
+    """Parses useful tokens for data manipulation from a string list with comma delimiters"""
     parensUnmatched = 0
     stringBuf = ""
     listBuf = []
@@ -257,6 +280,25 @@ def core_parse (string):
     return listBuf
 
 def removeTrailingWhitespace(string):
+    """Helper function which removes trailing whitespace from a string"""
     while (string[-1] == ' ' or string[-1] == '\t'):
         string = string[0:-1]
     return string
+
+def parseType(input):
+    """Parses type from a string attribute in the following formats:
+      <type> <name>
+      <name>:<type>"""
+    # remove the crap in parens
+    front = input.split('(', 1)[0]
+    tipe = ""
+    try:
+        # if it uses a colon
+        tipe = front.split(':',1)[1]
+    except:
+        # if it doesn't use a colon
+        tipe = front.split(' ')[0]
+    # if it doesn't have a type
+    if tipe == front:
+        tipe = None
+    return(tipe)

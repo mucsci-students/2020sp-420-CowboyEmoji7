@@ -18,7 +18,7 @@ Install all dependencies:
     - Navigate to the main project folder ('220 cowboy')
     - Activate environment.
         - Type 'source env/bin/activate'
-    - Type 'pip install -r requirements.txt' to install libraries
+    - Type 'python3 install.py' to install libraries
 
 * Both operations below assume you are inside of the activated enviroment *
 
@@ -37,7 +37,7 @@ Install all dependencies:
     - Navigate to the main project folder ('220 cowboy')
     - Activate environment.
         - Type 'env\Scripts\activate'
-    - Type 'pip install -r requirements.txt' to install libraries
+    - Type 'python install.py' to install libraries
 
 * Both operations below assume you are inside of the activated enviroment *
 

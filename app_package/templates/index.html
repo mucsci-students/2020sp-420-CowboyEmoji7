@@ -16,55 +16,84 @@
             <button type="submit" id="DeleteClass" class="btn" name="delete" value="{{ class.name }}" onclick="return confirm('Are you sure you want to delete this class?')"><i class="fa fa-close"></i></button>
         </form>
     </div>
-    <div id="EditClass">
+    <div class="EditClass">
         <button class="EditButton" onclick="editClass('{{ class.name }}')"><i class="fa fa-pencil" aria-hidden="true"></i></button>
     </div>
-    <h2 class="className">
-        <span  id="class-{{ class.name }}">
-            {{ class.name }}
-        </span>
-    </h2>
-    <div class="classRename">
-        <form action="/update/" method="POST">
-            <input type="hidden" name="old_name" value="{{ class.name }}">
-            <input type="hidden" id="classtext-{{ class.name }}" name="new_name" required placeholder="{{ class.name }}">
-            <input type="hidden" class="outline" id="classupd-{{ class.name }}" value="Rename">
-        </form>
-    </div>
-    <div id="Attributes">
-        <hr class="divider">
-        <h4 class="headings">Attributes</h4>
-        <ul class="attributeList">
-
-            {% for attr in attributes %}
-
-            {% if attributes|length < 1 %}
-            <li>No Attributes</li>
-            {% else %}
-
-            {% if attr.class_name == class.name %}
-            <li>
-                <form action="/manipAttribute/" method="POST">
-                    <input type="hidden" name="class_name" value="{{ class.name }}">
-                    <input type="hidden" name="attribute" value="{{ attr.attribute }}">
-                    <input type="hidden" class="attrtext-{{ class.name }}" name="new_attribute" required value="{{ attr.attribute }}">
-                    <span class="attrname-{{ class.name }}">{{ attr.attribute }}</span>
-                    <input type="hidden" class="attrupd-{{ class.name }} outline" name="action" value="Rename">
-                    <input type="hidden" class="attrdel-{{ class.name }} outline" name="action" value="Delete">
-                </form>
-            </li>
-            {% endif %}
-            {% endif %}
+    <form action="/manipCharacteristics/" method="POST">
+        <div class="SaveClass">
+            <button type="submit" style="display:none;" id="attrsave-{{ class.name }}" class="SaveButton"><i class="fa fa-save" aria-hidden="true"></i></button>
+        </div>
+        <div class="className">
+            <h2 class="className">
+                <span  id="class-{{ class.name }}" style="display:block;">{{ class.name }}</span>
+            </h2>
+            <input type="hidden" name="field[ super ][class_name]" value="{{ class.name }}">
+            <input type="hidden" name="field[ super ][new_name]" value="{{ class.name }}" id="classtext-{{ class.name }}">
+            <input type="hidden" name="field[ super ][action]" value="RenameClass">
+        </div>
+        <div id="Attributes">
+            {% for attr in attributes if attr.class_name == class.name %}
+                {% if loop.first %}
+                    <hr class="divider">
+                {% endif %}
             {% endfor %}
-            <span id="addAttributeForm-{{ class.name }}" onclick="addAttribute('attInput-{{ class.name }}')" style="display: none; padding-right: 10px; padding-top: 5px;">
-                <form action="/addAttribute/" method="POST">
-                    <input type="hidden" name="class_name" value="{{ class.name }}">
-                    <input type="text" id="attInput-{{ class.name }}" style="width: 70%;" placeholder="getColor(), setColor(), ..." name="attribute" required>
-                    <button id="AddAttribute" type="submit">Add</button> 
-                </form>
+            {% for attr in attributes if attr.class_name == class.name and attr.attr_type == 'field' %}
+                {% if loop.first %}
+                    <h3 class="headings">Fields</h3>
+                {% endif %}
+            {% endfor %}
+            <ul class="attributeList">
+                {% for attr in attributes if attr.class_name == class.name and attr.attr_type == 'field' %}
+                    <li id="attr-{{ class.name }}-{{ attr.attribute }}">
+                        <input type="hidden" name="field[{{ attr.attribute }}][class_name]" value="{{ class.name }}">
+                        <input type="hidden" name="field[{{ attr.attribute }}][attribute]" value="{{ attr.attribute }}">
+                        <input type="hidden" class="attrtext-{{ class.name }}" name="field[{{ attr.attribute }}][new_attribute]" value="{{ attr.attribute }}">
+                        <span class="attrname-{{ class.name }}">{{ attr.attribute }}</span>
+
+                        <label class="container container-{{ class.name }}" style="display:none;">
+                            <input type="checkbox" class="attrdel-{{ class.name }}" name="field[{{ attr.attribute }}][action]" value="Delete">
+                            <i class="fa fa-trash unchecked" title="Delete"></i>
+                            <i class="fa fa-trash checked" title="Cancel"></i>                            
+                        </label>
+                    </li>
+                {% endfor %}
+            </ul>
+            {% for attr in attributes if attr.class_name == class.name and attr.attr_type == 'method' %}
+                {% if loop.first %}
+                    <h3 class="headings">Methods</h3>
+                {% endif %}
+            {% endfor %}
+            <ul class="attributeList">
+                {% for attr in attributes if attr.class_name == class.name and attr.attr_type == 'method' %}
+                    <li id="attr-{{ class.name }}-{{ attr.attribute }}">
+                        <input type="hidden" name="field[{{ attr.attribute }}][class_name]" value="{{ class.name }}">
+                        <input type="hidden" name="field[{{ attr.attribute }}][attribute]" value="{{ attr.attribute }}">
+                        <input type="hidden" class="attrtext-{{ class.name }}" name="field[{{ attr.attribute }}][new_attribute]" value="{{ attr.attribute }}">
+                        <span class="attrname-{{ class.name }}">{{ attr.attribute }}</span>
+                        <label class="container container-{{ class.name }}" style="display:none;">
+                            <input type="checkbox" class="attrdel-{{ class.name }}" name="field[{{ attr.attribute }}][action]" value="Delete">
+                            <i class="fa fa-trash unchecked" title="Delete"></i>
+                            <i class="fa fa-trash checked" title="Cancel"></i>                            
+                        </label>
+                    </li>
+                {% endfor %}
+            </ul>
+             <span id="addAttributeForm-{{ class.name }}" style="display: none; padding-top: 5px; padding-bottom: 5px;">
+                <input type="hidden" name="field[ class ][class_name]" value="{{ class.name }}">
+                <h4 class="headings">Add Attributes</h4>
+                <ul class="addAttrs">
+                    <li>
+                        <input type="text" placeholder="int count, getCount:int(), ..." name="field[ class ][attrs]">
+                        <input type="hidden" name="field[ class ][action]" value="Add">
+                    </li>
+                    <input type="radio" name="field[ class ][attr_type]" id="field" value="field" checked>
+                    <label for="field">Fields</label>
+                    <input type="radio" name="field[ class ][attr_type]" id="method" value="method">
+                    <label for="method">Methods</label>
+                </ul>
             </span>
-        </ul>
-    </div>
+        </div>
+    </form>
     <div id="Relationships-{{ class.name }}" class="RelationshipDiv" style="display: none;">
         <hr class="divider">
         <h4 class="headings">Relationships</h4>
@@ -76,6 +105,18 @@
                     <option class="relOptions" value="{{ child.name }}">{{ child.name }}</option>
                     {% endfor %}
                 </select>
+                <br>
+                <input type="radio" name="rel_type" id="gen" value="gen">
+                <label for="gen">Generalization</label>
+                <br>
+                <input type="radio" name="rel_type" id="agg" value="agg">
+                <label for="agg">Aggregation</label>
+                <br>
+                <input type="radio" name="rel_type" id="comp" value="comp">
+                <label for="comp">Composition</label>
+                <br>
+                <input type="radio" name="rel_type" id="none" value="none" checked>
+                <label for="none">None</label>
                 <br>
                 <button class="outline" type="submit" name="action" value="delete">Delete</button>
                 <button class="outline" type="submit" name="action" value="add">Add</button>
