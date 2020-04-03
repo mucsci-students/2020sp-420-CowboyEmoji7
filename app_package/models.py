@@ -3,6 +3,7 @@
 from app_package import db, ma
 from datetime import datetime
 from sqlalchemy.orm import relationship
+from marshmallow import INCLUDE, fields, Schema
 
 
 class Class(db.Model):
@@ -45,19 +46,24 @@ class Relationship(db.Model):
     parent_class = relationship("Class", back_populates="class_relationships", foreign_keys=[from_name, to_name], primaryjoin='Class.name==Relationship.from_name')
     
 
-class ClassSchema(ma.ModelSchema):
+class RelationshipSchema(Schema):
     """Meta model used by flask-marshmallow in jsonification."""
-    
-    class Meta:
-        model = Class
+    from_name = fields.String()
+    to_name = fields.String()
+    rel_type = fields.String()
 
-class RelationshipSchema(ma.ModelSchema):
-    member_of = ma.Nested(ClassSchema)
-    class Meta:
-        fields = ("from_name", "to_name", "rel_type")
-        model = Relationship
+class AttributeSchema(Schema):
+    """Meta model used by flask-marshmallow in jsonification."""
+    attribute = fields.String()
+    attr_type = fields.String()
+    date_created = fields.DateTime()
+    class_name = fields.String()
 
-class AttributeSchema(ma.ModelSchema):
-    member_of = ma.Nested(ClassSchema)
-    class Meta:
-        model = Attribute
+class ClassSchema(Schema):
+    """Meta model used by flask-marshmallow in jsonification."""
+    name = fields.String()
+    date_created = fields.DateTime()
+    x = fields.Int()
+    y = fields.Int()
+    class_attributes = fields.Nested(AttributeSchema, many=True)
+    class_relationships = fields.Nested(RelationshipSchema, many=True)

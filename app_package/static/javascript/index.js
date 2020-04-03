@@ -43,6 +43,7 @@ jsPlumb.ready(function() {
         }
     });
 
+    // Ensure lines remain useful when window resized or zoomed
     window.onresize = function (){
         jsPlumb.repaintEverything();
     };
@@ -306,6 +307,7 @@ function ensureValidCoords(name){
     }
 }
 
+// Prevent overlap of dragged elements when dropped
 function ensureNoOverlap(name, lastMove){
     let el = document.getElementById(name);
     let rect1 = el.getBoundingClientRect();
