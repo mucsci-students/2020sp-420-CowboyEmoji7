@@ -144,7 +144,8 @@ class replShell(cmd.Cmd):
         if len(argList) > 1:
             class_name = argList.pop(0)
             for attr in argList:
-                delAttrCmd = del_attr(class_name, attr)
+                attr_to_del = Attribute.query.get({"class_name":class_name, "attribute":attr})
+                delAttrCmd = del_attr(class_name, attr, attr_to_del.attr_type)
                 if cmd_stack.execute(delAttrCmd):
                     print('ERROR: Unable to delete attribute \'' + attr + '\'')
                 else:
@@ -289,7 +290,8 @@ class replShell(cmd.Cmd):
         if len(argList) > 1:
             class_name = argList.pop(0)
             for rel in argList:
-                delRelCmd = del_rel(class_name, rel)
+                rel_to_del = Relationship.query.get({"from_name":class_name, "to_name":rel})
+                delRelCmd = del_rel(class_name, rel, rel_to_del.rel_type)
                 if cmd_stack.execute(delRelCmd):
                     print('ERROR: Unable to delete relationship from \'' + class_name + '\' to \'' + rel + '\'')
                 else:
