@@ -4,7 +4,7 @@
     [X] add             [] redo
     [X] delete          [X] fields
     [X] edit            [X] methods
-    [X] relationships   [] save
+    [] relationships    [] save
     [] undo             [] load
 """
 
@@ -367,6 +367,48 @@ def test_delAttr_none(capsys):
 
     captured = captureList(capsys)
     assert captured.out == "test\n  > Fields: onefield\nmorestuff\n\n"
+
+################################ TEST editAttr ##############################
+def test_editAttr_fields(capsys):
+    captured = attribute_frame(capsys)
+    app.do_addAttr("test, field, onefield")
+    captured = capsys.readouterr()
+
+    app.do_editAttr("test, onefield, twofield")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully updated attribute 'onefield' to 'twofield'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test\n  > Fields: twofield\nmorestuff\n\n"
+
+def test_editAttr_methods(capsys):
+    captured = attribute_frame(capsys)
+    app.do_addAttr("morestuff, method, onemethod")
+    captured = capsys.readouterr()
+
+    app.do_editAttr("morestuff, onemethod, twomethod")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully updated attribute 'onemethod' to 'twomethod'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test\nmorestuff\n  > Methods: twomethod\n\n"
+
+def test_editAttr_none(capsys):
+    captured = attribute_frame(capsys)
+    # First test editing a nonexistent attribute
+    app.do_editAttr("test, thisdoesntexist, stilldoesnt")
+    captured = capsys.readouterr()
+    assert captured.out == "ERROR: Unable to update attribute 'thisdoesntexist' to 'stilldoesnt'\n"
+
+    # Now test giving an attribute no name
+    app.do_addAttr("morestuff, field, yeet")
+    captured = capsys.readouterr()
+    app.do_editAttr("morestuff, yeet, ")
+    captured = capsys.readouterr()
+    assert captured.out == "Usage: editAttr <class_name>, <old_attribute>, <new_attribute>\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test\nmorestuff\n  > Fields: yeet\n\n"
 
 ############################### RELATIONSHIPS ###############################
 ################################ TEST addRel ################################
