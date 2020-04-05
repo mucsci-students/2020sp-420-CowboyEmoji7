@@ -43,6 +43,7 @@ jsPlumb.ready(function() {
         }
     });
 
+    // Ensure lines remain useful when window resized or zoomed
     window.onresize = function (){
         jsPlumb.repaintEverything();
     };
@@ -238,6 +239,35 @@ function closeFlashMsg(){
     this.style.display = "none";
 }
 
+//agg-> Open Diamond 
+//comp-> filled diamond
+//gen-> empty arrow 
+//none-> plain arrow
+
+//Get overlay returns the an array for the overlay for relationship types
+function getOverlay(relType){
+    switch(relType){
+        case "agg": 
+            return ["Label", {location:1, width:15, length:15, "label":"◇", cssClass:"labelStyle"}];
+        case "comp":
+            return ["Diamond", {location:1, width:18, length:18}];
+        case "gen":
+            return ["PlainArrow", {location:1, width:15, length:15}];
+        default: 
+            return ["Arrow", {location:1, width:15, length:15, foldback:.25}];
+    }
+}
+
+//getConnector is used to get the connector becuase for the agg relationship I needed
+// to give the non-filled diamond a gap from the class
+function getConnector(relType, from, to){
+    if(relType == "agg"){
+        return [(from != to ? "Flowchart" : "Bezier"),{gap:[0,11]}];
+    }else{
+        return (from != to ? "Flowchart" : "Bezier");
+    }
+}
+  
 // Get relationship data from database and use jsPlumb to draw lines
 function renderLines(){
     let xReq = new XMLHttpRequest();
@@ -247,15 +277,16 @@ function renderLines(){
                 let data = JSON.parse(this.responseText);
                 for(var i = 0; i < data.length; ++i) {
                     let from = data[i].from_name;
+                    let relType = data[i].rel_type;
                     let to = data[i].to_name;
                     jsPlumb.connect({
                         source:from, 
                         target:to,
                         anchor:"Continuous",
                         endpoint:"Blank",
-                        connector:(from != to ? "Flowchart" : "Bezier"),
+                        connector:getConnector(relType, from, to),
                         paintStyle:{ stroke: '#6B6E70', strokeWidth:2 },
-                        overlays:[["PlainArrow", {location:1, width:10, length:10}]]
+                        overlays:[getOverlay(relType)]
                     });
                 }
             }
@@ -276,6 +307,7 @@ function ensureValidCoords(name){
     }
 }
 
+// Prevent overlap of dragged elements when dropped
 function ensureNoOverlap(name, lastMove){
     let el = document.getElementById(name);
     let rect1 = el.getBoundingClientRect();

@@ -155,7 +155,8 @@ def update(oldName, newName):
 
 def delAttribute(name, attr):
     """Helper to remove attributes from class."""
-    delAttrCmd = del_attr(name, attr)
+    attr_to_del = Attribute.query.get({"class_name":name, "attribute":attr})
+    delAttrCmd = del_attr(name, attr, attr_to_del.attr_type)
     if cmd_stack.execute(delAttrCmd):
         flash("ERROR: Unable to remove attribute " + attr + " from " + name, 'error')
 
@@ -186,10 +187,10 @@ def manipRelationship():
         fro = request.form['class_name']
         to = request.form.getlist('relationship')
         action = request.form['action']
-        rel_type = request.form['rel_type']
         if (action == 'delete'):
             delRelationship(fro, to)
         elif (action == 'add'):
+            rel_type = request.form['rel_type']
             addRelationship(fro, to, rel_type)
     except:
         flash("Invalid arguments, try again.", 'error')
@@ -207,10 +208,15 @@ def addRelationship(fro, to, rel_type):
 
 def delRelationship(fro, to):
     """Helper function to remove relationships from class."""
+    print(getRelationship())
     for child in to:
-        delRelCmd = del_rel(fro, child)
-        if cmd_stack.execute(delRelCmd):
-            flash("ERROR: Unable to delete relationship from " + fro + " to " + child, 'error')
+        rel_to_del = Relationship.query.get({"from_name":fro, "to_name":child})
+        if rel_to_del is None:
+            flash("ERROR: No such relationship from " + fro + " to " + child, 'error')
+        else:
+            delRelCmd = del_rel(fro, child, rel_to_del.rel_type)
+            if cmd_stack.execute(delRelCmd):
+                flash("ERROR: Unable to delete relationship from " + fro + " to " + child, 'error')
 
 
 @app.route("/getRelationships/", methods=['POST'])
@@ -226,11 +232,13 @@ def getRelationship():
 
 @app.route("/undo/", methods=['POST'])
 def undo():
+    """Deals with requests from GUI to undo the last command executed by the user"""
     cmd_stack.undo()
     return redirect('/')
 
 
 @app.route("/redo/", methods=['POST'])
 def redo():
+    """Deals with requests from GUI to redo the last command undone by the user"""
     cmd_stack.redo()
     return redirect('/')

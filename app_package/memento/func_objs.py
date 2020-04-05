@@ -69,12 +69,12 @@ class delete_class(Command):
         result = core_add(self.className)
         if result == 0:
             for attr in self.attributes:
-                core_add_attr(self.className, attr.attribute)
+                core_add_attr(self.className, attr.attribute, attr.attr_type)
             print(self.relationships)
             for rel in self.relationships:
                 print(rel.from_name)
                 
-                core_add_rel(rel.from_name, rel.to_name)
+                core_add_rel(rel.from_name, rel.to_name, rel.rel_type)
         
             class_ = Class.query.get_or_404(self.className)
             class_.x = self.xPos
@@ -88,6 +88,8 @@ class delete_class(Command):
         class_ = Class.query.get_or_404(self.className)
         self.xPos = class_.x
         self.yPos = class_.y
+        self.attributes = Attribute.query.filter(self.className == Attribute.class_name).all()
+        self.relationships = Relationship.query.filter(self.className == Relationship.from_name).all()
         return core_delete(self.className)
 
 
@@ -125,7 +127,7 @@ class add_attr(Command):
         return core_add_attr(self.className, self.attrName, self.attrType)
 
     def undo(self):
-        return core_del_attr(self.className, self.attrName, self.attrType)
+        return core_del_attr(self.className, self.attrName)
 
     def redo(self):
         return core_add_attr(self.className, self.attrName, self.attrType)
@@ -135,16 +137,18 @@ class del_attr(Command):
     """Command class for core_del_attr.  Accepts a class name and the name of an attribute to remove"""
     className = ''
     attrName = ''
+    attrType = ''
 
-    def __init__(self, className, attrName):
+    def __init__(self, className, attrName, attrType):
         self.className = className
         self.attrName = attrName
+        self.attrType = attrType
 
     def execute(self):
         return core_del_attr(self.className, self.attrName)
 
     def undo(self):
-        return core_add_attr(self.className, self.attrName)
+        return core_add_attr(self.className, self.attrName, self.attrType)
 
     def redo(self):
         return core_del_attr(self.className, self.attrName)
@@ -196,10 +200,12 @@ class del_rel(Command):
     """Command class for core_del_rel.  Accepts a class name and the name of the child"""
     parentName = ''
     childName = ''
+    relType = ''
 
-    def __init__(self, parentName, childName):
+    def __init__(self, parentName, childName, relType):
         self.parentName = parentName
         self.childName = childName
+        self.relType = relType
 
     def execute(self):
         return core_del_rel(self.parentName, self.childName)
