@@ -1,6 +1,65 @@
+# Installation
+
+### Python:
+- Make sure that python3 is installed on your computer
+- Also make sure that python is located as a path in your enviroment variables
+
+### Install virtualenv:
+- Type `pip install virtualenv`
+
+### Create a virtual environment (only done once):
+- Navigate to directory root
+- Type `virtualenv env`
+
+**Here is where different operating systems require different commands.**
+- [Windows Installation](#windows)
+- [Linux/Mac Installation](#linux-or-mac)
+
+## LINUX or MAC
+
+### Install all dependencies:
+- Navigate to the main project folder (*'220 cowboy'*)
+- Activate environment.
+	- Type `source env/bin/activate`
+- Type `python3 install.py` to install libraries
+
+***Both operations below assume you are inside of the activated enviroment***
+
+### To clear and create a new Database: 
+- Note: A database is created automatically in running the application if one does not already exist. There is no need to run this command unless you have a database and want a new, empty one.
+- Type `python3 cleardb.py`
+- If a warning containing (*SQLALCHEMY_TRACK_MODIFICATIONS*) is thrown it can be safely ignored
+
+### To run the application:
+- `python3 run.py`
+- If you would like the web view, type `web` in the console that appears
+
+## WINDOWS
+
+### Install all dependencies:
+- Navigate to the main project folder (*'220 cowboy'*)
+- Activate environment.
+	- Type `env\Scripts\activate`
+- Type `python install.py` to install libraries
+
+***Both operations below assume you are inside of the activated enviroment***
+
+### To clear and create a new Database:
+- Note: A database is created automatically in running the application if one does not already exist. There is no need to run this command unless you have a database and want a new, empty one. 
+- `python cleardb.py`
+- If a warning containing (*SQLALCHEMY_TRACK_MODIFICATIONS*) is thrown it can be safely ignored
+
+### To run the application:
+- python run.py
+- If you would like the web view, type 'web' in the console that appears
+
 # Commands
 
-  
+## Graphical Interface
+A graphical interface exists which allows you to do everything the command line interface does, as well as click and drag classes to give them position and create a useful UML diagram.
+
+*Use the 'web' command to open this interface type in your browser.*
+
 ## Class
 
 - add
@@ -71,3 +130,6 @@
 	- Playback commands from a file:  PLAYBACK rose.cmd
 - record
 	- Save future commands to filename:  RECORD rose.cmd
+
+# Advanced
+Database contents are saved and loaded using the JSON file format. It is entirely legal to edit an existing save file with other data and load that data into the system. Just be careful! The JSON must adhere to the specific format of a save file to be properly loaded.
