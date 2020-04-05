@@ -5,17 +5,17 @@
 
 - add
 	- Accepts a single class name OR a list separated by commas and adds them to the database.
-	    Usage: add <class_name1>, <class_name2>, ... , <class_nameN>
+	- Usage: add <class_name1>, <class_name2>, ... , <class_nameN>
 
 - delete
 	- Accepts a single class name OR a list separated by commas and removes them from the database.
-	    Usage: delete <class_name1>, <class_name2>, ... , <class_nameN>
+	- Usage: delete <class_name1>, <class_name2>, ... , <class_nameN>
 - edit
 	- Accepts a single class name followed by a replacement name, separated by commas, and changes instances of old name in database with new name.
-	   Usage: edit <old_name>, <new_name>
+	- Usage: edit <old_name>, <new_name>
 - list
 	- Lists every class in the database.
-	    Usage: list
+	- Usage: list
 	    
 ## Attributes
 
