@@ -3,3 +3,4 @@ app_package/database.db
 env
 .vscode
 **/*.pyc
+.coverage
