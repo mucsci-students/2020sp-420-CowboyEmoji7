@@ -73,6 +73,16 @@
                     </form>
                 </span>
             </li>
+            <li><button id="ExportButton" class="non-active" onclick="openExportBox()"><i class="fa fa-clone"></i> Export</button>
+                <span class="exportPopup" id="exportForm">
+                    <form action="" class="form-container" method="POST" onsubmit="closeExportBox()">
+                        <h1>Export File</h1>
+                        <input type="text" placeholder="Enter File Name" id="exportInput" name="export_name" required>
+                        <button type="submit" class="btn exportButton">Export</button>
+                        <button id="DeleteSave" class="btn" onclick="closeExportBoxBeforeSubmit()"><i class="fa fa-close"></i></button>
+                    </form>
+                </span>
+            </li>
         </ul>
     </div>
     <div class="main-body">

@@ -15,6 +15,9 @@ const saveButton = document.getElementById('SaveButton');
 const addClassForm = document.getElementById('AddClassForm');
 const classInput = document.getElementById('ClassInput');
 const addButton = document.getElementById('AddButton');
+const exportForm = document.getElementById('exportForm');
+const exportInput = document.getElementById('exportInput');
+const exportButton = document.getElementById('ExportButton');
 
 mainBody.style.width = screen.availWidth;
 
@@ -61,6 +64,8 @@ function navBarAction(){
     }
     else if (addClassForm.style.display == "block") {
         closeAddClassBeforeSubmit();
+    }else if(exportForm.style.display == "block"){
+        closeExportBoxBeforeSubmit();
     }
 }
 
@@ -129,13 +134,14 @@ function editClass(name) {
 }
 
 // Displays "Add Class" popup, closes all other popups
-// TODO: Utilize existing functions, rather than copy-pasting
 function addClass() {
     if (loadForm.style.display == "block") {
         closeLoadBoxBeforeSubmit();
     }
     else if (saveForm.style.display == "block") {
         closeSaveBoxBeforeSubmit();
+    }else if(exportForm.style.display == "block"){
+        closeExportBoxBeforeSubmit();
     }
     classInput.value = "";
     addClassForm.style.display = "block";
@@ -151,7 +157,6 @@ function closeAddClass() {
 }
 
 // Closes "Add Class" popup, clears field
-// TODO: This and "closeAddClass" should probably be one function
 function closeAddClassBeforeSubmit() {
     classInput.value = "";
     addClassForm.style.display = "none";
@@ -160,13 +165,14 @@ function closeAddClassBeforeSubmit() {
 }
 
 // Displays "Save File" popup, closes all other popups
-// TODO: Utilize existing functions, rather than copy-pasting
 function openSaveBox() {
     if (addClassForm.style.display == "block") {
         closeAddClassBeforeSubmit();
     }
     else if (loadForm.style.display == "block") {
         closeLoadBoxBeforeSubmit();
+    }else if(exportForm.style.display == "block"){
+        closeExportBoxBeforeSubmit();
     }
     saveInput.value = "";
     saveForm.style.display = "block";
@@ -182,7 +188,6 @@ function closeSaveBox() {
 }
 
 // Closes "Save File" popup, clears field
-// TODO: This and "closeSaveBox" should probably be one function
 function closeSaveBoxBeforeSubmit() {
     saveInput.value = "";
     saveForm.style.display = "none";
@@ -191,13 +196,14 @@ function closeSaveBoxBeforeSubmit() {
 }
 
 // Displays "Load File" popup, closes all other popups
-// TODO: Utilize existing functions, rather than copy-pasting
 function openLoadBox() {
     if (saveForm.style.display == "block") {
         closeSaveBoxBeforeSubmit();
     }
     else if (addClassForm.style.display == "block") {
         closeAddClassBeforeSubmit();
+    }else if(exportForm.style.display == "block"){
+        closeExportBoxBeforeSubmit();
     }
     loadInput.value = "";
     loadForm.style.display = "block";
@@ -213,12 +219,41 @@ function closeLoadBox() {
 }
 
 // Closes "Load File" popup, clears field
-// TODO: This and "closeLoadBox" should probably be one function
 function closeLoadBoxBeforeSubmit() {
     loadInput.value = "";
     loadForm.style.display = "none";
     loadButton.classList.remove("active");
     loadButton.classList.add("non-active");
+}
+
+// Displays "Export File" popup, closes all other popups
+function openExportBox(){
+    if (saveForm.style.display == "block") {
+        closeSaveBoxBeforeSubmit();
+    }else if (addClassForm.style.display == "block") {
+        closeAddClassBeforeSubmit();
+    }else if(loadForm.style.display == "block"){
+        closeLoadBoxBeforeSubmit();
+    }
+    exportInput.value = "";
+    exportForm.style.display = "block";
+    exportButton.classList.remove("non-active");
+    exportButton.classList.add("active");
+}
+
+// Closes "Export File" popup
+function closeExportBox(){
+    exportForm.style.display = "none";
+    exportButton.classList.remove("active");
+    exportButton.classList.add("non-active");
+}
+
+// Closes "Export File" popup, clears field
+function closeExportBoxBeforeSubmit(){
+    exportInput.value = "";
+    exportForm.style.display = "none";
+    exportButton.classList.remove("active");
+    exportButton.classList.add("non-active");
 }
 
 // Upon release of the draggable component this function will be called to update cords in 
