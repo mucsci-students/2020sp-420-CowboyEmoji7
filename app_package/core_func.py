@@ -304,5 +304,6 @@ def parseType(input):
     return(tipe)
 
 def core_clear():
+    """Clears all existing classes from the database."""
     db.drop_all()
     db.create_all()

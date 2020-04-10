@@ -23,12 +23,7 @@
 	- Type `source env/bin/activate`
 - Type `python3 install.py` to install libraries
 
-***Both operations below assume you are inside of the activated enviroment***
-
-### To clear and create a new Database: 
-- Note: A database is created automatically in running the application if one does not already exist. There is no need to run this command unless you have a database and want a new, empty one.
-- Type `python3 cleardb.py`
-- If a warning containing (*SQLALCHEMY_TRACK_MODIFICATIONS*) is thrown it can be safely ignored
+***The operation below assumes you are inside of the activated enviroment***
 
 ### To run the application:
 - `python3 run.py`
@@ -42,12 +37,7 @@
 	- Type `env\Scripts\activate`
 - Type `python install.py` to install libraries
 
-***Both operations below assume you are inside of the activated enviroment***
-
-### To clear and create a new Database:
-- Note: A database is created automatically in running the application if one does not already exist. There is no need to run this command unless you have a database and want a new, empty one. 
-- `python cleardb.py`
-- If a warning containing (*SQLALCHEMY_TRACK_MODIFICATIONS*) is thrown it can be safely ignored
+***The operation below assumes you are inside of the activated enviroment***
 
 ### To run the application:
 - python run.py
@@ -75,6 +65,9 @@ A graphical interface exists which allows you to do everything the command line 
 - list
 	- Lists every class in the database.
 	- Usage: list
+- clear
+	- Clears all existing classes from the database.
+	- Usage: clear
 	    
 ## Attributes
 

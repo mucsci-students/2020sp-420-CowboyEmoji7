@@ -337,6 +337,10 @@ class replShell(cmd.Cmd):
         app.run(port=5000, debug=False)
         
     def do_clear(self, args):
+        """Clears all existing classes from the database.
+    Usage: clear
+    """
+        
         print("Are you sure you want to clear?\nThis cannot be undone.\n(Y/N): ", end = '')
         while True:
             answer = input()
