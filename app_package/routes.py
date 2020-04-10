@@ -7,7 +7,7 @@ Contains routes through which requests from
 from app_package.models import Class, ClassSchema, Relationship, RelationshipSchema, Attribute
 from flask import render_template, json, url_for, request, redirect, flash, Response
 from app_package import app, db, cmd_stack
-from app_package.core_func import core_save, core_load, core_parse
+from app_package.core_func import core_save, core_load, core_parse, core_clear
 from app_package.memento.func_objs import (add_class, delete_class, edit_class, 
                                            add_attr, del_attr, edit_attr, add_rel,
                                            del_rel, move)
@@ -58,6 +58,12 @@ def delete():
     except:
         flash("Invalid name", 'error')
 
+    return redirect('/')
+
+@app.route('/clear/', methods=['POST'])
+def clear():
+    """Deals with requests to clear the database."""
+    core_clear()
     return redirect('/')
 
 @app.route('/save/', methods=['POST'])

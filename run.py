@@ -1,5 +1,5 @@
 import cmd
-from app_package.core_func import (core_save, core_load, core_parse)
+from app_package.core_func import (core_save, core_load, core_parse, core_clear)
 from app_package.memento.func_objs import add_class, delete_class, edit_class, add_attr, del_attr, edit_attr, add_rel, del_rel
 from app_package.models import Class, Attribute, Relationship
 from app_package import app, cmd_stack, db
@@ -335,6 +335,19 @@ class replShell(cmd.Cmd):
     """
         webbrowser.open_new_tab("http://127.0.0.1:5000")
         app.run(port=5000, debug=False)
+        
+    def do_clear(self, args):
+        print("Are you sure you want to clear?\nThis cannot be undone.\n(Y/N): ", end = '')
+        while True:
+            answer = input()
+            if answer.lower() == 'y' or answer.lower() == 'yes':
+                core_clear()
+                print("Clear completed.")
+                break
+            if answer.lower() == 'n' or answer.lower() == 'no':
+                print("Clear aborted.")
+                break
+            print("(Y/N): ", end = '')
 
     def do_undo(self, args):
         """Reverses your last action. Optionally provide amount.

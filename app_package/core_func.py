@@ -302,3 +302,7 @@ def parseType(input):
     if tipe == front:
         tipe = None
     return(tipe)
+
+def core_clear():
+    db.drop_all()
+    db.create_all()
