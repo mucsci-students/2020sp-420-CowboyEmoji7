@@ -590,6 +590,7 @@ body{
     list-style-type: square;
     padding-right: 15px;
     color: white;
+    margin-bottom: 30px;
 }
 
 .list li {
@@ -599,11 +600,13 @@ body{
 }
 
 .checked {
+    float: right;
     cursor: pointer;
     color: red;
 }
 
 .unchecked {
+    float: right;
     cursor: pointer;
     color: #eee;
 }
