@@ -379,6 +379,13 @@ function ensureNoOverlap(name, lastMove){
     }
 }
 
+// Two possible states for the entrance of this function:
+//   If the process is in the first stage (no class has been selected):
+//     Save the clicked name, open the help prompt
+//     Allows the next part to occur
+//   If the process is halfway (one class has already been selected):
+//     Prompt for type until given a valid type or cancelled.
+//     If given type, call to add the relationship
 let class_clicked = "";
 function readyRelationship(name){
     if (class_clicked == ""){
@@ -406,6 +413,8 @@ function readyRelationship(name){
     
 }
 
+// Given a 'from' name, 'to' name, and relationship type,
+//   send a request to add a relationship and render the line.
 function addRelationship(from, to, type){
     let xReq = new XMLHttpRequest();
     xReq.onreadystatechange = function() {
@@ -430,6 +439,7 @@ function addRelationship(from, to, type){
     xReq.send(params);
 }
 
+// Upon cancelling adding a relationship, clear progress of that process
 function cancelAddRel(){
     class_clicked = "";
     let addRelHelp = document.getElementById("addRelHelp");
