@@ -439,6 +439,77 @@ body{
     box-shadow: 3px 3px 3px rgb(36, 36, 36);
 }
 
+.exportPopup{
+    position: sticky;
+    z-index: 1;
+    background-color: #474B4F;
+    text-align: center;
+    width: 200px;
+    height: 130px;
+    border: 1px solid #86C232;
+    font-size: 16px;
+    font-family: 'Ubuntu', sans-serif;
+    border-radius: 0px 0px 5px 5px;
+    box-shadow: 5px 4px 3px rgb(36, 36, 36);
+    visibility: visible;
+    -webkit-animation: fadeIn .5s;
+    animation: fadeIn .5s
+}
+
+.exportPopup input {
+    padding-left: 5px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    box-shadow: none;
+}
+
+.exportPopup h1 {
+    padding-top: 15px;
+    margin-bottom: 0px;
+    margin-top: 5px;
+    color: white;
+}
+
+#exportForm{
+    display: none;
+}
+
+.exportButton {
+    outline: none;
+    cursor: pointer;
+    border: 1px solid #86C232;
+    background-color: #474B4F;
+    box-shadow: 2px 2px 1px rgb(36, 36, 36);
+    color: white;
+    border-radius: 5px;
+    width: 60px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.exportButton:hover{
+    box-shadow: 3px 3px 3px rgb(36, 36, 36);
+}
+
+#ExportButton {
+    cursor: pointer;
+    outline: none;
+    background-color: #474B4F;
+    font-weight: bold;
+    font-size: 22px;
+    font-family: 'ubuntu', sans-serif;
+    border: 2px solid #86C232;
+    width: 150px;
+    height: 45px;
+}
+
+#ExportButton:hover{
+    color: #86C232;
+    box-shadow: 5px 8px 8px rgb(36, 36, 36);
+}
+
 #noClasses {
     font-family: 'Ubuntu', sans-serif; 
     left: 45%; 
