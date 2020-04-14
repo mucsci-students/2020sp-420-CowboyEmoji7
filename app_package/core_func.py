@@ -157,15 +157,6 @@ def core_add_attr(pName, attr, attrType):
         db.session.add(new_attr)
         db.session.commit()
         
-        parsedType = parseType(attr)
-        if parsedType is not None:
-            # link it to the related class if applicable
-            ClassList = Class.query.all()
-            for CurrentClass in ClassList:
-                if CurrentClass.name == parsedType:
-                    core_add_rel(pName, CurrentClass.name, "agg")
-                    break
-        
         return 0
     except:
         db.session.rollback()
@@ -302,3 +293,8 @@ def parseType(input):
     if tipe == front:
         tipe = None
     return(tipe)
+
+def core_clear():
+    """Clears all existing classes from the database."""
+    db.drop_all()
+    db.create_all()
