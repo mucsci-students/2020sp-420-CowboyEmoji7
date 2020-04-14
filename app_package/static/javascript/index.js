@@ -91,12 +91,10 @@ function editClass(name) {
     
 
     if(document.getElementById('Relationships-' + name).style.display == 'block') {
-        let elements = document.getElementById('custom-select-' + name).options;
         document.getElementById(name).classList.remove('activeEdit');
         document.getElementById(name).classList.add('non-activeEdit');
         document.getElementById('Relationships-' + name).style.display = 'none';
         document.getElementById('addAttributeForm-' + name).style.display = 'none';
-        document.getElementById('custom-select-' + name).blur();
         document.getElementById('class-' + name).style.display = "block";
         document.getElementById('classtext-' + name).type = "hidden";
         document.getElementById('attrsave-' + name).style.display = "none";
@@ -105,14 +103,11 @@ function editClass(name) {
         {
             attrNames[i].style.display = "block";
             attrTexts[i].type = "hidden";
+        }
+        for (let i = 0; i < attrChecks.length; ++i){
             attrChecks[i].style.display = "none";
         }
 
-        // Deselecting the selected options when the user is done editing if they selected any
-        for(let i = 0; i < elements.length; i++)
-        {
-            elements[i].selected = false;
-        }
     }
     else if (document.getElementById('Relationships-' + name).style.display == 'none') {
         document.getElementById(name).classList.remove('non-activeEdit');
@@ -127,6 +122,8 @@ function editClass(name) {
         {
             attrNames[i].style.display = "none";
             attrTexts[i].type = "text";
+        }
+        for (let i = 0; i < attrChecks.length; ++i){
             attrChecks[i].style.display = "inline";
         }
     }
@@ -415,4 +412,71 @@ function ensureNoOverlap(name, lastMove){
             }
         }
     }
+}
+
+// Two possible states for the entrance of this function:
+//   If the process is in the first stage (no class has been selected):
+//     Save the clicked name, open the help prompt
+//     Allows the next part to occur
+//   If the process is halfway (one class has already been selected):
+//     Prompt for type until given a valid type or cancelled.
+//     If given type, call to add the relationship
+let class_clicked = "";
+function readyRelationship(name){
+    if (class_clicked == ""){
+        class_clicked = name;
+        let addRelHelp = document.getElementById("addRelHelp");
+        addRelHelp.style.display = "block";
+    }
+    else{
+        let type = "";
+        while (true){
+            let attempt = prompt("What type of relationship?", "agg, comp, gen, or none");
+            if (attempt == "agg" || attempt == "comp" || attempt == "gen" || attempt == "none"){
+                type = attempt;
+                break;
+            }
+            if (attempt == null){
+                cancelAddRel();
+                return;
+            }
+        }
+
+        addRelationship(class_clicked, name, type);
+        class_clicked = "";
+    }
+    
+}
+
+// Given a 'from' name, 'to' name, and relationship type,
+//   send a request to add a relationship and render the line.
+function addRelationship(from, to, type){
+    let xReq = new XMLHttpRequest();
+    xReq.onreadystatechange = function() {
+        if (xReq.readyState == 4 && xReq.status == 200) {
+            jsPlumb.connect({
+                source:from, 
+                target:to,
+                anchor:"Continuous",
+                endpoint:"Blank",
+                connector:getConnector(type, from, to),
+                paintStyle:{ stroke: '#6B6E70', strokeWidth:2 },
+                overlays:[getOverlay(type)]
+            });
+            jsPlumb.repaintEverything();
+        }
+    }
+    let params = "class_name=" + from + "&to=" + to + "&rel_type=" + type;
+    xReq.open("POST", "/addRelationship/", true);
+    xReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xReq.setRequestHeader("Content-length", params.length);
+    xReq.setRequestHeader("Connection", "close");
+    xReq.send(params);
+}
+
+// Upon cancelling adding a relationship, clear progress of that process
+function cancelAddRel(){
+    class_clicked = "";
+    let addRelHelp = document.getElementById("addRelHelp");
+    addRelHelp.style.display = "none";
 }

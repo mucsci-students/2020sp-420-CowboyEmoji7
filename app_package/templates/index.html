@@ -63,7 +63,7 @@
                     <h3 class="headings">Methods</h3>
                 {% endif %}
             {% endfor %}
-            <ul class="attributeList">
+            <ul class="list">
                 {% for attr in attributes if attr.class_name == class.name and attr.attr_type == 'method' %}
                     <li id="attr-{{ class.name }}-{{ attr.attribute }}">
                         <input type="hidden" name="field[{{ attr.attribute }}][class_name]" value="{{ class.name }}">
@@ -78,7 +78,7 @@
                     </li>
                 {% endfor %}
             </ul>
-             <span id="addAttributeForm-{{ class.name }}" style="display: none; padding-top: 5px; padding-bottom: 5px;">
+            <span id="addAttributeForm-{{ class.name }}" style="display: none; padding-top: 5px; padding-bottom: 5px;">
                 <input type="hidden" name="field[ class ][class_name]" value="{{ class.name }}">
                 <h4 class="headings">Add Attributes</h4>
                 <ul class="addAttrs">
@@ -93,35 +93,27 @@
                 </ul>
             </span>
         </div>
+        <div id="Relationships-{{ class.name }}" class="RelationshipDiv" style="display: none;">
+            <hr class="divider">
+            <h4 class="headings">Delete Relationships</h4>
+            <ul class="list">
+                {% for rel in class.class_relationships if rel.from_name == class.name %}
+                    <li id="rel-{{ class.name }}-{{ rel.to_name }}">
+                        <input type="hidden" name="field[{{ rel.to_name }}][class_name]" value="{{ class.name }}">
+                        <input type="hidden" name="field[{{ rel.to_name }}][to_name]" value="{{ rel.to_name }}">
+                        <span class="relname-{{ class.name }}">{{ rel.to_name }}</span>
+                        <label class="container container-{{ class.name }}" style="display:none;">
+                            <input type="checkbox" class="attrdel-{{ class.name }}" name="field[{{ rel.to_name }}][action]" value="DeleteRel">
+                            <i class="fa fa-trash unchecked" title="Delete"></i>
+                            <i class="fa fa-trash checked" title="Cancel"></i>                            
+                        </label>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
     </form>
-    <div id="Relationships-{{ class.name }}" class="RelationshipDiv" style="display: none;">
-        <hr class="divider">
-        <h4 class="headings">Relationships</h4>
-        <ul class="relationshipList">
-            <form id="relSelect" action="/manipRelationship/" method="POST">
-                <input type="hidden" name="class_name" value="{{ class.name }}">
-                <select id="custom-select-{{ class.name }}" multiple style="width: 70%; box-shadow: none;" onclick="document.getElementById('custom-select-{{ class.name }}').focus()" name="relationship" required>
-                    {% for child in classes %}
-                    <option class="relOptions" value="{{ child.name }}">{{ child.name }}</option>
-                    {% endfor %}
-                </select>
-                <br>
-                <input type="radio" name="rel_type" id="gen" value="gen">
-                <label for="gen">Generalization</label>
-                <br>
-                <input type="radio" name="rel_type" id="agg" value="agg">
-                <label for="agg">Aggregation</label>
-                <br>
-                <input type="radio" name="rel_type" id="comp" value="comp">
-                <label for="comp">Composition</label>
-                <br>
-                <input type="radio" name="rel_type" id="none" value="none" checked>
-                <label for="none">None</label>
-                <br>
-                <button class="outline" type="submit" name="action" value="delete">Delete</button>
-                <button class="outline" type="submit" name="action" value="add">Add</button>
-            </form>
-        </ul>
+    <div class="RelClass">
+            <button class="RelButton" onclick="readyRelationship('{{ class.name }}')"><i class="fa fa-chain" aria-hidden="true"></i></button>
     </div>
 </div>
 
