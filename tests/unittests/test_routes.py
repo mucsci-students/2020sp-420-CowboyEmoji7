@@ -308,3 +308,13 @@ def test_update_coords (test_client, init_database):
     response = test_client.get('/', follow_redirects=True)
     assert b"left: 500px;" in response.data
     assert b"top: 42px;" in response.data
+    
+################################ TEST CLEAR ################################
+
+def test_clear (test_client, init_database):
+    response = test_client.post('/', data=dict(class_name='TestClass1'), follow_redirects=True)
+    assert b"TestClass1" in response.data
+    
+    response = test_client.post('/clear/', follow_redirects=True)
+    assert b"TestClass1" not in response.data
+    assert b"No Classes Added" in response.data
