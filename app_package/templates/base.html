@@ -14,14 +14,14 @@
 </head>
 
 <body>
-    <div>
+    <div id="undoredo">
         <span>
             <form action="/redo/" method="POST">
-                <button type="submit" class="undo-redo">&#11177</button>
+                <button type="submit" id="redo" class="undo-redo">&#11177</button>
             </form>
         </span>
         <span>
-            <form action="/undo/" method="POST">
+            <form action="/undo/" id="undo" method="POST">
                 <button type="submit" class="undo-redo">&#11176</button>
             </form>
         </span>
@@ -77,6 +77,10 @@
     </div>
     <div class="main-body">
         {% block elements %} {% endblock %}
+    </div>
+    <div id="addRelHelp" style="display:none;">
+        Click another relationship button to add a relationship
+        or <a onclick="cancelAddRel();">cancel</a>.
     </div>
     <script src="{{ url_for('static', filename='javascript//jsplumb.min.js') }}"></script>
     <script src="{{ url_for('static', filename='javascript/index.js') }}"></script>

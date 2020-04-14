@@ -5,7 +5,7 @@ Contains routes through which requests from
 """
 
 from app_package.models import Class, ClassSchema, Relationship, RelationshipSchema, Attribute
-from flask import render_template, json, url_for, request, redirect, flash, Response
+from flask import render_template, json, url_for, request, redirect, flash, Response, jsonify
 from app_package import app, db, cmd_stack
 from app_package.core_func import core_save, core_load, core_parse, core_clear
 from app_package.memento.func_objs import (add_class, delete_class, edit_class, 
@@ -147,9 +147,11 @@ def manipCharacteristics():
                 elif action == "RenameClass":
                     update(class_name, theDict[el]['new_name'])
                     class_name = theDict[el]['new_name']
+                elif action == "DeleteRel":
+                    delRelationship(class_name, theDict[el]['to_name'])
 
     except:
-        flash("Invalid arguments, try again", 'error')
+        flash("Invalid arguments, try again.", 'error')
     
     return redirect('/')
 
@@ -183,46 +185,28 @@ def addAttributes(name, attrString, attrType):
             flash('ERROR: Unable to add attribute ' + attr + " to " + name, 'error')
 
 
-@app.route("/manipRelationship/", methods=['POST'])
-def manipRelationship():
-    """Deals with requests from GUI to manipulate relationships.
-    
-    Delegates to helper functions
-    """
+@app.route("/addRelationship/", methods=['POST'])
+def addRelationship():
+    """Helper function to add relationships to class."""
     try:
         fro = request.form['class_name']
-        to = request.form.getlist('relationship')
-        action = request.form['action']
-        if (action == 'delete'):
-            delRelationship(fro, to)
-        elif (action == 'add'):
-            rel_type = request.form['rel_type']
-            addRelationship(fro, to, rel_type)
+        to = request.form['to']
+        rel_type = request.form['rel_type']
+        addRelCmd = add_rel(fro, to, rel_type)
+        if cmd_stack.execute(addRelCmd):
+            flash("ERROR: Unable to add relationship from " + fro + " to " + to, 'error')
     except:
         flash("Invalid arguments, try again.", 'error')
-    
+
     return redirect('/')
-
-
-def addRelationship(fro, to, rel_type):
-    """Helper function to add relationships to class."""
-    for child in to:
-        addRelCmd = add_rel(fro, child, rel_type)
-        if cmd_stack.execute(addRelCmd):
-            flash("ERROR: Unable to add relationship from " + fro + " to " + child, 'error')
 
 
 def delRelationship(fro, to):
     """Helper function to remove relationships from class."""
-    print(getRelationship())
-    for child in to:
-        rel_to_del = Relationship.query.get({"from_name":fro, "to_name":child})
-        if rel_to_del is None:
-            flash("ERROR: No such relationship from " + fro + " to " + child, 'error')
-        else:
-            delRelCmd = del_rel(fro, child, rel_to_del.rel_type)
-            if cmd_stack.execute(delRelCmd):
-                flash("ERROR: Unable to delete relationship from " + fro + " to " + child, 'error')
+    rel_to_del = Relationship.query.get({"from_name":fro, "to_name":to})
+    delRelCmd = del_rel(fro, to, rel_to_del.rel_type)
+    if cmd_stack.execute(delRelCmd):
+        flash("ERROR: Unable to delete relationship from " + fro + " to " + to, 'error')
 
 
 @app.route("/getRelationships/", methods=['POST'])

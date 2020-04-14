@@ -244,15 +244,17 @@ def test_attribute_invalid_args (test_client, init_database):
 
 def test_add_one_relationship(test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass1, TestClass2'), follow_redirects=True)
-    test_client.post('/manipRelationship/', data=dict(class_name='TestClass1', relationship=['TestClass2'], rel_type='agg', action="add"), follow_redirects=True)
+    test_client.post('/addRelationship/', data=dict(class_name='TestClass1', to='TestClass2', rel_type='agg'), follow_redirects=True)
     response = test_client.post('/getRelationships/', follow_redirects=True)
     assert response.status_code == 200
     assert b'{"from_name": "TestClass1", "rel_type": "agg", "to_name": "TestClass2"}' in response.data
 
 def test_add_many_relationships(test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass1, TestClass2'), follow_redirects=True)
-    test_client.post('/manipRelationship/', data=dict(class_name='TestClass1', relationship=['TestClass2', 'TestClass1'], rel_type='agg',  action="add"), follow_redirects=True)
-    test_client.post('/manipRelationship/', data=dict(class_name='TestClass2', relationship=['TestClass1', 'TestClass2'], rel_type='agg',  action="add"), follow_redirects=True)
+    test_client.post('/addRelationship/', data=dict(class_name='TestClass1', to='TestClass2', rel_type='agg'), follow_redirects=True)
+    test_client.post('/addRelationship/', data=dict(class_name='TestClass1', to='TestClass1', rel_type='agg'), follow_redirects=True)
+    test_client.post('/addRelationship/', data=dict(class_name='TestClass2', to='TestClass1', rel_type='agg'), follow_redirects=True)
+    test_client.post('/addRelationship/', data=dict(class_name='TestClass2', to='TestClass2', rel_type='agg'), follow_redirects=True)
     response = test_client.post('/getRelationships/', follow_redirects=True)
     assert response.status_code == 200
     assert b'{"from_name": "TestClass1", "rel_type": "agg", "to_name": "TestClass2"}' in response.data
@@ -260,28 +262,20 @@ def test_add_many_relationships(test_client, init_database):
     assert b'{"from_name": "TestClass1", "rel_type": "agg", "to_name": "TestClass1"}' in response.data
     assert b'{"from_name": "TestClass2", "rel_type": "agg", "to_name": "TestClass2"}' in response.data
 
-def test_add_two_relationships(test_client, init_database):
-    test_client.post('/', data=dict(class_name='TestClass1, TestClass2'), follow_redirects=True)
-    test_client.post('/manipRelationship/', data=dict(class_name='TestClass1', relationship=['TestClass2','TestClass1'], rel_type='agg',  action="add"), follow_redirects=True)
-    response = test_client.post('/getRelationships/', follow_redirects=True)
-    assert response.status_code == 200
-    assert b'{"from_name": "TestClass1", "rel_type": "agg", "to_name": "TestClass2"}' in response.data
-    assert b'{"from_name": "TestClass1", "rel_type": "agg", "to_name": "TestClass1"}' in response.data
-
 def test_add_one_relationship_but_then_delete_that_relationship(test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass1, TestClass2'), follow_redirects=True)
-    test_client.post('/manipRelationship/', data=dict(class_name='TestClass1', relationship=['TestClass2'], rel_type='agg',  action="add"), follow_redirects=True)
+    test_client.post('/addRelationship/', data=dict(class_name='TestClass1', to='TestClass2', rel_type='agg'), follow_redirects=True)
     response = test_client.post('/getRelationships/', follow_redirects=True)
     assert response.status_code == 200
     assert b'{"from_name": "TestClass1", "rel_type": "agg", "to_name": "TestClass2"}' in response.data
 
-    response = test_client.post('/manipRelationship/', data=dict(class_name='TestClass1', relationship=['TestClass2'], action="delete"), follow_redirects=True)
+    response = test_client.post('/manipCharacteristics/', data={"field[ super ][class_name]": "TestClass1", "field[TestClass2][action]": "DeleteRel", "field[TestClass2][to_name]": "TestClass2"}, follow_redirects=True)
     assert response.status_code == 200
     assert not b'{"from_name": "TestClass1", "rel_type": "agg", "to_name": "TestClass2"}' in response.data
 
 def test_add_one_relationship_but_its_for_a_class_that_doesnt_exist(test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass1, TestClass2'), follow_redirects=True)
-    response = test_client.post('/manipRelationship/', data=dict(class_name='TestClass2', relationship=['TestClass69'], rel_type='agg', action="add"), follow_redirects=True)
+    response = test_client.post('/addRelationship/', data=dict(class_name='TestClass2', to='TestClass69', rel_type='agg'), follow_redirects=True)
     assert b"ERROR: Unable to add relationship from" in response.data
 
     response = test_client.post('/getRelationships/', follow_redirects=True)
@@ -289,13 +283,13 @@ def test_add_one_relationship_but_its_for_a_class_that_doesnt_exist(test_client,
     assert not b'{"from_name": "TestClass1", "to_name": "TestClass69"}' in response.data
 
 def test_delete_a_relationship_that_didnt_exist_in_the_first_place(test_client, init_database):
-    test_client.post('/', data=dict(class_name='TestClass1 TestClass2'), follow_redirects=True)
-    response = test_client.post('/manipRelationship/', data=dict(class_name='TestClass2', relationship=['TestClass69'], rel_type="agg", action="delete"), follow_redirects=True)
-    assert b"ERROR: No such relationship from" in response.data
-
-def test_manip_relationship_invalid_args (test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass1, TestClass2'), follow_redirects=True)
-    response = test_client.post('/manipRelationship/', data=dict(class_name=None, relationship=[], rel_type='agg', action="add"), follow_redirects=True)
+    response = test_client.post('/manipCharacteristics/', data={"field[ super ][class_name]": "TestClass2", "field[TestClass69][action]": "DeleteRel", "field[TestClass69][to_name]": "TestClass69"}, follow_redirects=True)
+    assert b"Invalid arguments, try again." in response.data
+
+def test_add_relationship_invalid_args (test_client, init_database):
+    test_client.post('/', data=dict(class_name='TestClass1, TestClass2'), follow_redirects=True)
+    response = test_client.post('/addRelationship/', data=dict(class_name=None, to='howdy', rel_type='agg'), follow_redirects=True)
     assert b"Invalid arguments, try again." in response.data
 
 ################################ TEST COORDINATES ################################
