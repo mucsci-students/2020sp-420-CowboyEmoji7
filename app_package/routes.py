@@ -138,7 +138,6 @@ def manipCharacteristics():
                         updateAttribute(class_name, theDict[el]['attribute'], theDict[el]['new_attribute'])
             else:
                 action = theDict[el]['action']
-
                 if action == "Add":
                     if 'attr_type' in theDict[el]:
                         addAttributes(class_name, theDict[el]['attrs'], theDict[el]['attr_type'])
@@ -164,10 +163,12 @@ def update(oldName, newName):
 def delAttribute(name, attr):
     """Helper to remove attributes from class."""
     attr_to_del = Attribute.query.get({"class_name":name, "attribute":attr})
-    delAttrCmd = del_attr(name, attr, attr_to_del.attr_type)
-    if cmd_stack.execute(delAttrCmd):
+    if not attr_to_del is None:
+        delAttrCmd = del_attr(name, attr, attr_to_del.attr_type)
+        if cmd_stack.execute(delAttrCmd):
+            flash("ERROR: Unable to remove attribute " + attr + " from " + name, 'error')
+    else:
         flash("ERROR: Unable to remove attribute " + attr + " from " + name, 'error')
-
 
 def updateAttribute(name, oldAttr, newAttr):
     """Helper to update attributes in class."""
@@ -204,8 +205,11 @@ def addRelationship():
 def delRelationship(fro, to):
     """Helper function to remove relationships from class."""
     rel_to_del = Relationship.query.get({"from_name":fro, "to_name":to})
-    delRelCmd = del_rel(fro, to, rel_to_del.rel_type)
-    if cmd_stack.execute(delRelCmd):
+    if not rel_to_del is None:
+        delRelCmd = del_rel(fro, to, rel_to_del.rel_type)
+        if cmd_stack.execute(delRelCmd):
+            flash("ERROR: Unable to delete relationship from " + fro + " to " + to, 'error')
+    else:
         flash("ERROR: Unable to delete relationship from " + fro + " to " + to, 'error')
 
 

@@ -456,16 +456,7 @@ function addRelationship(from, to, type){
     let xReq = new XMLHttpRequest();
     xReq.onreadystatechange = function() {
         if (xReq.readyState == 4 && xReq.status == 200) {
-            jsPlumb.connect({
-                source:from, 
-                target:to,
-                anchor:"Continuous",
-                endpoint:"Blank",
-                connector:getConnector(type, from, to),
-                paintStyle:{ stroke: '#6B6E70', strokeWidth:2 },
-                overlays:[getOverlay(type)]
-            });
-            jsPlumb.repaintEverything();
+           window.location.replace("/");
         }
     }
     let params = "class_name=" + from + "&to=" + to + "&rel_type=" + type;
