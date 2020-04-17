@@ -378,6 +378,15 @@ def test_rename_attribute_auto_add_rel (test_client, init_database):
     assert response.status_code == 200
     assert b'{"from_name": "TestClass", "rel_type": "agg", "to_name": "TestType"}' in response.data
 
+def test_add_attribute_auto_add_rel (test_client, init_database):
+    test_client.post('/', data=dict(class_name='TestClass, TestType'), follow_redirects=True)
+    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestType yes", "field[ class ][attr_type]":"field", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
+    assert b'TestType yes' in response.data
+
+    response = test_client.post('/getRelationships/', follow_redirects=True)
+    assert response.status_code == 200
+    assert b'{"from_name": "TestClass", "rel_type": "agg", "to_name": "TestType"}' in response.data
+
 ################################ TEST RELATIONSHIPS ################################
 
 def test_add_one_relationship(test_client, init_database):
