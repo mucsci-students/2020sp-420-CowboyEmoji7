@@ -431,7 +431,7 @@ function readyRelationship(name){
     else{
         let type = "";
         while (true){
-            let attempt = prompt("What type of relationship?", "agg, comp, gen, or none");
+            let attempt = prompt("What type of relationship?\n\nagg, comp, gen, or none");
             if (attempt == "agg" || attempt == "comp" || attempt == "gen" || attempt == "none"){
                 type = attempt;
                 break;
