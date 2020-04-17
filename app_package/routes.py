@@ -12,6 +12,11 @@ from app_package.memento.func_objs import (add_class, delete_class, edit_class,
                                            add_attr, del_attr, edit_attr, add_rel,
                                            del_rel, move)
 from parse import *
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
+import time
+
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -231,4 +236,29 @@ def undo():
 def redo():
     """Deals with requests from GUI to redo the last command undone by the user"""
     cmd_stack.redo()
+    return redirect('/')
+
+
+@app.route("/export/", methods=['POST'])
+def export():
+    chromeOptions = Options()
+    chromeOptions.add_argument("--headless") 
+    driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chromeOptions)
+    
+    driver.get('http://127.0.0.1:5000/')
+    #get Window height
+    height = driver.execute_script("return Math.max( document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight )")
+    print(height)
+    driver.close()
+
+    chromeOptions2 = Options()
+    chromeOptions2.add_argument("--headless") 
+    chromeOptions2.add_argument(f"--window-size=1920,{height}")
+    chromeOptions2.add_argument("--hide-scrollbars")
+    driver2 = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chromeOptions2)
+   
+    driver2.get('http://127.0.0.1:5000/')
+    driver2.save_screenshot("screenshot.png")
+    driver2.close()
+
     return redirect('/')
