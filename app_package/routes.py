@@ -241,6 +241,7 @@ def redo():
 
 @app.route("/export/", methods=['POST'])
 def export():
+    image_name = request.form['export_name']
     chromeOptions = Options()
     chromeOptions.add_argument("--headless") 
     driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chromeOptions)
@@ -248,7 +249,6 @@ def export():
     driver.get('http://127.0.0.1:5000/')
     #get Window height
     height = driver.execute_script("return Math.max( document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight )")
-    print(height)
     driver.close()
 
     chromeOptions2 = Options()
@@ -258,7 +258,7 @@ def export():
     driver2 = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chromeOptions2)
    
     driver2.get('http://127.0.0.1:5000/')
-    driver2.save_screenshot("screenshot.png")
+    driver2.save_screenshot("%s.png" % image_name)
     driver2.close()
 
     return redirect('/')
