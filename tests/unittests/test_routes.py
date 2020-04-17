@@ -35,6 +35,11 @@ def test_add_no_name(test_client, init_database):
     response = test_client.post('/', data=dict(class_name=''), follow_redirects=True)
     assert not b'id=""' in response.data
 
+def test_add_quotes(test_client, init_database):
+    response = test_client.post('/', data=dict(class_name='TestAddQuote"'), follow_redirects=True)
+    assert response.status_code == 200
+    assert b'ERROR: Unable to add class TestAddQuote' in response.data
+
 ################################ TEST UPDATE ################################
 def test_update (test_client, init_database):
     response = test_client.post('/', data=dict(class_name='TestOriginal'), follow_redirects=True)
@@ -43,6 +48,15 @@ def test_update (test_client, init_database):
     response = test_client.post('/manipCharacteristics/', data={"field[ super ][class_name]":"TestOriginal", "field[ super ][new_name]":"TestUpdate", "field[ super ][action]":"RenameClass"}, follow_redirects=True)
     assert b'TestUpdate' in response.data
     assert not b'TestOriginal' in response.data
+
+def test_update_quotes(test_client, init_database):
+    response = test_client.post('/', data=dict(class_name='TestOriginal'), follow_redirects=True)
+    assert response.status_code == 200
+    assert b'TestOriginal' in response.data
+
+    response = test_client.post('/manipCharacteristics/', data={"field[ super ][class_name]":"TestOriginal", "field[ super ][new_name]":"TestUpdate'", "field[ super ][action]":"RenameClass"}, follow_redirects=True)
+    assert b'TestOriginal' in response.data
+    assert b'ERROR: Unable to update class TestOriginal to TestUpdate' in response.data
 
 def test_update_to_existo (test_client, init_database):
     response = test_client.post('/', data=dict(class_name='TestOriginal, TestUpdate'), follow_redirects=True)
@@ -212,6 +226,51 @@ def test_load_not_even_json (test_client, init_database):
     jFile = io.BytesIO(b"")
     response = test_client.post('/load/', data=dict(file=(jFile, 'temp.json')), content_type='multipart/form-data', follow_redirects=True)
     assert b"Invalid JSON" in response.data
+
+def test_load_quotes (test_client, init_database):
+    jFile = io.BytesIO(b"""[
+    {
+        "class_attributes": [
+            {
+                "attr_type": "field",
+                "attribute": "please help",
+                "class_name": "Friendship ended with SQLALCHEMY-MARSHMALLOW",
+                "date_created": "2020-04-03T03:10:40.883665"
+            }
+        ],
+        "class_relationships": [
+            {
+                "from_name": "Friendship ended with SQLALCHEMY-MARSHMALLOW",
+                "rel_type": "agg",
+                "to_name": "Now DEPRESSION is my best friend"
+            }
+        ],
+        "date_created": "2020-04-03T03:09:38.770317",
+        "name": "Friendship ended with SQLALCHEMY-MARSHMALLOW",
+        "x": 675,
+        "y": 42
+    },
+    {
+        "class_attributes": [
+            {
+                "attr_type": "method",
+                "attribute": "seriously though",
+                "class_name": "Now DEPRESSION is my best friend",
+                "date_created": "2020-04-03T03:11:00.813333"
+            }
+        ],
+        "class_relationships": [],
+        "date_created": "2020-04-03T03:09:38.790341",
+        "name": "Now DEPRESSION is my best friend'",
+        "x": 100,
+        "y": 74
+    }
+]""")
+    response = test_client.post('/load/', data=dict(file=(jFile, 'temp.json')), content_type='multipart/form-data', follow_redirects=True)
+    assert b"ERROR: Unable to load data into database" in response.data
+
+    response = test_client.post('/getRelationships/', follow_redirects=True)
+    assert not b'{"from_name": "Friendship ended with SQLALCHEMY-MARSHMALLOW", "rel_type": "agg", "to_name": "Now DEPRESSION is my best friend"}' in response.data
 
 ################################ TEST SAVE ################################
 
