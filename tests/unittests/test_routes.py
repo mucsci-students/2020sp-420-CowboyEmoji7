@@ -517,10 +517,12 @@ def test_delAttr_undo_redo(test_client, init_database):
     response = test_client.post('/redo/', follow_redirects=True)
     assert not b"TestAttr" in response.data
 
-def test_empty_undo_redo (test_client, init_database):
+def test_empty_undo_redo_stacks (test_client, init_database):
     initialState = test_client.get('/')
     
     response = test_client.post('/undo/', follow_redirects=True)
     assert initialState.data == response.data
+
+    initialState = test_client.post('/', data=dict(class_name='TestOriginal'), follow_redirects=True)
     response = test_client.post('/redo/', follow_redirects=True)
     assert initialState.data == response.data
