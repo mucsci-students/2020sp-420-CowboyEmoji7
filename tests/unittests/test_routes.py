@@ -526,3 +526,66 @@ def test_empty_undo_redo_stacks (test_client, init_database):
     initialState = test_client.post('/', data=dict(class_name='TestOriginal'), follow_redirects=True)
     response = test_client.post('/redo/', follow_redirects=True)
     assert initialState.data == response.data
+
+
+def test_editAttr_undo_redo(test_client, init_database):
+    test_client.post('/', data=dict(class_name='TestClass'), follow_redirects=True)
+    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][attr_type]":"field", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
+    assert b"TestAttr" in response.data
+
+    response = test_client.post('/manipCharacteristics/', data={"field[TestAttr][attribute]":"TestAttr", "field[TestAttr][action]":None, "field[ super ][class_name]":"TestClass", "field[TestAttr][new_attribute]":"TestUpdate"}, follow_redirects=True)
+    assert not b'TestAttr' in response.data
+    assert b'TestUpdate' in response.data
+    
+    response = test_client.post('/undo/', follow_redirects=True)
+    assert b'TestAttr' in response.data
+    assert not b'TestUpdate' in response.data
+    response = test_client.post('/redo/', follow_redirects=True)
+    assert not b'TestAttr' in response.data
+    assert b'TestUpdate' in response.data
+    
+def test_AddRell_undo_redo(test_client, init_database):
+    test_client.post('/', data=dict(class_name='TestClass1, TestClass2'), follow_redirects=True)
+    test_client.post('/addRelationship/', data=dict(class_name='TestClass1', to='TestClass2', rel_type='agg'), follow_redirects=True)
+    response = test_client.post('/getRelationships/', follow_redirects=True)
+    assert response.status_code == 200
+    assert b'{"from_name": "TestClass1", "rel_type": "agg", "to_name": "TestClass2"}' in response.data
+    
+    test_client.post('/undo/', follow_redirects=True)
+    response = test_client.post('/getRelationships/', follow_redirects=True)
+    assert not b'{"from_name": "TestClass1", "rel_type": "agg", "to_name": "TestClass2"}' in response.data
+    
+    test_client.post('/redo/', follow_redirects=True)
+    response = test_client.post('/getRelationships/', follow_redirects=True)
+    assert b'{"from_name": "TestClass1", "rel_type": "agg", "to_name": "TestClass2"}' in response.data
+    
+def test_delRell_undo_redo(test_client, init_database):
+    test_client.post('/', data=dict(class_name='TestClass1, TestClass2'), follow_redirects=True)
+    test_client.post('/addRelationship/', data=dict(class_name='TestClass1', to='TestClass2', rel_type='agg'), follow_redirects=True)
+    response = test_client.post('/getRelationships/', follow_redirects=True)
+    assert response.status_code == 200
+    assert b'{"from_name": "TestClass1", "rel_type": "agg", "to_name": "TestClass2"}' in response.data
+    test_client.post('/manipCharacteristics/', data={"field[ super ][class_name]":"TestClass1", "field[ super ][action]":"RenameClass", "field[ super ][new_name]":"TestClass1", "field[TestClass2][action]":"DeleteRel", "field[TestClass2][to_name]":"TestClass2"}, follow_redirects=True)
+    response = test_client.post('/getRelationships/', follow_redirects=True)
+    assert not b'{"from_name": "TestClass1", "rel_type": "agg", "to_name": "TestClass2"}' in response.data
+    
+    test_client.post('/undo/', follow_redirects=True)
+    response = test_client.post('/getRelationships/', follow_redirects=True)
+    assert b'{"from_name": "TestClass1", "rel_type": "agg", "to_name": "TestClass2"}' in response.data
+    
+    test_client.post('/redo/', follow_redirects=True)
+    response = test_client.post('/getRelationships/', follow_redirects=True)
+    assert not b'{"from_name": "TestClass1", "rel_type": "agg", "to_name": "TestClass2"}' in response.data
+
+def test_update_coords (test_client, init_database):
+    test_client.post('/', data=dict(class_name='TestClass1'), follow_redirects=True)
+    test_client.post('/updateCoords/', data=dict(name='TestClass1', left=50, top=50), follow_redirects=True)
+    test_client.post('/updateCoords/', data=dict(name='TestClass1', left=100, top=100), follow_redirects=True)
+    
+    response = test_client.post('/undo/', follow_redirects=True)
+    assert b"left: 50px;" in response.data
+    assert b"top: 50px;" in response.data
+    response = test_client.post('/redo/', follow_redirects=True)
+    assert b"left: 100px;" in response.data
+    assert b"top: 100px;" in response.data
+
