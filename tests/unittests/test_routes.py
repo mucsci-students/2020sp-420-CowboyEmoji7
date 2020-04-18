@@ -462,3 +462,65 @@ def test_clear (test_client, init_database):
 
 ################################ TEST UNDO/REDO ################################
 
+def test_add_undo_redo (test_client, init_database):
+    initialState = test_client.get('/')
+    SecondState = test_client.post('/', data=dict(class_name='Test'), follow_redirects=True)
+    
+    response = test_client.post('/undo/', follow_redirects=True)
+    assert initialState.data == response.data
+    response = test_client.post('/redo/', follow_redirects=True)
+    assert SecondState.data == response.data
+
+def test_rename_undo_redo (test_client, init_database):
+    initialState = test_client.post('/', data=dict(class_name='TestOriginal'), follow_redirects=True)
+    SecondState = test_client.post('/manipCharacteristics/', data={"field[ super ][class_name]":"TestOriginal", "field[ super ][new_name]":"TestUpdate", "field[ super ][action]":"RenameClass"}, follow_redirects=True)
+    
+    response = test_client.post('/undo/', follow_redirects=True)
+    assert initialState.data == response.data
+    response = test_client.post('/redo/', follow_redirects=True)
+    assert SecondState.data == response.data
+    
+def test_delete_undo_redo (test_client, init_database):
+    test_client.post('/', data=dict(class_name='TestClass'), follow_redirects=True)
+    test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][attr_type]":"field", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
+    InitialState = test_client.post('/addRelationship/', data=dict(class_name='TestClass', to='TestClass', rel_type='agg'), follow_redirects=True)
+    SecondState = test_client.post('/delete/', data=dict(delete='TestClass'), follow_redirects=True)
+    
+    response = test_client.post('/undo/', follow_redirects=True)
+    assert InitialState.data == response.data
+    response = test_client.post('/redo/', follow_redirects=True)
+    assert SecondState.data == response.data
+    
+def test_addAttr_undo_redo (test_client, init_database):
+    
+    test_client.post('/', data=dict(class_name='TestClass'), follow_redirects=True)
+    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][attr_type]":"field", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
+    assert b"TestAttr" in response.data
+    
+    response = test_client.post('/undo/', follow_redirects=True)
+    assert not b"TestAttr" in response.data
+    response = test_client.post('/redo/', follow_redirects=True)
+    assert b"TestAttr" in response.data
+
+def test_delAttr_undo_redo(test_client, init_database):
+    test_client.post('/', data=dict(class_name='TestClass'), follow_redirects=True)
+    response = test_client.post('/manipCharacteristics/', data={"field[ class ][attrs]":"TestAttr", "field[ class ][attr_type]":"field", "field[ class ][action]":"Add", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
+    assert b"TestAttr" in response.data
+
+    response = test_client.post('/manipCharacteristics/', data={"field[TestAttr][attribute]":"TestAttr", "field[TestAttr][action]":"Delete", "field[ super ][class_name]":"TestClass"}, follow_redirects=True)
+    assert response.status_code == 200
+    assert b"TestClass" in response.data
+    assert not b"TestAttr" in response.data
+    
+    response = test_client.post('/undo/', follow_redirects=True)
+    assert b"TestAttr" in response.data
+    response = test_client.post('/redo/', follow_redirects=True)
+    assert not b"TestAttr" in response.data
+
+def test_empty_undo_redo (test_client, init_database):
+    initialState = test_client.get('/')
+    
+    response = test_client.post('/undo/', follow_redirects=True)
+    assert initialState.data == response.data
+    response = test_client.post('/redo/', follow_redirects=True)
+    assert initialState.data == response.data
