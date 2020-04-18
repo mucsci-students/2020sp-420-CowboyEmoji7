@@ -577,7 +577,7 @@ def test_delRell_undo_redo(test_client, init_database):
     response = test_client.post('/getRelationships/', follow_redirects=True)
     assert not b'{"from_name": "TestClass1", "rel_type": "agg", "to_name": "TestClass2"}' in response.data
 
-def test_update_coords (test_client, init_database):
+def test_update_coords_undo_redo (test_client, init_database):
     test_client.post('/', data=dict(class_name='TestClass1'), follow_redirects=True)
     test_client.post('/updateCoords/', data=dict(name='TestClass1', left=50, top=50), follow_redirects=True)
     test_client.post('/updateCoords/', data=dict(name='TestClass1', left=100, top=100), follow_redirects=True)
