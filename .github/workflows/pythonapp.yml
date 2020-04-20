@@ -32,9 +32,10 @@ jobs:
       run: |
         pip install pytest
         pip install pytest-cov
-        pytest --cov --cov-report=xml
-    - name: Upload code coverage to Codecov
-      uses: codecov/codecov-action@v1.0.6
-      with:
-        fail_ci_if_error: true
+        pip install coverage
+        pip install coverage-badge
+        pytest --cov --cov-report html
+        coverage html
+        open htmlcov/index.html
+        coverage-badge -f -o coverage.svg
     
