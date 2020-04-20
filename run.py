@@ -334,7 +334,7 @@ class replShell(cmd.Cmd):
     Usage: web
     """
         webbrowser.open_new_tab("http://127.0.0.1:5000")
-        app.run(port=5000, debug=False)
+        app.run(port=5000, debug=True)
         
     def do_clear(self, args):
         """Clears all existing classes from the database.

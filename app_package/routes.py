@@ -242,23 +242,23 @@ def redo():
 @app.route("/export/", methods=['POST'])
 def export():
     image_name = request.form['export_name']
-    chromeOptions = Options()
-    chromeOptions.add_argument("--headless") 
-    driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chromeOptions)
-    
-    driver.get('http://127.0.0.1:5000/')
-    #get Window height
-    height = driver.execute_script("return Math.max( document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight )")
-    driver.close()
 
-    chromeOptions2 = Options()
-    chromeOptions2.add_argument("--headless") 
-    chromeOptions2.add_argument(f"--window-size=1920,{height}")
-    chromeOptions2.add_argument("--hide-scrollbars")
-    driver2 = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chromeOptions2)
-   
-    driver2.get('http://127.0.0.1:5000/')
-    driver2.save_screenshot("%s.png" % image_name)
-    driver2.close()
+    chromeOptions = Options()
+    chromeOptions.add_argument("--headless")
+    chromeOptions.add_argument("--hide-scrollbars")
+    
+    driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chromeOptions)
+    driver.get('http://127.0.0.1:5000/')
+
+    height = driver.execute_script("return Math.max( document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight )")
+    # find name of class furthest right, get element by id, use that as width
+    furthestClass = Class.query.order_by(Class.x.desc()).first()
+    obj = driver.find_element_by_id(furthestClass.name)
+    width = furthestClass.x + obj.rect['width']
+    margin = 15
+    driver.set_window_size(width + margin, height + margin)
+
+    driver.save_screenshot("%s.png" % image_name)
+    driver.close()
 
     return redirect('/')
