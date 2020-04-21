@@ -6,7 +6,7 @@ Contains routes through which requests from
 
 from app_package.models import Class, ClassSchema, Relationship, RelationshipSchema, Attribute
 from flask import render_template, json, url_for, request, redirect, flash, Response, jsonify
-from app_package import app, db, cmd_stack
+from app_package import app, db, cmd_stack, driver
 from app_package.core_func import core_save, core_load, core_parse, core_clear
 from app_package.memento.func_objs import (add_class, delete_class, edit_class, 
                                            add_attr, del_attr, edit_attr, add_rel,
@@ -242,23 +242,12 @@ def redo():
 @app.route("/export/", methods=['POST'])
 def export():
     image_name = request.form['export_name']
-
-    chromeOptions = Options()
-    chromeOptions.add_argument("--headless")
-    chromeOptions.add_argument("--hide-scrollbars")
+    driver.refresh()
     
-    driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chromeOptions)
-    driver.get('http://127.0.0.1:5000/')
-
     height = driver.execute_script("return Math.max( document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight )")
-    # find name of class furthest right, get element by id, use that as width
-    furthestClass = Class.query.order_by(Class.x.desc()).first()
-    obj = driver.find_element_by_id(furthestClass.name)
-    width = furthestClass.x + obj.rect['width']
+    width = driver.execute_script("return Math.max( document.body.scrollWidth, document.body.offsetWidth, document.documentElement.clientWidth, document.documentElement.scrollWidth, document.documentElement.offsetWidth )")
     margin = 15
     driver.set_window_size(width + margin, height + margin)
-
     driver.save_screenshot("%s.png" % image_name)
-    driver.close()
 
     return redirect('/')
