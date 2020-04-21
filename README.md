@@ -1,5 +1,6 @@
 # Cowboy Emoji 7 UML Editor
 [![codecov](https://codecov.io/gh/mucsci-students/2020sp-420-CowboyEmoji7/branch/develop/graph/badge.svg)](https://codecov.io/gh/mucsci-students/2020sp-420-CowboyEmoji7)
+
 This project is an open source UML editor built using Flask, jsPlumb, SQLAlchemy, and other useful open source projects. Contains a command line interface, as well as a graphical interface that runs inside your browser. This project exists as a passion project for us at Cowboy Emoji 7--passion for the Unified Modeling Language and, to a lesser extent, passion for passing grades <sup><sup>and degrees</sup></sup>.
 
 # Installation
