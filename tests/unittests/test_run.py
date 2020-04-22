@@ -417,3 +417,40 @@ def test_editAttr_none(capsys):
 ################################ TEST delRel ################################
 
 ################################# UNDO/REDO #################################
+
+def test_undo_add(capsys):
+    app.do_add("class1")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully added class 'class1'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "class1\n\n"
+
+    app.do_undo("")
+    captured = capsys.readouterr()
+    assert captured.out == "undid action\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "No Classes\n\n"
+
+def test_undo_delete(capsys):
+    app.do_add("class1")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully added class 'class1'\n"
+
+    app.do_delete("class1")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully deleted class 'class1'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "No Classes\n\n"
+
+    app.do_undo("")
+    captured = capsys.readouterr()
+    assert captured.out == "undid action\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "class1\n\n"
+
+
+    
