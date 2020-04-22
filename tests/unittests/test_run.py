@@ -10,6 +10,7 @@
 """
 
 import run
+import module 
 
 #################################### SETUP ##################################
 app = run.replShell()
@@ -418,7 +419,7 @@ def test_editAttr_none(capsys):
 
 ################################# UNDO/REDO #################################
 
-def test_undo_add(capsys):
+def test_undo_redo_add(capsys):
     app.do_add("class1")
     captured = capsys.readouterr()
     assert captured.out == "Successfully added class 'class1'\n"
@@ -433,7 +434,15 @@ def test_undo_add(capsys):
     captured = captureList(capsys)
     assert captured.out == "No Classes\n\n"
 
-def test_undo_delete(capsys):
+    app.do_redo("")
+    captured = capsys.readouterr()
+    assert captured.out == "redid action\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "class1\n\n"
+
+
+def test_undo_redo_delete(capsys):
     app.do_add("class1")
     captured = capsys.readouterr()
     assert captured.out == "Successfully added class 'class1'\n"
@@ -452,5 +461,77 @@ def test_undo_delete(capsys):
     captured = captureList(capsys)
     assert captured.out == "class1\n\n"
 
+    app.do_redo("")
+    captured = capsys.readouterr()
+    assert captured.out == "redid action\n"
 
-    
+    captured = captureList(capsys)
+    assert captured.out == "No Classes\n\n"
+
+
+def test_undo_redo_edit(capsys):
+    app.do_add("class1")
+    captured = capsys.readouterr()
+
+    app.do_edit("class1, newName")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully updated class 'class1' to 'newName'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "newName\n\n"
+
+    app.do_undo("")
+    captured = capsys.readouterr()
+    assert captured.out == "undid action\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "class1\n\n"
+
+    app.do_redo("")
+    captured = capsys.readouterr()
+    assert captured.out == "redid action\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "newName\n\n"
+
+def test_undo_redo_add_attr(capsys):
+    app.do_add("class1")
+    captured = capsys.readouterr()
+
+    app.do_addAttr("class1, field, attr1")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully added field 'attr1'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "class1\n  > Fields: attr1\n\n"
+
+    app.do_undo("")
+    captured = capsys.readouterr()
+    assert captured.out == "undid action\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "class1\n\n"
+
+    app.do_redo("")
+    captured = capsys.readouterr()
+    assert captured.out == "redid action\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "class1\n  > Fields: attr1\n\n"
+
+################################# CLEAR #################################
+"""
+def test_clear(capsys):
+    app.do_add("class1, class2, class3")
+    captured = capsys.readouterr()
+
+    app.do_clear("")
+    module.input = lambda: 'y'
+    captured = captureList(capsys)
+    assert captured.out == "No Classes\n\n"
+
+
+def teardown_method(self, method):
+    # This method is being called after each test case, and it will revert input back to original function
+    module.input = input  
+    """
