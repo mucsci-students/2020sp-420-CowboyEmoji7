@@ -8,9 +8,9 @@ myPath = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, myPath + '/../')
 
 from app_package import app, db
-import pytest
 from app_package.models import Class, Relationship, Attribute
 from flask import Flask
+import pytest
 
 @pytest.fixture(autouse=True)
 def test_client():

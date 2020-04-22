@@ -39,12 +39,16 @@ class Relationship(db.Model):
     Use names 'from'/'to' as composite primary key because this combo is unique
     """
 
-    __relationship__ = 'relationship'
+    __tablename__ = 'relationship'
     from_name = db.Column(db.String(200), db.ForeignKey('class.name'), primary_key=True)
     to_name = db.Column(db.String(200), db.ForeignKey('class.name'), primary_key=True)
     rel_type = db.Column(db.String(10)) # agg,comp,gen,none
     parent_class = relationship("Class", back_populates="class_relationships", foreign_keys=[from_name, to_name], primaryjoin='Class.name==Relationship.from_name')
     
+    __mapper_args__ = {
+        'confirm_deleted_rows': False
+    }
+
 
 class RelationshipSchema(Schema):
     """Meta model used by flask-marshmallow in jsonification."""

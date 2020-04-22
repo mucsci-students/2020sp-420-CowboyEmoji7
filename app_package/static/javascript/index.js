@@ -257,8 +257,10 @@ function closeExportBoxBeforeSubmit(){
 // database so that upon reload or other interface calls locations of classes will be saved
 function updateCoords(name) {
     let coords = document.getElementById(name).getBoundingClientRect();
+    let left = coords.left + window.scrollX;
+    let top = coords.top + window.scrollY;
     let xReq = new XMLHttpRequest();
-    let params = "name=" + name + "&left=" + coords.left + "&top=" + coords.top;
+    let params = "name=" + name + "&left=" + left + "&top=" + top;
     xReq.open("POST", "/updateCoords/", true);
     xReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xReq.setRequestHeader("Content-length", params.length);
@@ -431,7 +433,7 @@ function readyRelationship(name){
     else{
         let type = "";
         while (true){
-            let attempt = prompt("What type of relationship?", "agg, comp, gen, or none");
+            let attempt = prompt("What type of relationship?\n\nagg, comp, gen, or none");
             if (attempt == "agg" || attempt == "comp" || attempt == "gen" || attempt == "none"){
                 type = attempt;
                 break;
@@ -454,16 +456,7 @@ function addRelationship(from, to, type){
     let xReq = new XMLHttpRequest();
     xReq.onreadystatechange = function() {
         if (xReq.readyState == 4 && xReq.status == 200) {
-            jsPlumb.connect({
-                source:from, 
-                target:to,
-                anchor:"Continuous",
-                endpoint:"Blank",
-                connector:getConnector(type, from, to),
-                paintStyle:{ stroke: '#6B6E70', strokeWidth:2 },
-                overlays:[getOverlay(type)]
-            });
-            jsPlumb.repaintEverything();
+           window.location.replace("/");
         }
     }
     let params = "class_name=" + from + "&to=" + to + "&rel_type=" + type;
