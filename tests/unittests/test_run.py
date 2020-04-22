@@ -6,6 +6,7 @@
     [X] edit            [X] methods
     [] relationships    [] save
     [] undo             [] load
+    [] export           [] clear
 """
 
 import run
