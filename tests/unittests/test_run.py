@@ -1,11 +1,11 @@
 """ Unit tests for run.py/Command Line Interface 
 
     Tests:
-    [X] add             [] redo
+    [X] add             [X] redo
     [X] delete          [X] fields
     [X] edit            [X] methods
-    [] relationships    [] save
-    [] undo             [] load
+    [X] relationships   [] save
+    [X] undo            [] load
     [] export           [] clear
 """
 
@@ -26,6 +26,12 @@ def captureList(capsys):
 # also captures the add output for me
 def attribute_frame(capsys):
     app.do_add("test, morestuff")
+    captured = capsys.readouterr()
+    return captured
+
+# builds framework for testing relationships
+def rel_frame(capsys):
+    app.do_add("test1, test2")
     captured = capsys.readouterr()
     return captured
 
@@ -414,6 +420,125 @@ def test_editAttr_none(capsys):
 
 ############################### RELATIONSHIPS ###############################
 ################################ TEST addRel ################################
+def test_addRel_notype(capsys):
+    captured = rel_frame(capsys)
+
+    app.do_addRel("test1, none, test2")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully added relationship from 'test1' to 'test2' of type 'none'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test1\ntest2\nRelationships:\n  test1 -> test2 (none)\n\n"
+
+def test_addRel_agg(capsys):
+    captured = rel_frame(capsys)
+
+    app.do_addRel("test1, agg, test2")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully added relationship from 'test1' to 'test2' of type 'agg'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test1\ntest2\nRelationships:\n  test1 -> test2 (agg)\n\n"
+
+def test_addRel_comp(capsys):
+    captured = rel_frame(capsys)
+
+    app.do_addRel("test1, comp, test2")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully added relationship from 'test1' to 'test2' of type 'comp'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test1\ntest2\nRelationships:\n  test1 -> test2 (comp)\n\n"
+
+def test_addRel_gen(capsys):
+    captured = rel_frame(capsys)
+
+    app.do_addRel("test1, gen, test2")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully added relationship from 'test1' to 'test2' of type 'gen'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test1\ntest2\nRelationships:\n  test1 -> test2 (gen)\n\n"
+
+def test_addRel_no_type_given(capsys):
+    captured = rel_frame(capsys)
+
+    app.do_addRel("test1, , test2")
+    captured = capsys.readouterr()
+    assert captured.out == "Usage: addRel <class_name>, <relationship type>, <relationship1>, <relationship2>, ... , <relationshipN>\n  Valid relationship types: agg, comp, gen, none\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test1\ntest2\n\n"
+
+def test_addRel_unknown_type(capsys):
+    captured = rel_frame(capsys)
+
+    app.do_addRel("test1, notareltype, test2")
+    captured = capsys.readouterr()
+    assert captured.out == "ERROR: Invalid relationship type: notareltype\n  Valid relationship types: agg, comp, gen, none\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test1\ntest2\n\n"
+
+def test_addRel_nonexistant_parent(capsys):
+    captured = rel_frame(capsys)
+
+    # writing all cases in one because I'm lazy 
+    app.do_addRel(", none, test2")
+    app.do_addRel(", agg, test2")
+    app.do_addRel(", comp, test2")
+    app.do_addRel(", gen, test2")
+    captured = capsys.readouterr()
+    assert captured.out == "Usage: addRel <class_name>, <relationship type>, <relationship1>, <relationship2>, ... , <relationshipN>\n  Valid relationship types: agg, comp, gen, none\nUsage: addRel <class_name>, <relationship type>, <relationship1>, <relationship2>, ... , <relationshipN>\n  Valid relationship types: agg, comp, gen, none\nUsage: addRel <class_name>, <relationship type>, <relationship1>, <relationship2>, ... , <relationshipN>\n  Valid relationship types: agg, comp, gen, none\nUsage: addRel <class_name>, <relationship type>, <relationship1>, <relationship2>, ... , <relationshipN>\n  Valid relationship types: agg, comp, gen, none\n"
+
+    # now all the cases where a wrong parent is used
+    app.do_addRel("test3, none, test2")
+    app.do_addRel("test3, agg, test2")
+    app.do_addRel("test3, comp, test2")
+    app.do_addRel("test3, gen, test2")
+    captured = capsys.readouterr()
+    assert captured.out == "ERROR: Unable to add relationship from 'test3' to 'test2' of type 'none'\nERROR: Unable to add relationship from 'test3' to 'test2' of type 'agg'\nERROR: Unable to add relationship from 'test3' to 'test2' of type 'comp'\nERROR: Unable to add relationship from 'test3' to 'test2' of type 'gen'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test1\ntest2\n\n"
+
+def test_addRel_nonexistant_child(capsys):
+    captured = rel_frame(capsys)
+
+    # writing all cases in one because I'm lazy 
+    app.do_addRel("test1, none, ")
+    app.do_addRel("test1, agg, ")
+    app.do_addRel("test1, comp, ")
+    app.do_addRel("test1, gen, ")
+    captured = capsys.readouterr()
+    assert captured.out == "Usage: addRel <class_name>, <relationship type>, <relationship1>, <relationship2>, ... , <relationshipN>\n  Valid relationship types: agg, comp, gen, none\nUsage: addRel <class_name>, <relationship type>, <relationship1>, <relationship2>, ... , <relationshipN>\n  Valid relationship types: agg, comp, gen, none\nUsage: addRel <class_name>, <relationship type>, <relationship1>, <relationship2>, ... , <relationshipN>\n  Valid relationship types: agg, comp, gen, none\nUsage: addRel <class_name>, <relationship type>, <relationship1>, <relationship2>, ... , <relationshipN>\n  Valid relationship types: agg, comp, gen, none\n"
+
+    # now all the cases where a wrong child is used
+    app.do_addRel("test1, none, test3")
+    app.do_addRel("test1, agg, test3")
+    app.do_addRel("test1, comp, test3")
+    app.do_addRel("test1, gen, test3")
+    captured = capsys.readouterr()
+    assert captured.out == "ERROR: Unable to add relationship from 'test1' to 'test3' of type 'none'\nERROR: Unable to add relationship from 'test1' to 'test3' of type 'agg'\nERROR: Unable to add relationship from 'test1' to 'test3' of type 'comp'\nERROR: Unable to add relationship from 'test1' to 'test3' of type 'gen'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test1\ntest2\n\n"
+
+def test_addRel_recursive(capsys):
+    captured = rel_frame(capsys)
+    app.do_add("test3, test4")
+    captured = capsys.readouterr()
+    
+    # adding one of each recursive relationship
+    app.do_addRel("test1, none, test1")
+    app.do_addRel("test2, agg, test2")
+    app.do_addRel("test3, comp, test3")
+    app.do_addRel("test4, gen, test4")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully added relationship from 'test1' to 'test1' of type 'none'\nSuccessfully added relationship from 'test2' to 'test2' of type 'agg'\nSuccessfully added relationship from 'test3' to 'test3' of type 'comp'\nSuccessfully added relationship from 'test4' to 'test4' of type 'gen'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test1\ntest2\ntest3\ntest4\nRelationships:\n  test1 -> test1 (none)\n  test2 -> test2 (agg)\n  test3 -> test3 (comp)\n  test4 -> test4 (gen)\n\n"
 
 ################################ TEST delRel ################################
 
