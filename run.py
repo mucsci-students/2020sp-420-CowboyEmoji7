@@ -448,7 +448,8 @@ class replShell(cmd.Cmd):
     Usage: exit
     """
         print('Thank you for using our UML editor')
-        driver.quit()
+        if driver != 'null':
+            driver.quit()
         self.close()
         return True
 

@@ -242,5 +242,6 @@ def redo():
 @app.route("/export/", methods=['POST'])
 def export():
     image_name = request.form['export_name']
-    core_export(image_name)
+    if core_export(image_name):
+        flash("ERROR: Could not find Chrome or Firefox installed", 'error')
     return redirect('/')

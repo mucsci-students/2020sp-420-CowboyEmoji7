@@ -271,12 +271,16 @@ def core_parse (string):
     return listBuf
 
 def core_export(file_name):
-    driver.refresh()
-    height = driver.execute_script("return Math.max( document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight )")
-    width = driver.execute_script("return Math.max( document.body.scrollWidth, document.body.offsetWidth, document.documentElement.clientWidth, document.documentElement.scrollWidth, document.documentElement.offsetWidth )")
-    margin = 15
-    driver.set_window_size(width + margin, height + margin)
-    driver.save_screenshot("%s.png" % file_name)
+    if driver == 'null':
+        return 1
+    else:
+        driver.refresh()
+        height = driver.execute_script("return Math.max( document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight )")
+        width = driver.execute_script("return Math.max( document.body.scrollWidth, document.body.offsetWidth, document.documentElement.clientWidth, document.documentElement.scrollWidth, document.documentElement.offsetWidth )")
+        margin = 15
+        driver.set_window_size(width + margin, height + margin)
+        driver.save_screenshot("%s.png" % file_name)
+    return 0
 
 
 def removeTrailingWhitespace(string):

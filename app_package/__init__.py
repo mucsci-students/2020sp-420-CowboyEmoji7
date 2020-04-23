@@ -6,6 +6,7 @@ from app_package.memento.command_stack import command_stack
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
 
 
 app = Flask(__name__)
@@ -16,11 +17,21 @@ db = SQLAlchemy(app)
 ma = Marshmallow(app)
 cmd_stack = command_stack()
 
-chromeOptions = Options()
-chromeOptions.add_argument("--headless")
-chromeOptions.add_argument("--hide-scrollbars")
+driverOptions = Options()
+driverOptions.add_argument("--headless")
+driverOptions.add_argument("--hide-scrollbars")
 
-driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=chromeOptions)
-driver.get('http://127.0.0.1:5000/')
+#driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=driverOptions)
+driver = 'null'
+try:
+    driver = webdriver.Firefox(GeckoDriverManager().install(), firefox_options=driverOptions)
+    driver.get('http://127.0.0.1:5000/')
+except:
+    print('\nFirefox installation not found, attempting to use Chrome.\n')
+    try:
+        driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=driverOptions)
+        driver.get('http://127.0.0.1:5000/')
+    except:
+        print('Chrome installation not found, ensure Firefox or Chrome are installed to utilize export functionality.\n')
 
 from app_package import routes
