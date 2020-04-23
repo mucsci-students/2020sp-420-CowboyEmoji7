@@ -1,7 +1,7 @@
 """Contains core controller functionality connecting view to data model."""
 
 from app_package.models import Class, ClassSchema, Attribute, AttributeSchema, Relationship, RelationshipSchema
-from app_package import app, db
+from app_package import app, db, driver
 from flask import json
 
 def core_add(class_name):
@@ -269,6 +269,15 @@ def core_parse (string):
         listBuf.append(stringBuf)
         
     return listBuf
+
+def core_export(file_name):
+    driver.refresh()
+    height = driver.execute_script("return Math.max( document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight )")
+    width = driver.execute_script("return Math.max( document.body.scrollWidth, document.body.offsetWidth, document.documentElement.clientWidth, document.documentElement.scrollWidth, document.documentElement.offsetWidth )")
+    margin = 15
+    driver.set_window_size(width + margin, height + margin)
+    driver.save_screenshot("%s.png" % file_name)
+
 
 def removeTrailingWhitespace(string):
     """Helper function which removes trailing whitespace from a string"""

@@ -7,7 +7,7 @@ Contains routes through which requests from
 from app_package.models import Class, ClassSchema, Relationship, RelationshipSchema, Attribute
 from flask import render_template, json, url_for, request, redirect, flash, Response, jsonify
 from app_package import app, db, cmd_stack, driver
-from app_package.core_func import core_save, core_load, core_parse, core_clear
+from app_package.core_func import core_save, core_load, core_parse, core_clear, core_export
 from app_package.memento.func_objs import (add_class, delete_class, edit_class, 
                                            add_attr, del_attr, edit_attr, add_rel,
                                            del_rel, move)
@@ -15,7 +15,7 @@ from parse import *
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
-import time
+import webbrowser
 
 
 
@@ -242,12 +242,5 @@ def redo():
 @app.route("/export/", methods=['POST'])
 def export():
     image_name = request.form['export_name']
-    driver.refresh()
-    
-    height = driver.execute_script("return Math.max( document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight )")
-    width = driver.execute_script("return Math.max( document.body.scrollWidth, document.body.offsetWidth, document.documentElement.clientWidth, document.documentElement.scrollWidth, document.documentElement.offsetWidth )")
-    margin = 15
-    driver.set_window_size(width + margin, height + margin)
-    driver.save_screenshot("%s.png" % image_name)
-
+    core_export(image_name)
     return redirect('/')
