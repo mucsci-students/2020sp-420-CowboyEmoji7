@@ -5,7 +5,7 @@ Contains routes through which requests from
 """
 
 from app_package.models import Class, ClassSchema, Relationship, RelationshipSchema, Attribute
-from flask import render_template, json, url_for, request, redirect, flash, Response, jsonify
+from flask import render_template, json, url_for, request, redirect, flash, Response, jsonify, send_file
 from app_package import app, db, cmd_stack, driver
 from app_package.core_func import core_save, core_load, core_parse, core_clear, core_export
 from app_package.memento.func_objs import (add_class, delete_class, edit_class, 
@@ -244,4 +244,6 @@ def export():
     image_name = request.form['export_name']
     if core_export(image_name):
         flash("ERROR: Could not find Chrome or Firefox installed", 'error')
+    else:
+        return send_file(image_name + ".png", mimetype='image/png')
     return redirect('/')
