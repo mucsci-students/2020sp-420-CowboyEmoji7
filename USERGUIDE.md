@@ -71,6 +71,9 @@ Four default themes control the color scheme of your graphical diagram. If you w
 - clear
 	- Clears all existing classes from the database.
 	- Usage: clear
+- export
+	- Saves an image of the current state of the database to the requested file.
+	- Usage: export <file_location>
 	    
 ## Attributes
 
