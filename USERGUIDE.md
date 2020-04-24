@@ -50,6 +50,9 @@ A graphical interface exists which allows you to do everything the command line 
 
 *Use the 'web' command to open this interface type in your browser.*
 
+### Themes
+Four default themes control the color scheme of your graphical diagram. If you wish to create your own, take a look at the existing "stylesheets" within app_package/static/css/themes and make your own theme! Adding a stylesheet to this folder will automatically show up in the menu within the navigation sidebar.
+
 ## Class
 
 - add
