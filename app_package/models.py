@@ -49,6 +49,12 @@ class Relationship(db.Model):
         'confirm_deleted_rows': False
     }
 
+class Settings(db.Model):
+    """Saves user settings. Currently only saves theme."""
+
+    name = db.Column(db.String(30), primary_key=True)
+    value = db.Column(db.String(50))
+
 
 class RelationshipSchema(Schema):
     """Meta model used by flask-marshmallow in jsonification."""

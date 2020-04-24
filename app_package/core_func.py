@@ -1,6 +1,6 @@
 """Contains core controller functionality connecting view to data model."""
 
-from app_package.models import Class, ClassSchema, Attribute, AttributeSchema, Relationship, RelationshipSchema
+from app_package.models import Class, ClassSchema, Attribute, AttributeSchema, Relationship, RelationshipSchema, Settings
 from app_package import app, db
 from flask import json
 
@@ -265,5 +265,12 @@ def parseType(input):
 
 def core_clear():
     """Clears all existing classes from the database."""
+    theme = Settings.query.get({"name":"theme"})
+    themeVal = theme.value if theme is not None else None
     db.drop_all()
     db.create_all()
+    db.session.commit()
+    if themeVal is not None:
+        newTheme = Settings(name="theme", value=themeVal)
+        db.session.add(newTheme)
+        db.session.commit()

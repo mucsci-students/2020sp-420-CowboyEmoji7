@@ -9,7 +9,6 @@
 
 {% for class in classes %}
 
-<!-- No matter what IntelliSense tries to tell you, the moustaches in the next line are not errors. -->
 <div id="{{ class.name }}" class="draggable Class non-activeEdit" onmouseover="bringForward('{{ class.name }}')" style="top: {{ class.y }}px; left: {{ class.x }}px;">
     <div id="DeleteClass">
         <form action="/delete/" method="POST">
