@@ -74,6 +74,10 @@ body{
     cursor: pointer;
 }
 
+.undo-redo:hover {
+    background-color: #2f3336;
+}
+
 .navBar{
     width: 255px;
     position: fixed;

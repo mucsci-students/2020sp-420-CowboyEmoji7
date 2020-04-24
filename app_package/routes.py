@@ -141,7 +141,7 @@ def manipCharacteristics():
         class_name = theDict[' super ']['class_name']
         for el in theDict:
             if 'action' not in theDict[el]:
-                if theDict[el]['new_attribute'] != theDict[el]['attribute']:
+                if 'to_name' not in theDict[el] and theDict[el]['new_attribute'] != theDict[el]['attribute']:
                     #rename
                     if theDict[el]['new_attribute'] != "":
                         updateAttribute(class_name, theDict[el]['attribute'], theDict[el]['new_attribute'])
