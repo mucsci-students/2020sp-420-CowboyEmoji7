@@ -589,3 +589,28 @@ def test_update_coords_undo_redo (test_client, init_database):
     assert b"left: 100px;" in response.data
     assert b"top: 100px;" in response.data
 
+################################ TEST THEMES ################################
+
+def test_update_themes (test_client, init_database):
+    response = test_client.get('/')
+    assert b"Dark-Green" in response.data
+
+    response = test_client.post('/updateTheme/', data=dict(theme='Dark-Blue'), follow_redirects=True)
+    assert b"Dark-Blue" in response.data
+
+def test_update_themes_twice (test_client, init_database):
+    response = test_client.get('/')
+    assert b"Dark-Green" in response.data
+
+    response = test_client.post('/updateTheme/', data=dict(theme='Dark-Blue'), follow_redirects=True)
+    assert b"Dark-Blue" in response.data
+
+    response = test_client.post('/updateTheme/', data=dict(theme='Light-Blue'), follow_redirects=True)
+    assert b"Light-Blue" in response.data
+
+def test_theme_after_clear (test_client, init_database):
+    response = test_client.post('/updateTheme/', data=dict(theme='Dark-Blue'), follow_redirects=True)
+    assert b"Dark-Blue" in response.data
+
+    response = test_client.post('/clear/', follow_redirects=True)
+    assert b"Dark-Blue" in response.data
