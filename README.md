@@ -58,10 +58,10 @@ We have a continuous integration setup that runs our current suite of pytest tes
 To run tests manually, ensure pytest is installed on your system and run 'pytest' in the top level of the project.
 
 # Use
-See USERGUIDE.md
+See [our user guide](USERGUIDE.md)
 
 # Contribute
-See CONTRIBUTING.md and CODE_OF_CONDUCT.md
+See [our contributing guide](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md)
 
 # License
-See LICENSE and NOTICE.txt
+See [our license](LICENSE) and [notice](NOTICE.txt)

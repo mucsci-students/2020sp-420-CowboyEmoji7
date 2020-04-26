@@ -456,9 +456,12 @@ class replShell(cmd.Cmd):
         return True
 
     def emptyline(self):
+        """It's an empty line. Ignore it."""
         pass
 
     def do_export(self, args):
+        """Saves an image of the current state of the diagram to the requested file.
+    Usage: export <file_location>"""
         if len(args.split()) != 1:
             print("Usage: export <file_location>")
         else:
