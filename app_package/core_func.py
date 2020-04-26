@@ -241,7 +241,7 @@ def core_parse (string):
 
 def core_export(name, interface):
     if driver == 'null':
-        return 1
+        return 1    # pragma: no cover
     else:
         driver.refresh()
         height = driver.execute_script("return Math.max( document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight )")

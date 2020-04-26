@@ -42,14 +42,13 @@ driverOptions.add_experimental_option('excludeSwitches', ['enable-logging'])
 driver = 'null'
 try:
     driver = webdriver.Firefox(GeckoDriverManager().install(), firefox_options=driverOptions)
-    driver.get('http://127.0.0.1:5000/')
 except:
     print('\nFirefox installation not found, attempting to use Chrome.\n')
     try:
         driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=driverOptions)
-        driver.get('http://127.0.0.1:5000/')
-    except:
+    except: # pragma: no cover
         print('Chrome installation not found, ensure Firefox or Chrome are installed to utilize export functionality.\n')
+driver.get('http://127.0.0.1:5000/')
 
 from app_package import routes
 
