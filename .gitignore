@@ -6,3 +6,4 @@ env
 .coverage
 app_package/chromedriver.exe
 htmlcov
+**/*.png

@@ -466,7 +466,7 @@ class replShell(cmd.Cmd):
                 core_export(args, "cli")
 
                 print("Successfully exported diagram as \'" + args + '\'')
-            except:
+            except: # pragma: no cover
                 print("ERROR: Unable to export diagram as \'" + args + '\'')
     
 
