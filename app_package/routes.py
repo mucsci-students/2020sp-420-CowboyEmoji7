@@ -242,8 +242,9 @@ def redo():
 @app.route("/export/", methods=['POST'])
 def export():
     image_name = request.form['export_name']
-    if core_export(image_name):
-        flash("ERROR: Could not find Chrome or Firefox installed", 'error')
-    else:
-        return send_file(image_name + ".png", mimetype='image/png')
-    return redirect('/')
+    try:
+        image = core_export(image_name, "gui")
+        return Response(image, mimetype="image/png", headers={"Content-disposition": "attachment; filename=" + image_name + ".png;"})
+    except:
+        flash("There was a problem exporting. Try again.", 'error')
+        return redirect('/')

@@ -270,7 +270,7 @@ def core_parse (string):
         
     return listBuf
 
-def core_export(file_name):
+def core_export(name, interface):
     if driver == 'null':
         return 1
     else:
@@ -279,8 +279,10 @@ def core_export(file_name):
         width = driver.execute_script("return Math.max( document.body.scrollWidth, document.body.offsetWidth, document.documentElement.clientWidth, document.documentElement.scrollWidth, document.documentElement.offsetWidth )")
         margin = 15
         driver.set_window_size(width + margin, height + margin)
-        driver.save_screenshot("%s.png" % file_name)
-    return 0
+        if interface == "gui":
+            return driver.get_screenshot_as_png()
+        else:
+            driver.save_screenshot(name + '.png')
 
 
 def removeTrailingWhitespace(string):
