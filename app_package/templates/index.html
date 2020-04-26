@@ -9,7 +9,6 @@
 
 {% for class in classes %}
 
-<!-- No matter what IntelliSense tries to tell you, the moustaches in the next line are not errors. -->
 <div id="{{ class.name }}" class="draggable Class non-activeEdit" onmouseover="bringForward('{{ class.name }}')" style="top: {{ class.y }}px; left: {{ class.x }}px;">
     <div id="DeleteClass">
         <form action="/delete/" method="POST">
@@ -42,14 +41,13 @@
                     <h3 class="headings">Fields</h3>
                 {% endif %}
             {% endfor %}
-            <ul class="attributeList">
+            <ul class="list">
                 {% for attr in attributes if attr.class_name == class.name and attr.attr_type == 'field' %}
                     <li id="attr-{{ class.name }}-{{ attr.attribute }}">
                         <input type="hidden" name="field[{{ attr.attribute }}][class_name]" value="{{ class.name }}">
                         <input type="hidden" name="field[{{ attr.attribute }}][attribute]" value="{{ attr.attribute }}">
                         <input type="hidden" class="attrtext-{{ class.name }}" name="field[{{ attr.attribute }}][new_attribute]" value="{{ attr.attribute }}">
                         <span class="attrname-{{ class.name }}">{{ attr.attribute }}</span>
-
                         <label class="container container-{{ class.name }}" style="display:none;">
                             <input type="checkbox" class="attrdel-{{ class.name }}" name="field[{{ attr.attribute }}][action]" value="Delete">
                             <i class="fa fa-trash unchecked" title="Delete"></i>
@@ -94,8 +92,12 @@
             </span>
         </div>
         <div id="Relationships-{{ class.name }}" class="RelationshipDiv" style="display: none;">
-            <hr class="divider">
-            <h4 class="headings">Delete Relationships</h4>
+            {% for rel in class.class_relationships if rel.from_name == class.name %}
+                {% if loop.first %}
+                    <hr class="divider">
+                    <h3 class="headings">Delete Relationships</h3>
+                {% endif %}
+            {% endfor %}
             <ul class="list">
                 {% for rel in class.class_relationships if rel.from_name == class.name %}
                     <li id="rel-{{ class.name }}-{{ rel.to_name }}">
