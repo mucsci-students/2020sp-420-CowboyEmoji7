@@ -519,6 +519,23 @@ body{
     box-shadow: 3px 3px 3px rgb(36, 36, 36);
 }
 
+#ClearButton {
+    cursor: pointer;
+    outline: none;
+    background-color: #CCCCCC;
+    color: #111111;
+    font-weight: bold;
+    font-size: 22px;
+    font-family: 'ubuntu', sans-serif;
+    border: 2px solid #86C232;
+    width: 150px;
+    height: 45px;
+}
+
+#ClearButton:hover{
+    box-shadow: 5px 8px 8px rgb(36, 36, 36);
+}
+
 #ExportButton {
     cursor: pointer;
     outline: none;

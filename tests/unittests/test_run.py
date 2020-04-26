@@ -416,3 +416,15 @@ def test_editAttr_none(capsys):
 ################################ TEST delRel ################################
 
 ################################# UNDO/REDO #################################
+
+################################# EXPORT #################################
+
+def test_export(capsys):
+    captured = attribute_frame(capsys)
+    app.do_export("howdy no")
+    captured = capsys.readouterr()
+    assert captured.out == "Usage: export <file_location>\n"
+
+    app.do_export("howdy")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully exported diagram as \'howdy\'\n"
