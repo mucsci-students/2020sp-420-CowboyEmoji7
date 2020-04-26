@@ -146,28 +146,6 @@ body{
     box-shadow: 5px 8px 8px rgb(36, 36, 36);
 }
 
-#RelationshipButton {
-    cursor: pointer;
-    outline: none;
-    background-color: #474B4F;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    font-family: 'Ubuntu', sans-serif;
-    border: 1px solid #86C232;
-    border-radius: 5px;
-    width: 150px;
-    height: 25px;
-    margin-left: 20%;
-    margin-bottom: 10px;
-    box-shadow: 5px 3px 3px rgb(36, 36, 36);
-}
-
-#RelationshipButton:hover {
-    color: white;
-    box-shadow: 5px 8px 8px rgb(36, 36, 36);
-}
-
 .active{
     color: #86C232;
     border-radius: 5px 5px 0px 0px;
@@ -506,6 +484,23 @@ body{
 }
 
 #ExportButton:hover{
+    color: #86C232;
+    box-shadow: 5px 8px 8px rgb(36, 36, 36);
+}
+
+#ClearButton {
+    cursor: pointer;
+    outline: none;
+    background-color: #474B4F;
+    font-weight: bold;
+    font-size: 22px;
+    font-family: 'ubuntu', sans-serif;
+    border: 2px solid #86C232;
+    width: 150px;
+    height: 45px;
+}
+
+#ClearButton:hover{
     color: #86C232;
     box-shadow: 5px 8px 8px rgb(36, 36, 36);
 }
