@@ -174,6 +174,15 @@ class edit_attr(Command):
         self.newAttrName = newName
 
     def execute(self):
+        parsedType = parseType(self.newAttrName)
+        if parsedType is not None:
+            # link it to the related class if applicable
+            ClassList = Class.query.all()
+            for CurrentClass in ClassList:
+                if CurrentClass.name == parsedType:
+                    cmd_stack.execute(add_rel(self.className, CurrentClass.name, "agg"))
+                    break
+
         return core_update_attr(self.className, self.oldAttrName, self.newAttrName)
 
     def undo(self):
