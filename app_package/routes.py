@@ -5,13 +5,18 @@ Contains routes through which requests from
 """
 
 from app_package.models import Class, ClassSchema, Relationship, RelationshipSchema, Attribute
-from flask import render_template, json, url_for, request, redirect, flash, Response, jsonify
-from app_package import app, db, cmd_stack
-from app_package.core_func import core_save, core_load, core_parse, core_clear
+from flask import render_template, json, url_for, request, redirect, flash, Response, jsonify, send_file
+from app_package import app, db, cmd_stack, driver
+from app_package.core_func import core_save, core_load, core_parse, core_clear, core_export
 from app_package.memento.func_objs import (add_class, delete_class, edit_class, 
                                            add_attr, del_attr, edit_attr, add_rel,
                                            del_rel, move)
 from parse import *
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
+import webbrowser
+
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -234,3 +239,14 @@ def redo():
     """Deals with requests from GUI to redo the last command undone by the user"""
     cmd_stack.redo()
     return redirect('/')
+
+
+@app.route("/export/", methods=['POST'])
+def export():
+    try:
+        image_name = request.form['export_name']
+        image = core_export(image_name, "gui")
+        return Response(image, mimetype="image/png", headers={"Content-disposition": "attachment; filename=" + image_name + ".png;"})
+    except:
+        flash("There was a problem exporting. Try again.", 'error')
+        return redirect('/')

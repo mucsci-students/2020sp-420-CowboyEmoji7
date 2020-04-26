@@ -460,6 +460,26 @@ def test_clear (test_client, init_database):
     assert b"TestClass1" not in response.data
     assert b"No Classes Added" in response.data
 
+################################ TEST EXPORT ################################
+# Kind of. Not sure how to test image content, so I'll test file headers.
+
+def test_export(test_client, init_database):
+    response = test_client.post('/', data=dict(class_name='TestAddToSave'), follow_redirects=True)
+    assert response.status_code == 200
+    assert b"TestAddToSave" in response.data
+
+    response = test_client.post('/export/', data=dict(export_name='TestExport'), follow_redirects=True)
+
+    assert "filename=TestExport.png" in response.headers['Content-Disposition']
+
+def test_export_no_name(test_client, init_database):
+    response = test_client.post('/', data=dict(class_name='TestAddToSave'), follow_redirects=True)
+    assert response.status_code == 200
+    assert b"TestAddToSave" in response.data
+
+    response = test_client.post('/export/', data=dict(export_name=None), follow_redirects=True)
+
+    assert b"There was a problem exporting. Try again." in response.data
 ################################ TEST UNDO/REDO ################################
 
 def test_add_undo_redo (test_client, init_database):

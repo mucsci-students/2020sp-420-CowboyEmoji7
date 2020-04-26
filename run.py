@@ -1,11 +1,13 @@
 import cmd
-from app_package.core_func import (core_save, core_load, core_parse, core_clear)
+from app_package.core_func import (core_save, core_load, core_parse, core_clear, core_export)
 from app_package.memento.func_objs import add_class, delete_class, edit_class, add_attr, del_attr, edit_attr, add_rel, del_rel
 from app_package.models import Class, Attribute, Relationship
-from app_package import app, cmd_stack, db
+from app_package import app, cmd_stack, db, driver, thread
 import webbrowser
 import json
 import readline
+from werkzeug.serving import run_simple
+import threading
 
 class replShell(cmd.Cmd):
     intro = 'Welcome to the UML editor shell.\nType help or ? to list commands.\nType web to open web app.\n'
@@ -334,7 +336,6 @@ class replShell(cmd.Cmd):
     Usage: web
     """
         webbrowser.open_new_tab("http://127.0.0.1:5000")
-        app.run(port=5000, debug=False)
         
     def do_clear(self, args):
         """Clears all existing classes from the database.
@@ -421,7 +422,7 @@ class replShell(cmd.Cmd):
             print("Usage: save <file_location>")
         else:
             try:
-                Jfile = open(args, "w+")
+                Jfile = open(args + ".json", "w+")
                 Jfile.write(core_save())
                 print("Successfully saved file as \'" + args + '\'')
             except:
@@ -448,12 +449,27 @@ class replShell(cmd.Cmd):
     Usage: exit
     """
         print('Thank you for using our UML editor')
+        if driver != 'null':
+            driver.close()
+            driver.quit()
         self.close()
         return True
 
     def emptyline(self):
         pass
+
+    def do_export(self, args):
+        if len(args.split()) != 1:
+            print("Usage: export <file_location>")
+        else:
+            try:
+                core_export(args, "cli")
+
+                print("Successfully exported diagram as \'" + args + '\'')
+            except: # pragma: no cover
+                print("ERROR: Unable to export diagram as \'" + args + '\'')
     
+
     # ----- record and playback -----
     def do_record(self, arg):
         'Save future commands to filename:  RECORD rose.cmd'
@@ -474,7 +490,6 @@ class replShell(cmd.Cmd):
         if self.file:
             self.file.close()
             self.file = None
-
 
 if __name__ == '__main__':
     db.create_all()
