@@ -6,7 +6,7 @@
     [X] edit            [X] methods
     [X] relationships   [] save
     [X] undo            [] load
-    [] export           [] clear
+    [X] export          [] clear
 """
 
 import run
@@ -540,6 +540,81 @@ def test_addRel_recursive(capsys):
     assert captured.out == "test1\ntest2\ntest3\ntest4\nRelationships:\n  test1 -> test1 (none)\n  test2 -> test2 (agg)\n  test3 -> test3 (comp)\n  test4 -> test4 (gen)\n\n"
 
 ################################ TEST delRel ################################
+def test_delRel_notype(capsys):
+    captured = rel_frame(capsys)
+    app.do_addRel("test1, none, test2")
+    captured = capsys.readouterr()
+
+    app.do_delRel("test1, test2")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully deleted relationship from 'test1' to 'test2'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test1\ntest2\n\n"
+
+def test_delRel_agg(capsys):
+    captured = rel_frame(capsys)
+    app.do_addRel("test1, agg, test2")
+    captured = capsys.readouterr()
+
+    app.do_delRel("test1, test2")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully deleted relationship from 'test1' to 'test2'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test1\ntest2\n\n"
+
+def test_delRel_comp(capsys):
+    captured = rel_frame(capsys)
+    app.do_addRel("test1, comp, test2")
+    captured = capsys.readouterr()
+
+    app.do_delRel("test1, test2")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully deleted relationship from 'test1' to 'test2'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test1\ntest2\n\n"
+
+def test_delRel_gen(capsys):
+    captured = rel_frame(capsys)
+    app.do_addRel("test1, gen, test2")
+    captured = capsys.readouterr()
+
+    app.do_delRel("test1, test2")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully deleted relationship from 'test1' to 'test2'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test1\ntest2\n\n"
+
+def test_delRel_recursive(capsys):
+    captured = rel_frame(capsys)
+    app.do_addRel("test1, none, test1")
+    captured = capsys.readouterr()
+
+    app.do_delRel("test1, test1")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully deleted relationship from 'test1' to 'test1'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test1\ntest2\n\n"
+
+def test_delRel_missing_or_wrong(capsys):
+    captured = rel_frame(capsys)
+    app.do_addRel("test1, none, test2")
+    captured = capsys.readouterr()
+
+    app.do_delRel(", test2")
+    app.do_delRel("test1, ")
+    app.do_delRel("test3, test2")
+    app.do_delRel("test1, test3")
+
+    captured = capsys.readouterr()
+    assert captured.out == "Usage: delRel <class_name>, <relationship1>, <relationship2>, ... , <relationshipN>\nUsage: delRel <class_name>, <relationship1>, <relationship2>, ... , <relationshipN>\nERROR: Unable to delete relationship from 'test3' to 'test2'\nERROR: Unable to delete relationship from 'test1' to 'test3'\n"
+
+    captured = captureList(capsys)
+    assert captured.out == "test1\ntest2\nRelationships:\n  test1 -> test2 (none)\n\n"
 
 ################################# UNDO/REDO #################################
 
