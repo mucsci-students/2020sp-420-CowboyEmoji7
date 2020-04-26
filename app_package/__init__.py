@@ -20,6 +20,7 @@ db = SQLAlchemy(app)
 ma = Marshmallow(app)
 cmd_stack = command_stack()
 
+# Keep unnecessary output away from users
 suppress_early = io.StringIO()
 sys.stdout = suppress_early
 
@@ -38,7 +39,7 @@ driverOptions.add_argument("--hide-scrollbars")
 driverOptions.add_experimental_option('excludeSwitches', ['enable-logging'])
 
 
-#driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=driverOptions)
+# Setup selenium webdriver for export
 driver = 'null'
 try:
     driver = webdriver.Firefox(GeckoDriverManager().install(), firefox_options=driverOptions)

@@ -245,6 +245,7 @@ def redo():
     return redirect('/')
 
 def populateThemes():
+    """Helper function to query themes folder to display user options"""
     themePath = "app_package/static/css/themes"
     themeFiles = [f for f in listdir(themePath) if isfile(join(themePath, f))]
     themes = []
@@ -254,6 +255,7 @@ def populateThemes():
 
 @app.route("/updateTheme/", methods=['POST'])
 def updateTheme():
+    """Deals with requests from GUI to change to a different stylesheet"""
     newTheme = request.form['theme']
     theme = Settings.query.get({"name":"theme"})
     if theme is None:
@@ -267,6 +269,7 @@ def updateTheme():
 
 @app.route("/export/", methods=['POST'])
 def export():
+    """Deals with requests from GUI to export a screenshot of the diagram"""
     try:
         image_name = request.form['export_name']
         image = core_export(image_name, "gui")

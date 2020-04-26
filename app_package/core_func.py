@@ -240,6 +240,7 @@ def core_parse (string):
     return listBuf
 
 def core_export(name, interface):
+    """Takes a screenshot of the current contents of the diagram and gives them to the user"""
     if driver == 'null':
         return 1    # pragma: no cover
     else:
