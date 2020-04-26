@@ -241,8 +241,8 @@ def redo():
 
 @app.route("/export/", methods=['POST'])
 def export():
-    image_name = request.form['export_name']
     try:
+        image_name = request.form['export_name']
         image = core_export(image_name, "gui")
         return Response(image, mimetype="image/png", headers={"Content-disposition": "attachment; filename=" + image_name + ".png;"})
     except:
