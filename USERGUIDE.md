@@ -2,7 +2,7 @@
 
 ### Python:
 - Make sure that python3 is installed on your computer
-- Also make sure that python is located as a path in your enviroment variables
+- Also make sure that python is located as a path in your environment variables
 
 ### Install virtualenv:
 - Type `pip install virtualenv`
@@ -23,12 +23,7 @@
 	- Type `source env/bin/activate`
 - Type `python3 install.py` to install libraries
 
-***Both operations below assume you are inside of the activated enviroment***
-
-### To clear and create a new Database: 
-- Note: A database is created automatically in running the application if one does not already exist. There is no need to run this command unless you have a database and want a new, empty one.
-- Type `python3 cleardb.py`
-- If a warning containing (*SQLALCHEMY_TRACK_MODIFICATIONS*) is thrown it can be safely ignored
+***The operation below assumes you are inside of the activated environment***
 
 ### To run the application:
 - `python3 run.py`
@@ -42,12 +37,7 @@
 	- Type `env\Scripts\activate`
 - Type `python install.py` to install libraries
 
-***Both operations below assume you are inside of the activated enviroment***
-
-### To clear and create a new Database:
-- Note: A database is created automatically in running the application if one does not already exist. There is no need to run this command unless you have a database and want a new, empty one. 
-- `python cleardb.py`
-- If a warning containing (*SQLALCHEMY_TRACK_MODIFICATIONS*) is thrown it can be safely ignored
+***The operation below assumes you are inside of the activated environment***
 
 ### To run the application:
 - python run.py
@@ -59,6 +49,9 @@
 A graphical interface exists which allows you to do everything the command line interface does, as well as click and drag classes to give them position and create a useful UML diagram.
 
 *Use the 'web' command to open this interface type in your browser.*
+
+### Themes
+Four default themes control the color scheme of your graphical diagram. If you wish to create your own, take a look at the existing "stylesheets" within app_package/static/css/themes and make your own theme! Adding a stylesheet to this folder will automatically show up in the menu within the navigation sidebar.
 
 ## Class
 
@@ -75,6 +68,12 @@ A graphical interface exists which allows you to do everything the command line 
 - list
 	- Lists every class in the database.
 	- Usage: list
+- clear
+	- Clears all existing classes from the database.
+	- Usage: clear
+- export
+	- Saves an image of the current state of the database to the requested file.
+	- Usage: export <file_location>
 	    
 ## Attributes
 
@@ -92,7 +91,7 @@ A graphical interface exists which allows you to do everything the command line 
 
 - addRel
 	- Accepts a single 'from' class name and relationship type followed by a list of 'to' class names separated by commas and adds these relationships to the database.
-	- Usage: addRel <class_name>, <relationship type>, <relationship1>, <relationship2>, ... , <relationshipN>
+	- Usage: addRel <class_name>, <relationship_type>, <relationship1>, <relationship2>, ... , <relationshipN>
 	- Valid relationship types: agg, comp, gen, none
 - delRel
 	- Accepts a single 'from' class name followed by a list of 'to' class names separated by commas and removes these relationships from the database.

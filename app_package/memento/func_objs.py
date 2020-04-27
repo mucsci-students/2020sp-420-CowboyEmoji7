@@ -1,19 +1,18 @@
-from ..core_func import (core_add, core_delete, core_add_attr, core_update, core_add_attr, core_del_attr, core_update_attr, core_add_rel, core_del_rel)
+from ..core_func import (core_add, core_delete, core_add_attr, core_update, core_add_attr, core_del_attr, core_update_attr, core_add_rel, core_del_rel, parseType)
 from ..models import Attribute, Class, Relationship
-from app_package import db
-
+from app_package import db, cmd_stack
 
 class Command:
     """The base class which all commands are a subclass
        All subclasses require these methods"""
     def execute(self):
-        pass
+        pass    # pragma: no cover
 
     def undo(self):
-        return
+        return  # pragma: no cover
 
     def redo(self):
-        pass
+        pass    # pragma: no cover
 
 
 class add_class(Command):
@@ -124,6 +123,15 @@ class add_attr(Command):
         self.attrType = attrType
 
     def execute(self):
+        parsedType = parseType(self.attrName)
+        if parsedType is not None:
+            # link it to the related class if applicable
+            ClassList = Class.query.all()
+            for CurrentClass in ClassList:
+                if CurrentClass.name == parsedType:
+                    cmd_stack.execute(add_rel(self.className, CurrentClass.name, "agg"))
+                    break
+        
         return core_add_attr(self.className, self.attrName, self.attrType)
 
     def undo(self):
@@ -166,6 +174,15 @@ class edit_attr(Command):
         self.newAttrName = newName
 
     def execute(self):
+        parsedType = parseType(self.newAttrName)
+        if parsedType is not None:
+            # link it to the related class if applicable
+            ClassList = Class.query.all()
+            for CurrentClass in ClassList:
+                if CurrentClass.name == parsedType:
+                    cmd_stack.execute(add_rel(self.className, CurrentClass.name, "agg"))
+                    break
+
         return core_update_attr(self.className, self.oldAttrName, self.newAttrName)
 
     def undo(self):

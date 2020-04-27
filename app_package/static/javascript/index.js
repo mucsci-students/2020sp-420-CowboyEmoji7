@@ -15,6 +15,9 @@ const saveButton = document.getElementById('SaveButton');
 const addClassForm = document.getElementById('AddClassForm');
 const classInput = document.getElementById('ClassInput');
 const addButton = document.getElementById('AddButton');
+const exportForm = document.getElementById('exportForm');
+const exportInput = document.getElementById('exportInput');
+const exportButton = document.getElementById('ExportButton');
 
 mainBody.style.width = screen.availWidth;
 
@@ -61,6 +64,8 @@ function navBarAction(){
     }
     else if (addClassForm.style.display == "block") {
         closeAddClassBeforeSubmit();
+    }else if(exportForm.style.display == "block"){
+        closeExportBoxBeforeSubmit();
     }
 }
 
@@ -86,12 +91,10 @@ function editClass(name) {
     
 
     if(document.getElementById('Relationships-' + name).style.display == 'block') {
-        let elements = document.getElementById('custom-select-' + name).options;
         document.getElementById(name).classList.remove('activeEdit');
         document.getElementById(name).classList.add('non-activeEdit');
         document.getElementById('Relationships-' + name).style.display = 'none';
         document.getElementById('addAttributeForm-' + name).style.display = 'none';
-        document.getElementById('custom-select-' + name).blur();
         document.getElementById('class-' + name).style.display = "block";
         document.getElementById('classtext-' + name).type = "hidden";
         document.getElementById('attrsave-' + name).style.display = "none";
@@ -100,14 +103,11 @@ function editClass(name) {
         {
             attrNames[i].style.display = "block";
             attrTexts[i].type = "hidden";
+        }
+        for (let i = 0; i < attrChecks.length; ++i){
             attrChecks[i].style.display = "none";
         }
 
-        // Deselecting the selected options when the user is done editing if they selected any
-        for(let i = 0; i < elements.length; i++)
-        {
-            elements[i].selected = false;
-        }
     }
     else if (document.getElementById('Relationships-' + name).style.display == 'none') {
         document.getElementById(name).classList.remove('non-activeEdit');
@@ -122,6 +122,8 @@ function editClass(name) {
         {
             attrNames[i].style.display = "none";
             attrTexts[i].type = "text";
+        }
+        for (let i = 0; i < attrChecks.length; ++i){
             attrChecks[i].style.display = "inline";
         }
     }
@@ -129,13 +131,14 @@ function editClass(name) {
 }
 
 // Displays "Add Class" popup, closes all other popups
-// TODO: Utilize existing functions, rather than copy-pasting
 function addClass() {
     if (loadForm.style.display == "block") {
         closeLoadBoxBeforeSubmit();
     }
     else if (saveForm.style.display == "block") {
         closeSaveBoxBeforeSubmit();
+    }else if(exportForm.style.display == "block"){
+        closeExportBoxBeforeSubmit();
     }
     classInput.value = "";
     addClassForm.style.display = "block";
@@ -151,7 +154,6 @@ function closeAddClass() {
 }
 
 // Closes "Add Class" popup, clears field
-// TODO: This and "closeAddClass" should probably be one function
 function closeAddClassBeforeSubmit() {
     classInput.value = "";
     addClassForm.style.display = "none";
@@ -160,13 +162,14 @@ function closeAddClassBeforeSubmit() {
 }
 
 // Displays "Save File" popup, closes all other popups
-// TODO: Utilize existing functions, rather than copy-pasting
 function openSaveBox() {
     if (addClassForm.style.display == "block") {
         closeAddClassBeforeSubmit();
     }
     else if (loadForm.style.display == "block") {
         closeLoadBoxBeforeSubmit();
+    }else if(exportForm.style.display == "block"){
+        closeExportBoxBeforeSubmit();
     }
     saveInput.value = "";
     saveForm.style.display = "block";
@@ -182,7 +185,6 @@ function closeSaveBox() {
 }
 
 // Closes "Save File" popup, clears field
-// TODO: This and "closeSaveBox" should probably be one function
 function closeSaveBoxBeforeSubmit() {
     saveInput.value = "";
     saveForm.style.display = "none";
@@ -191,13 +193,14 @@ function closeSaveBoxBeforeSubmit() {
 }
 
 // Displays "Load File" popup, closes all other popups
-// TODO: Utilize existing functions, rather than copy-pasting
 function openLoadBox() {
     if (saveForm.style.display == "block") {
         closeSaveBoxBeforeSubmit();
     }
     else if (addClassForm.style.display == "block") {
         closeAddClassBeforeSubmit();
+    }else if(exportForm.style.display == "block"){
+        closeExportBoxBeforeSubmit();
     }
     loadInput.value = "";
     loadForm.style.display = "block";
@@ -213,7 +216,6 @@ function closeLoadBox() {
 }
 
 // Closes "Load File" popup, clears field
-// TODO: This and "closeLoadBox" should probably be one function
 function closeLoadBoxBeforeSubmit() {
     loadInput.value = "";
     loadForm.style.display = "none";
@@ -221,12 +223,44 @@ function closeLoadBoxBeforeSubmit() {
     loadButton.classList.add("non-active");
 }
 
+// Displays "Export File" popup, closes all other popups
+function openExportBox(){
+    if (saveForm.style.display == "block") {
+        closeSaveBoxBeforeSubmit();
+    }else if (addClassForm.style.display == "block") {
+        closeAddClassBeforeSubmit();
+    }else if(loadForm.style.display == "block"){
+        closeLoadBoxBeforeSubmit();
+    }
+    exportInput.value = "";
+    exportForm.style.display = "block";
+    exportButton.classList.remove("non-active");
+    exportButton.classList.add("active");
+}
+
+// Closes "Export File" popup
+function closeExportBox(){
+    exportForm.style.display = "none";
+    exportButton.classList.remove("active");
+    exportButton.classList.add("non-active");
+}
+
+// Closes "Export File" popup, clears field
+function closeExportBoxBeforeSubmit(){
+    exportInput.value = "";
+    exportForm.style.display = "none";
+    exportButton.classList.remove("active");
+    exportButton.classList.add("non-active");
+}
+
 // Upon release of the draggable component this function will be called to update cords in 
 // database so that upon reload or other interface calls locations of classes will be saved
 function updateCoords(name) {
     let coords = document.getElementById(name).getBoundingClientRect();
+    let left = coords.left + window.scrollX;
+    let top = coords.top + window.scrollY;
     let xReq = new XMLHttpRequest();
-    let params = "name=" + name + "&left=" + coords.left + "&top=" + coords.top;
+    let params = "name=" + name + "&left=" + left + "&top=" + top;
     xReq.open("POST", "/updateCoords/", true);
     xReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xReq.setRequestHeader("Content-length", params.length);
@@ -380,4 +414,62 @@ function ensureNoOverlap(name, lastMove){
             }
         }
     }
+}
+
+// Two possible states for the entrance of this function:
+//   If the process is in the first stage (no class has been selected):
+//     Save the clicked name, open the help prompt
+//     Allows the next part to occur
+//   If the process is halfway (one class has already been selected):
+//     Prompt for type until given a valid type or cancelled.
+//     If given type, call to add the relationship
+let class_clicked = "";
+function readyRelationship(name){
+    if (class_clicked == ""){
+        class_clicked = name;
+        let addRelHelp = document.getElementById("addRelHelp");
+        addRelHelp.style.display = "block";
+    }
+    else{
+        let type = "";
+        while (true){
+            let attempt = prompt("What type of relationship?\n\nagg, comp, gen, or none");
+            if (attempt == "agg" || attempt == "comp" || attempt == "gen" || attempt == "none"){
+                type = attempt;
+                break;
+            }
+            if (attempt == null){
+                cancelAddRel();
+                return;
+            }
+        }
+
+        addRelationship(class_clicked, name, type);
+        class_clicked = "";
+    }
+    
+}
+
+// Given a 'from' name, 'to' name, and relationship type,
+//   send a request to add a relationship and render the line.
+function addRelationship(from, to, type){
+    let xReq = new XMLHttpRequest();
+    xReq.onreadystatechange = function() {
+        if (xReq.readyState == 4 && xReq.status == 200) {
+           window.location.replace("/");
+        }
+    }
+    let params = "class_name=" + from + "&to=" + to + "&rel_type=" + type;
+    xReq.open("POST", "/addRelationship/", true);
+    xReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xReq.setRequestHeader("Content-length", params.length);
+    xReq.setRequestHeader("Connection", "close");
+    xReq.send(params);
+}
+
+// Upon cancelling adding a relationship, clear progress of that process
+function cancelAddRel(){
+    class_clicked = "";
+    let addRelHelp = document.getElementById("addRelHelp");
+    addRelHelp.style.display = "none";
 }

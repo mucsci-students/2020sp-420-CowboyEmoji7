@@ -4,3 +4,6 @@ env
 .vscode
 **/*.pyc
 .coverage
+app_package/chromedriver.exe
+htmlcov
+**/*.png

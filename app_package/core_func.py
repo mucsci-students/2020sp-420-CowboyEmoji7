@@ -1,7 +1,7 @@
 """Contains core controller functionality connecting view to data model."""
 
-from app_package.models import Class, ClassSchema, Attribute, AttributeSchema, Relationship, RelationshipSchema
-from app_package import app, db
+from app_package.models import Class, ClassSchema, Attribute, AttributeSchema, Relationship, RelationshipSchema, Settings
+from app_package import app, db, driver
 from flask import json
 
 def core_add(class_name):
@@ -25,29 +25,23 @@ def core_delete(class_name):
 
     Returns 0 on success, 1 on failure
     """
-    try:
-        class_to_delete = Class.query.get(class_name)
-        if (class_to_delete is None):
-            return 1
+    class_to_delete = Class.query.get(class_name)
 
-        relations = Relationship.query.filter(class_name == Relationship.from_name).all()
-        for rel in relations:
-            db.session.delete(rel)
+    relations = Relationship.query.filter(class_name == Relationship.from_name).all()
+    for rel in relations:
+        db.session.delete(rel)
 
-        relations = Relationship.query.filter(class_name == Relationship.to_name).all()
-        for rel in relations:
-            db.session.delete(rel)
+    relations = Relationship.query.filter(class_name == Relationship.to_name).all()
+    for rel in relations:
+        db.session.delete(rel)
 
-        attributes = Attribute.query.filter(class_name == Attribute.class_name).all()
-        for attr in attributes:
-            db.session.delete(attr)
+    attributes = Attribute.query.filter(class_name == Attribute.class_name).all()
+    for attr in attributes:
+        db.session.delete(attr)
 
-        db.session.delete(class_to_delete)
-        db.session.commit()
-        return 0
-    except:
-        db.session.rollback()
-        return 1
+    db.session.delete(class_to_delete)
+    db.session.commit()
+    return 0
 
 def core_update(old_name, new_name):
     """Updates a class with the given name from the database with a new name.
@@ -111,7 +105,6 @@ def core_load(data):
         for element in data:
             if "'" in element["name"] or '"' in element["name"]:
                 raise ValueError("Double and single quotes are disallowed in class names.")
-                return 1
             newClass = Class(
                 name=element["name"],
                 x=max(element["x"], 0),
@@ -157,15 +150,6 @@ def core_add_attr(pName, attr, attrType):
         db.session.add(new_attr)
         db.session.commit()
         
-        parsedType = parseType(attr)
-        if parsedType is not None:
-            # link it to the related class if applicable
-            ClassList = Class.query.all()
-            for CurrentClass in ClassList:
-                if CurrentClass.name == parsedType:
-                    core_add_rel(pName, CurrentClass.name, "agg")
-                    break
-        
         return 0
     except:
         db.session.rollback()
@@ -177,17 +161,10 @@ def core_del_attr(pName, attr):
     Returns 0 on success, 1 on failure
     """
 
-    try:
-        attr_to_delete = Attribute.query.get({"class_name": pName, "attribute": attr})
-        if (attr_to_delete is None):
-            return 1
-
-        db.session.delete(attr_to_delete)
-        db.session.commit()
-        return 0
-    except:
-        db.session.rollback()
-        return 1
+    attr_to_delete = Attribute.query.get({"class_name": pName, "attribute": attr})
+    db.session.delete(attr_to_delete)
+    db.session.commit()
+    return 0
 
 def core_update_attr(pName, attr, newAttr):
     """Updates an attribute in class with given name in the database
@@ -198,20 +175,10 @@ def core_update_attr(pName, attr, newAttr):
     try:
         attr_to_update = Attribute.query.get({"class_name": pName, "attribute": attr})
         if (attr_to_update is None):
-            return 1
+            raise Exception("No such attribute exists!")
 
         attr_to_update.attribute = newAttr
         db.session.commit()
-        
-        parsedType = parseType(newAttr)
-        if parsedType is not None:
-            # link it to the related class if applicable
-            ClassList = Class.query.all()
-            for CurrentClass in ClassList:
-                if CurrentClass.name == parsedType:
-                    core_add_rel(pName, CurrentClass.name, "agg")
-                    break
-                
         return 0
     except:
         db.session.rollback()
@@ -225,7 +192,7 @@ def core_add_rel(from_name, to_name, rel_type):
 
     try:
         if (Class.query.get(from_name) is None or Class.query.get(to_name) is None):
-            return 1
+            raise Exception('One or more classes do not exist!')
         new_rel = Relationship(from_name=from_name, to_name=to_name, rel_type=rel_type)
         db.session.add(new_rel)
         db.session.commit()
@@ -240,17 +207,10 @@ def core_del_rel(from_name, to_name):
     Returns 0 on success, 1 on failure
     """
 
-    try:
-        rel_to_delete = Relationship.query.get({"from_name": from_name, "to_name": to_name})
-        if (rel_to_delete is None):
-            return 1
-        
-        db.session.delete(rel_to_delete)
-        db.session.commit()
-        return 0
-    except:
-        db.session.rollback()
-        return 1
+    rel_to_delete = Relationship.query.get({"from_name": from_name, "to_name": to_name})
+    db.session.delete(rel_to_delete)
+    db.session.commit()
+    return 0
 
 def core_parse (string):
     """Parses useful tokens for data manipulation from a string list with comma delimiters"""
@@ -279,6 +239,22 @@ def core_parse (string):
         
     return listBuf
 
+def core_export(name, interface):
+    """Takes a screenshot of the current contents of the diagram and gives them to the user"""
+    if driver == 'null':
+        return 1    # pragma: no cover
+    else:
+        driver.refresh()
+        height = driver.execute_script("return Math.max( document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight )")
+        width = driver.execute_script("return Math.max( document.body.scrollWidth, document.body.offsetWidth, document.documentElement.clientWidth, document.documentElement.scrollWidth, document.documentElement.offsetWidth )")
+        margin = 15
+        driver.set_window_size(width + margin, height + margin)
+        if interface == "gui":
+            return driver.get_screenshot_as_png()
+        else:
+            driver.save_screenshot(name + '.png')
+
+
 def removeTrailingWhitespace(string):
     """Helper function which removes trailing whitespace from a string"""
     while (string[-1] == ' ' or string[-1] == '\t'):
@@ -302,3 +278,15 @@ def parseType(input):
     if tipe == front:
         tipe = None
     return(tipe)
+
+def core_clear():
+    """Clears all existing classes from the database."""
+    theme = Settings.query.get({"name":"theme"})
+    themeVal = theme.value if theme is not None else None
+    db.drop_all()
+    db.create_all()
+    db.session.commit()
+    if themeVal is not None:
+        newTheme = Settings(name="theme", value=themeVal)
+        db.session.add(newTheme)
+        db.session.commit()

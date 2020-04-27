@@ -1,4 +1,4 @@
-/* Contains style information for base index */
+/* Contains style information for base index in dark blue theme */
 
 body{
     margin: 0px;
@@ -48,16 +48,21 @@ body{
     right: 20px;
 }
 
-.undo {
-    background-color: #1c79c0;
+#undo {
+    position: fixed;
+    top: 0;
+    right: 50px;
+    z-index: 999999;
 }
 
-.redo {
-    background-color: #1c79c0;
+#redo {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 999999;
 }
 
 .undo-redo {
-    float: right;
     background-color: #424649;
     border: none;
     color: white;
@@ -67,6 +72,10 @@ body{
     margin-right: 4px;
     margin-top: 4px;
     cursor: pointer;
+}
+
+.undo-redo:hover {
+    background-color: #2f3336;
 }
 
 .navBar{
@@ -131,13 +140,13 @@ body{
     font-size: 22px;
     font-weight: bold;
     font-family: 'Ubuntu', sans-serif;
-    border: 2px solid #86C232;
+    border: 2px solid rgb(0, 204, 255);
     width: 150px;
     height: 45px;
 }
 
 #AddButton:hover {
-    color: #86C232;
+    color: rgb(0, 204, 255);
     box-shadow: 5px 8px 8px rgb(36, 36, 36);
 }
 
@@ -149,7 +158,7 @@ body{
     font-size: 16px;
     font-weight: bold;
     font-family: 'Ubuntu', sans-serif;
-    border: 1px solid #86C232;
+    border: 1px solid rgb(0, 204, 255);
     border-radius: 5px;
     width: 150px;
     height: 25px;
@@ -164,7 +173,7 @@ body{
 }
 
 .active{
-    color: #86C232;
+    color: rgb(0, 204, 255);
     border-radius: 5px 5px 0px 0px;
     box-shadow: 5px 8px 8px rgb(36, 36, 36);
 }
@@ -182,13 +191,13 @@ body{
     font-weight: bold;
     font-size: 22px;
     font-family: 'ubuntu', sans-serif;
-    border: 2px solid #86C232;
+    border: 2px solid rgb(0, 204, 255);
     width: 150px;
     height: 45px;
 }
 
 #SaveButton:hover{
-    color: #86C232;
+    color: rgb(0, 204, 255);
     box-shadow: 5px 8px 8px rgb(36, 36, 36);
 }
 
@@ -199,13 +208,13 @@ body{
     font-weight: bold;
     font-size: 22px;
     font-family: 'Ubuntu', sans-serif;
-    border: 2px solid #86C232;
+    border: 2px solid rgb(0, 204, 255);
     width: 150px;
     height: 45px;
 }
 
 #LoadButton:hover {
-    color: #86C232;
+    color: rgb(0, 204, 255);
     box-shadow: 5px 8px 8px rgb(36, 36, 36);
 }
 
@@ -267,7 +276,7 @@ body{
     position: sticky;
     z-index: 1;
     background-color: #474B4F;
-    border: 1px solid #86C232;
+    border: 1px solid rgb(0, 204, 255);
     text-align: center;
     width: 200px;
     height: 130px;
@@ -303,7 +312,7 @@ body{
 .SubmitButton {
     outline: none;
     cursor: pointer;
-    border: 1px solid #86C232;
+    border: 1px solid rgb(0, 204, 255);
     background-color: #474B4F;
     box-shadow: 2px 2px 1px rgb(36, 36, 36);
     color: white;
@@ -324,7 +333,7 @@ body{
     text-align: center;
     width: 200px;
     height: 130px;
-    border: 1px solid #86C232;
+    border: 1px solid rgb(0, 204, 255);
     font-size: 16px;
     font-family: 'Ubuntu', sans-serif;
     border-radius: 0px 0px 5px 5px;
@@ -357,7 +366,7 @@ body{
 .saveButton {
     outline: none;
     cursor: pointer;
-    border: 1px solid #86C232;
+    border: 1px solid rgb(0, 204, 255);
     background-color: #474B4F;
     box-shadow: 2px 2px 1px rgb(36, 36, 36);
     color: white;
@@ -375,7 +384,7 @@ body{
     position: sticky;
     z-index: 1;
     background-color: #474B4F;
-    border: 1px solid #86C232;
+    border: 1px solid rgb(0, 204, 255);
     text-align: center;
     width: 200px;
     height: 130px;
@@ -420,7 +429,7 @@ body{
 .loadButton {
     outline: none;
     cursor: pointer;
-    border: 1px solid #86C232;
+    border: 1px solid rgb(0, 204, 255);
     background-color: #474B4F;
     box-shadow: 2px 2px 1px rgb(36, 36, 36);
     color: white;
@@ -434,6 +443,95 @@ body{
     box-shadow: 3px 3px 3px rgb(36, 36, 36);
 }
 
+.exportPopup{
+    position: sticky;
+    z-index: 1;
+    background-color: #474B4F;
+    text-align: center;
+    width: 200px;
+    height: 130px;
+    border: 1px solid rgb(0, 204, 255);
+    font-size: 16px;
+    font-family: 'Ubuntu', sans-serif;
+    border-radius: 0px 0px 5px 5px;
+    box-shadow: 5px 4px 3px rgb(36, 36, 36);
+    visibility: visible;
+    -webkit-animation: fadeIn .5s;
+    animation: fadeIn .5s
+}
+
+.exportPopup input {
+    padding-left: 5px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    box-shadow: none;
+}
+
+.exportPopup h1 {
+    padding-top: 15px;
+    margin-bottom: 0px;
+    margin-top: 5px;
+    color: white;
+}
+
+#exportForm{
+    display: none;
+}
+
+.exportButton {
+    outline: none;
+    cursor: pointer;
+    border: 1px solid rgb(0, 204, 255);
+    background-color: #474B4F;
+    box-shadow: 2px 2px 1px rgb(36, 36, 36);
+    color: white;
+    border-radius: 5px;
+    width: 60px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.exportButton:hover{
+    box-shadow: 3px 3px 3px rgb(36, 36, 36);
+}
+
+#ClearButton {
+    cursor: pointer;
+    outline: none;
+    background-color: #474B4F;
+    color: white;
+    font-weight: bold;
+    font-size: 22px;
+    font-family: 'ubuntu', sans-serif;
+    border: 2px solid rgb(0, 204, 255);
+    width: 150px;
+    height: 45px;
+}
+
+#ClearButton:hover{
+    color: rgb(0, 204, 255);
+    box-shadow: 5px 8px 8px rgb(36, 36, 36);
+}
+
+#ExportButton {
+    cursor: pointer;
+    outline: none;
+    background-color: #474B4F;
+    font-weight: bold;
+    font-size: 22px;
+    font-family: 'ubuntu', sans-serif;
+    border: 2px solid rgb(0, 204, 255);
+    width: 150px;
+    height: 45px;
+}
+
+#ExportButton:hover{
+    color: rgb(0, 204, 255);
+    box-shadow: 5px 8px 8px rgb(36, 36, 36);
+}
+
 #noClasses {
     font-family: 'Ubuntu', sans-serif; 
     left: 45%; 
@@ -444,7 +542,7 @@ body{
     text-align: center;
     padding-top: 25px;
     border-radius: 5px;
-    border: 2px solid #86C232;
+    border: 2px solid rgb(0, 204, 255);
     width: 250px;
     height: 50px;
     background-color: #222629;
@@ -464,7 +562,7 @@ body{
 }
 
 .Class:hover {
-    box-shadow: 0px 0px 15px #61892F;
+    box-shadow: 0px 0px 15px rgb(28, 166, 200);
 }
 
 .EditClass {
@@ -509,16 +607,37 @@ body{
     background-color: #1c5c9c;
 }
 
+.RelClass {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+}
+
+.RelButton {
+    cursor: pointer;
+    background-color: rgb(248, 232, 3);
+    outline: none;
+    color: #222629;
+    font-size: 16px;
+    border: none;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.RelButton:hover {
+    background-color: rgb(187, 178, 6);
+}
+
 .non-activeEdit {
     box-shadow: none;
 }
 
 .activeEdit{
-    box-shadow: 0px 0px 15px #61892F;
+    box-shadow: 0px 0px 15px rgb(28, 166, 200);
 }
 
 #AddAttribute {
-    border: 1px solid #86C232;
+    border: 1px solid rgb(0, 204, 255);
     background-color: #474B4F;
     color: white;
     box-shadow: 5px 3px 3px rgb(36, 36, 36);
@@ -533,7 +652,7 @@ body{
 
 .outline {
     margin-top: 1px;
-    border: 1px solid #86C232;
+    border: 1px solid rgb(0, 204, 255);
     background-color: #474B4F;
     color: white;
     box-shadow: 5px 3px 3px rgb(36, 36, 36);
@@ -560,24 +679,27 @@ body{
     color: white;
 }
 
-.attributeList {
+.list {
     list-style-type: square;
     padding-right: 15px;
     color: white;
+    margin-bottom: 30px;
 }
 
-.attributeList li {
+.list li {
     font-size: 14px;
     margin-bottom: 5px;
     color: white;
 }
 
 .checked {
+    float: right;
     cursor: pointer;
     color: red;
 }
 
 .unchecked {
+    float: right;
     cursor: pointer;
     color: #eee;
 }
@@ -597,16 +719,6 @@ body{
 
 .container:hover input[type="checkbox"] ~ .unchecked {
     color: #888;
-}
-
-.relationshipList {
-    list-style: none;
-    color: white;
-}
-
-.relationshipList li {
-    font-size: 14px;
-    color: white;
 }
 
 #relOptions {
@@ -642,4 +754,21 @@ body{
     color: #6B6E70;
     font-size: 30px; 
     font-weight: bold;
+}
+
+#addRelHelp {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    font-family: 'Ubuntu', sans-serif;
+    color: #FFFFFF;
+    z-index: 999999999999;
+}
+
+#addRelHelp a {
+    color: red;
+    cursor: pointer;
+    text-decoration: underline;
 }

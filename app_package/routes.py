@@ -4,14 +4,16 @@ Contains routes through which requests from
   the view are passed to interact with the data model.
 """
 
-from app_package.models import Class, ClassSchema, Relationship, RelationshipSchema, Attribute
-from flask import render_template, json, url_for, request, redirect, flash, Response
-from app_package import app, db, cmd_stack
-from app_package.core_func import core_save, core_load, core_parse
+from app_package.models import Class, ClassSchema, Relationship, RelationshipSchema, Attribute, Settings
+from flask import render_template, json, url_for, request, redirect, flash, Response, jsonify
+from app_package import app, db, cmd_stack, driver
+from app_package.core_func import core_save, core_load, core_parse, core_clear, core_export
 from app_package.memento.func_objs import (add_class, delete_class, edit_class, 
                                            add_attr, del_attr, edit_attr, add_rel,
                                            del_rel, move)
 from parse import *
+from os import listdir
+from os.path import isfile, join
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -41,7 +43,14 @@ def index():
         # grab all entries in order
         classes = Class.query.order_by(Class.date_created).all()
         attributes = Attribute.query.order_by(Attribute.date_created).all()
-        return render_template('index.html', classes=classes, attributes=attributes, cmd_stack=cmd_stack)
+        theme = Settings.query.get({"name":"theme"})
+        if theme is None:
+            theme = "Dark-Green"
+        else:
+            theme = theme.value
+
+        athemes = populateThemes();
+        return render_template('index.html', classes=classes, attributes=attributes, cmd_stack=cmd_stack, theme=theme, availThemes=athemes)
 
 
 @app.route('/delete/', methods=['POST'])
@@ -58,6 +67,12 @@ def delete():
     except:
         flash("Invalid name", 'error')
 
+    return redirect('/')
+
+@app.route('/clear/', methods=['POST'])
+def clear():
+    """Deals with requests to clear the database."""
+    core_clear()
     return redirect('/')
 
 @app.route('/save/', methods=['POST'])
@@ -126,13 +141,12 @@ def manipCharacteristics():
         class_name = theDict[' super ']['class_name']
         for el in theDict:
             if 'action' not in theDict[el]:
-                if theDict[el]['new_attribute'] != theDict[el]['attribute']:
+                if 'to_name' not in theDict[el] and theDict[el]['new_attribute'] != theDict[el]['attribute']:
                     #rename
                     if theDict[el]['new_attribute'] != "":
                         updateAttribute(class_name, theDict[el]['attribute'], theDict[el]['new_attribute'])
             else:
                 action = theDict[el]['action']
-
                 if action == "Add":
                     if 'attr_type' in theDict[el]:
                         addAttributes(class_name, theDict[el]['attrs'], theDict[el]['attr_type'])
@@ -141,9 +155,11 @@ def manipCharacteristics():
                 elif action == "RenameClass":
                     update(class_name, theDict[el]['new_name'])
                     class_name = theDict[el]['new_name']
+                elif action == "DeleteRel":
+                    delRelationship(class_name, theDict[el]['to_name'])
 
     except:
-        flash("Invalid arguments, try again", 'error')
+        flash("Invalid arguments, try again.", 'error')
     
     return redirect('/')
 
@@ -156,10 +172,11 @@ def update(oldName, newName):
 def delAttribute(name, attr):
     """Helper to remove attributes from class."""
     attr_to_del = Attribute.query.get({"class_name":name, "attribute":attr})
-    delAttrCmd = del_attr(name, attr, attr_to_del.attr_type)
-    if cmd_stack.execute(delAttrCmd):
+    if not attr_to_del is None:
+        delAttrCmd = del_attr(name, attr, attr_to_del.attr_type)
+        cmd_stack.execute(delAttrCmd)
+    else:
         flash("ERROR: Unable to remove attribute " + attr + " from " + name, 'error')
-
 
 def updateAttribute(name, oldAttr, newAttr):
     """Helper to update attributes in class."""
@@ -177,46 +194,30 @@ def addAttributes(name, attrString, attrType):
             flash('ERROR: Unable to add attribute ' + attr + " to " + name, 'error')
 
 
-@app.route("/manipRelationship/", methods=['POST'])
-def manipRelationship():
-    """Deals with requests from GUI to manipulate relationships.
-    
-    Delegates to helper functions
-    """
+@app.route("/addRelationship/", methods=['POST'])
+def addRelationship():
+    """Helper function to add relationships to class."""
     try:
         fro = request.form['class_name']
-        to = request.form.getlist('relationship')
-        action = request.form['action']
-        if (action == 'delete'):
-            delRelationship(fro, to)
-        elif (action == 'add'):
-            rel_type = request.form['rel_type']
-            addRelationship(fro, to, rel_type)
+        to = request.form['to']
+        rel_type = request.form['rel_type']
+        addRelCmd = add_rel(fro, to, rel_type)
+        if cmd_stack.execute(addRelCmd):
+            flash("ERROR: Unable to add relationship from " + fro + " to " + to, 'error')
     except:
         flash("Invalid arguments, try again.", 'error')
-    
+
     return redirect('/')
-
-
-def addRelationship(fro, to, rel_type):
-    """Helper function to add relationships to class."""
-    for child in to:
-        addRelCmd = add_rel(fro, child, rel_type)
-        if cmd_stack.execute(addRelCmd):
-            flash("ERROR: Unable to add relationship from " + fro + " to " + child, 'error')
 
 
 def delRelationship(fro, to):
     """Helper function to remove relationships from class."""
-    print(getRelationship())
-    for child in to:
-        rel_to_del = Relationship.query.get({"from_name":fro, "to_name":child})
-        if rel_to_del is None:
-            flash("ERROR: No such relationship from " + fro + " to " + child, 'error')
-        else:
-            delRelCmd = del_rel(fro, child, rel_to_del.rel_type)
-            if cmd_stack.execute(delRelCmd):
-                flash("ERROR: Unable to delete relationship from " + fro + " to " + child, 'error')
+    rel_to_del = Relationship.query.get({"from_name":fro, "to_name":to})
+    if not rel_to_del is None:
+        delRelCmd = del_rel(fro, to, rel_to_del.rel_type)
+        cmd_stack.execute(delRelCmd)
+    else:
+        flash("ERROR: Unable to delete relationship from " + fro + " to " + to, 'error')
 
 
 @app.route("/getRelationships/", methods=['POST'])
@@ -242,3 +243,37 @@ def redo():
     """Deals with requests from GUI to redo the last command undone by the user"""
     cmd_stack.redo()
     return redirect('/')
+
+def populateThemes():
+    """Helper function to query themes folder to display user options"""
+    themePath = "app_package/static/css/themes"
+    themeFiles = [f for f in listdir(themePath) if isfile(join(themePath, f))]
+    themes = []
+    for i in themeFiles:
+        themes.append(i[0:-4])
+    return themes
+
+@app.route("/updateTheme/", methods=['POST'])
+def updateTheme():
+    """Deals with requests from GUI to change to a different stylesheet"""
+    newTheme = request.form['theme']
+    theme = Settings.query.get({"name":"theme"})
+    if theme is None:
+        newTheme = Settings(name="theme", value=newTheme)
+        db.session.add(newTheme)
+    else:
+        theme.value = newTheme
+
+    db.session.commit()
+    return redirect('/')
+
+@app.route("/export/", methods=['POST'])
+def export():
+    """Deals with requests from GUI to export a screenshot of the diagram"""
+    try:
+        image_name = request.form['export_name']
+        image = core_export(image_name, "gui")
+        return Response(image, mimetype="image/png", headers={"Content-disposition": "attachment; filename=" + image_name + ".png;"})
+    except:
+        flash("There was a problem exporting. Try again.", 'error')
+        return redirect('/')
