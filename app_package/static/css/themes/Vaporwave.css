@@ -1,9 +1,9 @@
-/* Contains style information for base index */
+/* Contains style information for base index in light green theme */
 
 body{
     margin: 0px;
     padding: 0px;
-    background-color: #a716d7;
+    background-color: rgb(75, 0, 135);
 }
 
 .main-body{
@@ -13,10 +13,11 @@ body{
 .flash-error {
     outline: none;
     cursor: pointer;
-    border: 1px solid #4e3761;
-    background-color: #4e3761;
-    box-shadow: 0px 0px 10px rgb(36, 36, 36);
-    color:#efba9b;
+    border: 1px solid rgb(236, 0, 255);
+    background-color: rgb(78, 0, 248);
+    box-shadow: 0px 0px 10px rgb(0, 238, 248);
+    color: rgb(243, 243, 243);
+    font-family: 'Ubuntu', sans-serif;
     border-radius: 5px;
     width: 160px;
     margin: 20px;
@@ -27,16 +28,16 @@ body{
     position: absolute;
     top: 40px;
     right: 20px;
-    font-family: 'Ubuntu', sans-serif;
 }
 
 .flash-success {
     outline: none;
     cursor: pointer;
-    border: 1px solid #4e3761;
-    background-color: #4e3761;
-    box-shadow: 0px 0px 10px rgb(36, 36, 36);
-    color: #efba9b;
+    border: 1px solid rgb(236, 0, 255);
+    background-color: rgb(78, 0, 248);
+    box-shadow: 0px 0px 10px rgb(0, 238, 248);
+    color: rgb(243, 243, 243);
+    font-family: 'Ubuntu', sans-serif;
     border-radius: 5px;
     width: 160px;
     margin: 20px;
@@ -47,22 +48,26 @@ body{
     position: absolute;
     top: 40px;
     right: 20px;
-    font-family: 'Ubuntu', sans-serif;
 }
 
-.undo {
-    background-color: #efba9b;
+#undo {
+    position: fixed;
+    top: 0;
+    right: 50px;
+    z-index: 999999;
 }
 
-.redo {
-    background-color: #efba9b;
+#redo {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 999999;
 }
 
 .undo-redo {
-    float: right;
-    background-color: #22184d;
+    background-color: #4E00F8;
     border: none;
-    color: #efba9b;
+    color: #00EEF8;
     text-align: center;
     text-decoration: none;
     font-size: 30pt;
@@ -71,12 +76,16 @@ body{
     cursor: pointer;
 }
 
+.undo-redo:hover {
+    background-color: rgb(116, 0, 248);
+}
+
 .navBar{
     width: 255px;
     position: fixed;
     z-index: 125000;
     left: -257px;
-    background-color: #22184d;
+    background-color: rgb(78, 0, 248);
     transition: 0.5s;
 }
 
@@ -103,8 +112,8 @@ body{
     width: 40px;
     height: 5px;
     display: block;
-    background-color: #efba9b;
-    border: 1px solid #efba9b;
+    background-color: rgb(255, 0, 201);
+    border: 1px solid rgb(255, 0, 201);
     border-radius: 2px;
     margin-top: 4px;
     transition: 0.5s;
@@ -129,30 +138,29 @@ body{
 #AddButton {
     cursor: pointer;
     outline: none;
-    background-color:#4e3761;
+    background-color: #350D70;
+    color: #00EEF8;
     font-size: 22px;
     font-weight: bold;
     font-family: 'Ubuntu', sans-serif;
-    color: #efba9b;
-    border: 2px solid #efba9b;
+    border: 2px solid #FF00C9;
     width: 150px;
     height: 45px;
 }
 
 #AddButton:hover {
-    color: rgb(255, 224, 82);
-    box-shadow: 0px 0px 15px #b11bc2;
+    box-shadow: 0px 0px 20px rgb(235, 160, 0);
 }
 
 #RelationshipButton {
     cursor: pointer;
     outline: none;
-    background-color: #474B4F;
-    color: white;
+    background-color: #CCCCCC;
+    color: #111111;
     font-size: 16px;
     font-weight: bold;
     font-family: 'Ubuntu', sans-serif;
-    border: 1px solid rgb(0, 204, 255);
+    border: 1px solid #86C232;
     border-radius: 5px;
     width: 150px;
     height: 25px;
@@ -162,56 +170,51 @@ body{
 }
 
 #RelationshipButton:hover {
-    color: white;
     box-shadow: 5px 8px 8px rgb(36, 36, 36);
 }
 
 .active{
-    color: rgb(0, 204, 255);
     border-radius: 5px 5px 0px 0px;
-    box-shadow: 0px 0px 15px #b11bc2;
+    box-shadow: 0px 0px 20px rgb(235, 160, 0);
 }
 
 .non-active {
-    color: white;
     border-radius: 5px;
-    box-shadow: 0px 0px 15px rgb(36, 36, 36);
+    box-shadow: 0px 0px 10px rgb(246, 204, 0);
 }
 
 #SaveButton {
     cursor: pointer;
     outline: none;
-    background-color:#4e3761;
+    background-color: #350D70;
+    color: #00EEF8;
     font-size: 22px;
     font-weight: bold;
     font-family: 'Ubuntu', sans-serif;
-    color: #efba9b;
-    border: 2px solid #efba9b;
+    border: 2px solid #FF00C9;
     width: 150px;
     height: 45px;
 }
 
 #SaveButton:hover{
-    color: rgb(255, 224, 82);
-    box-shadow: 0px 0px 15px #b11bc2;
+    box-shadow: 0px 0px 20px rgb(235, 160, 0);
 }
 
 #LoadButton {
     cursor: pointer;
     outline: none;
-    background-color:#4e3761;
+    background-color: #350D70;
+    color: #00EEF8;
     font-size: 22px;
     font-weight: bold;
     font-family: 'Ubuntu', sans-serif;
-    color: #efba9b;
-    border: 2px solid #efba9b;
+    border: 2px solid #FF00C9;
     width: 150px;
     height: 45px;
 }
 
 #LoadButton:hover {
-    color: rgb(255, 224, 82);
-    box-shadow: 0px 0px 15px #b11bc2;
+    box-shadow: 0px 0px 20px rgb(235, 160, 0);
 }
 
 #DeleteAdd{
@@ -271,18 +274,19 @@ body{
 .classPopup{
     position: sticky;
     z-index: 1;
-    background-color: #4e3761;
-    border: 1px solid #efba9b;
+    background-color: #350D70;
+    border: 1px solid #FF00C9;
+    color: #00EEF8;
     text-align: center;
     width: 200px;
     height: 130px;
     font-size: 16px;
     font-family: 'Ubuntu', sans-serif;
     border-radius: 0px 0px 5px 5px;
-    box-shadow: 5px 4px 3px rgb(36, 36, 36);
+    box-shadow: 0px 0px 10px rgb(246, 204, 0);
     visibility: visible;
     -webkit-animation: fadeIn .5s;
-    animation: fadeIn .5s
+    animation: fadeIn .5s;
 }
 
 .classPopup input {
@@ -298,7 +302,7 @@ body{
     padding-top: 15px;
     margin-bottom: 0px;
     margin-top: 5px;
-    color: #efba9b;
+    color: #00EEF8;
 }
 
 #AddClassForm{
@@ -308,10 +312,10 @@ body{
 .SubmitButton {
     outline: none;
     cursor: pointer;
-    border: 1px solid #efba9b;
-    background-color: #4e3761;
-    box-shadow: 2px 2px 1px rgb(36, 36, 36);
-    color: #efba9b;
+    border: 1px solid #FF00C9;
+    background-color: #00EEF8;
+    box-shadow: 0px 0px 5px rgb(246, 204, 0);
+    color: #350D70;
     border-radius: 5px;
     width: 60px;
     font-weight: bold;
@@ -319,24 +323,25 @@ body{
 }
 
 .SubmitButton:hover{
-    box-shadow: 3px 3px 3px rgb(36, 36, 36);
+    box-shadow: 0px 0px 7px rgb(235, 160, 0);
 }
 
 .savePopup{
     position: sticky;
     z-index: 1;
-    background-color: #4e3761;
-    border: 1px solid #efba9b;
+    background-color: #350D70;
+    border: 1px solid #FF00C9;
+    color: #00EEF8;
     text-align: center;
     width: 200px;
     height: 130px;
     font-size: 16px;
     font-family: 'Ubuntu', sans-serif;
     border-radius: 0px 0px 5px 5px;
-    box-shadow: 5px 4px 3px rgb(36, 36, 36);
+    box-shadow: 0px 0px 10px rgb(246, 204, 0);
     visibility: visible;
     -webkit-animation: fadeIn .5s;
-    animation: fadeIn .5s
+    animation: fadeIn .5s;
 }
 
 .savePopup input {
@@ -352,7 +357,7 @@ body{
     padding-top: 15px;
     margin-bottom: 0px;
     margin-top: 5px;
-    color: #efba9b;
+    color: #00EEF8;
 }
 
 #saveForm{
@@ -362,10 +367,10 @@ body{
 .saveButton {
     outline: none;
     cursor: pointer;
-    border: 1px solid #efba9b;
-    background-color: #4e3761;
-    box-shadow: 2px 2px 1px rgb(36, 36, 36);
-    color: #efba9b;
+    border: 1px solid #FF00C9;
+    background-color: #00EEF8;
+    box-shadow: 0px 0px 5px rgb(246, 204, 0);
+    color: #350D70;
     border-radius: 5px;
     width: 60px;
     font-weight: bold;
@@ -373,24 +378,46 @@ body{
 }
 
 .saveButton:hover{
-    box-shadow: 3px 3px 3px rgb(36, 36, 36);
+    box-shadow: 0px 0px 7px rgb(235, 160, 0);
+}
+
+.RelClass {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+}
+
+.RelButton {
+    cursor: pointer;
+    background-color: rgb(78, 0, 248);
+    outline: none;
+    color: #00EEF8;
+    font-size: 16px;
+    border: none;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.RelButton:hover {
+    background-color: rgb(116, 0, 248);
 }
 
 .loadPopup{
     position: sticky;
     z-index: 1;
-    background-color: #4e3761;
-    border: 1px solid #efba9b;
+    background-color: #350D70;
+    border: 1px solid #FF00C9;
+    color: #00EEF8;
     text-align: center;
     width: 200px;
     height: 130px;
     font-size: 16px;
     font-family: 'Ubuntu', sans-serif;
     border-radius: 0px 0px 5px 5px;
-    box-shadow: 5px 4px 3px rgb(36, 36, 36);
+    box-shadow: 0px 0px 10px rgb(246, 204, 0);
     visibility: visible;
     -webkit-animation: fadeIn .5s;
-    animation: fadeIn .5s
+    animation: fadeIn .5s;
 }
 
 .loadPopup input {
@@ -406,12 +433,12 @@ body{
     padding-top: 15px;
     margin-bottom: 0px;
     margin-top: 5px;
-    color: #efba9b;
+    color: #00EEF8;
 }
 
 #loadInput {
     width: 175px;
-    color: #efba9b;
+    color: #00EEF8;
     border: none;
     outline: none;
     font-family: 'Ubuntu', sans-serif;
@@ -425,10 +452,10 @@ body{
 .loadButton {
     outline: none;
     cursor: pointer;
-    border: 1px solid #efba9b;
-    background-color: #4e3761;
-    box-shadow: 2px 2px 1px rgb(36, 36, 36);
-    color: #efba9b;
+    border: 1px solid #FF00C9;
+    background-color: #00EEF8;
+    box-shadow: 0px 0px 5px rgb(246, 204, 0);
+    color: #350D70;
     border-radius: 5px;
     width: 60px;
     font-weight: bold;
@@ -436,40 +463,129 @@ body{
 }
 
 .loadButton:hover{
-    box-shadow: 3px 3px 3px rgb(36, 36, 36);
+    box-shadow: 0px 0px 7px rgb(235, 160, 0);
+}
+
+.exportPopup{
+    position: sticky;
+    z-index: 1;
+    background-color: #350D70;
+    border: 1px solid #FF00C9;
+    color: #00EEF8;
+    text-align: center;
+    width: 200px;
+    height: 130px;
+    font-size: 16px;
+    font-family: 'Ubuntu', sans-serif;
+    border-radius: 0px 0px 5px 5px;
+    box-shadow: 0px 0px 10px rgb(246, 204, 0);
+    visibility: visible;
+    -webkit-animation: fadeIn .5s;
+    animation: fadeIn .5s;
+}
+
+.exportPopup input {
+    padding-left: 5px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    box-shadow: none;
+}
+
+.exportPopup h1 {
+    padding-top: 15px;
+    margin-bottom: 0px;
+    margin-top: 5px;
+    color: #00EEF8;
+}
+
+#exportForm{
+    display: none;
+}
+
+.exportButton {
+    outline: none;
+    cursor: pointer;
+    border: 1px solid #FF00C9;
+    background-color: #00EEF8;
+    box-shadow: 0px 0px 5px rgb(246, 204, 0);
+    color: #350D70;
+    border-radius: 5px;
+    width: 60px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.exportButton:hover{
+    box-shadow: 0px 0px 7px rgb(235, 160, 0);
+}
+
+#ClearButton {
+    cursor: pointer;
+    outline: none;
+    background-color: #350D70;
+    color: #00EEF8;
+    font-size: 22px;
+    font-weight: bold;
+    font-family: 'Ubuntu', sans-serif;
+    border: 2px solid #FF00C9;
+    width: 150px;
+    height: 45px;
+}
+
+#ClearButton:hover{
+    box-shadow: 0px 0px 20px rgb(235, 160, 0);
+}
+
+#ExportButton {
+    cursor: pointer;
+    outline: none;
+    background-color: #350D70;
+    color: #00EEF8;
+    font-size: 22px;
+    font-weight: bold;
+    font-family: 'Ubuntu', sans-serif;
+    border: 2px solid #FF00C9;
+    width: 150px;
+    height: 45px;
+}
+
+#ExportButton:hover{
+    box-shadow: 0px 0px 20px rgb(235, 160, 0);
 }
 
 #noClasses {
     font-family: 'Ubuntu', sans-serif; 
     left: 45%; 
     top: 40%; 
-    color: white;
+    color: #00EEF8;
     font-size: 20px;
     font-weight: bold;
     text-align: center;
     padding-top: 25px;
     border-radius: 5px;
-    border: 2px solid rgb(0, 204, 255);
+    border: 2px solid #FF00C9;
     width: 250px;
     height: 50px;
-    background-color: #222629;
+    background-color: #4E00F8;
     position: fixed;
 }
 
 .Class{
     font-size: 16px;
     font-family: 'Ubuntu', sans-serif;
-    background-color: #474B4F;
-    color: #FFFFFF;
+    background-color: #EBA000;
+    color: #111111;
     cursor: pointer;
     position: absolute;
     border-radius: 0px 0px 5px 5px;
-    border: 1px solid #222629;
     z-index: 1;
+    overflow: hidden;
 }
 
 .Class:hover {
-    box-shadow: 0px 0px 15px #025eff;
+    box-shadow: 0px 0px 15px #F6CC00;
 }
 
 .EditClass {
@@ -480,9 +596,9 @@ body{
 
 .EditButton {
     cursor: pointer;
-    background-color: rgb(0, 204, 255);
+    background-color: #00EEF8;
     outline: none;
-    color: #222629;
+    color: #4E00F8;
     font-size: 16px;
     border: none;
     padding-left: 10px;
@@ -490,7 +606,7 @@ body{
 }
 
 .EditButton:hover {
-    background-color: rgb(0, 98, 163);
+    background-color: #82FAFF;
 }
 
 .SaveClass {
@@ -519,28 +635,14 @@ body{
 }
 
 .activeEdit{
-    box-shadow: 0px 0px 15px #025eff;
-}
-
-#AddAttribute {
-    border: 1px solid rgb(0, 204, 255);
-    background-color: #474B4F;
-    color: white;
-    box-shadow: 5px 3px 3px rgb(36, 36, 36);
-    padding-top: 2px;
-    padding-bottom: 2px;
-    cursor: pointer;
-}
-
-#AddAttribute:hover {
-    box-shadow: 5px 8px 8px rgb(36, 36, 36);
+    box-shadow: 0px 0px 15px #F6CC00;
 }
 
 .outline {
     margin-top: 1px;
-    border: 1px solid rgb(0, 204, 255);
-    background-color: #474B4F;
-    color: white;
+    border: 1px solid #86C232;
+    background-color: #CCCCCC;
+    color: #111111;
     box-shadow: 5px 3px 3px rgb(36, 36, 36);
     padding-top: 2px;
     padding-bottom: 2px;
@@ -562,19 +664,19 @@ body{
 
 .headings {
     padding-left: 10px;
-    color: white;
+    color: #111111;
 }
 
 .attributeList {
     list-style-type: square;
     padding-right: 15px;
-    color: white;
+    color: #111111;
 }
 
 .attributeList li {
     font-size: 14px;
     margin-bottom: 5px;
-    color: white;
+    color: #111111;
 }
 
 .checked {
@@ -584,7 +686,7 @@ body{
 
 .unchecked {
     cursor: pointer;
-    color: #eee;
+    color: #111111;
 }
 
 .container input[type="checkbox"],
@@ -606,12 +708,12 @@ body{
 
 .relationshipList {
     list-style: none;
-    color: white;
+    color: #111111;
 }
 
 .relationshipList li {
     font-size: 14px;
-    color: white;
+    color: #111111;
 }
 
 #relOptions {
@@ -641,4 +743,27 @@ body{
 @keyframes fadeIn {
     from {opacity: 0;}
     to {opacity: 1;}
+}
+
+.labelStyle {
+    color: #FF00C9;
+    font-size: 30px; 
+    font-weight: bold;
+}
+
+#addRelHelp {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    font-family: 'Ubuntu', sans-serif;
+    color: #F6CC00;
+    z-index: 999999999999;
+}
+
+#addRelHelp a {
+    color: #FF00C9;
+    cursor: pointer;
+    text-decoration: underline;
 }
