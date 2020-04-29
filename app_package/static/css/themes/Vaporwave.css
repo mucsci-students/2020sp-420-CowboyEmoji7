@@ -504,6 +504,7 @@ body{
     display: none;
 }
 
+/* Small button within export window */
 .exportButton {
     outline: none;
     cursor: pointer;
@@ -538,6 +539,7 @@ body{
     box-shadow: 0px 0px 20px rgb(235, 160, 0);
 }
 
+/* The actual button on navbar */
 #ExportButton {
     cursor: pointer;
     outline: none;
@@ -576,7 +578,7 @@ body{
     font-size: 16px;
     font-family: 'Ubuntu', sans-serif;
     background-color: #EBA000;
-    color: #111111;
+    color: #350D70;
     cursor: pointer;
     position: absolute;
     border-radius: 0px 0px 5px 5px;
@@ -640,21 +642,21 @@ body{
 
 .outline {
     margin-top: 1px;
-    border: 1px solid #86C232;
-    background-color: #CCCCCC;
-    color: #111111;
-    box-shadow: 5px 3px 3px rgb(36, 36, 36);
+    border: 1px solid #FF00C9;
+    background-color: #350D70;
+    color: #00EEF8;
+    box-shadow: 0px 0px 7px #F6CC00;
     padding-top: 2px;
     padding-bottom: 2px;
     cursor: pointer;
 }
 
 .outline:hover {
-    box-shadow: 5px 8px 8px rgb(36, 36, 36);
+    box-shadow: 0px 0px 10px rgb(246, 204, 0);
 }
 
 .divider{
-    background-color: #222629;
+    background-color:#4E00F8;
     border: none;
     height: 2px;
     position: relative;
