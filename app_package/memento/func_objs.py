@@ -6,13 +6,13 @@ class Command:
     """The base class which all commands are a subclass
        All subclasses require these methods"""
     def execute(self):
-        pass
+        pass    # pragma: no cover
 
     def undo(self):
-        return
+        return  # pragma: no cover
 
     def redo(self):
-        pass
+        pass    # pragma: no cover
 
 
 class add_class(Command):

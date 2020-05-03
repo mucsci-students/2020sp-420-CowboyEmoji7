@@ -15,7 +15,9 @@ requirements = [
     "six==1.14.0",
     "SQLAlchemy==1.3.13",
     "Werkzeug==0.16.1",
-    "parse==1.15.0"
+    "parse==1.15.0",
+    "webdriver-manager==2.3.0",
+    "selenium==3.141.0"
 ]
 
 ################################### OS Specific ##################################

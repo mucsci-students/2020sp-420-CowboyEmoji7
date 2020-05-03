@@ -1,7 +1,7 @@
 """Contains core controller functionality connecting view to data model."""
 
-from app_package.models import Class, ClassSchema, Attribute, AttributeSchema, Relationship, RelationshipSchema
-from app_package import app, db
+from app_package.models import Class, ClassSchema, Attribute, AttributeSchema, Relationship, RelationshipSchema, Settings
+from app_package import app, db, driver
 from flask import json
 
 def core_add(class_name):
@@ -239,6 +239,22 @@ def core_parse (string):
         
     return listBuf
 
+def core_export(name, interface):
+    """Takes a screenshot of the current contents of the diagram and gives them to the user"""
+    if driver == 'null':
+        return 1    # pragma: no cover
+    else:
+        driver.refresh()
+        height = driver.execute_script("return Math.max( document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight )")
+        width = driver.execute_script("return Math.max( document.body.scrollWidth, document.body.offsetWidth, document.documentElement.clientWidth, document.documentElement.scrollWidth, document.documentElement.offsetWidth )")
+        margin = 15
+        driver.set_window_size(width + margin, height + margin)
+        if interface == "gui":
+            return driver.get_screenshot_as_png()
+        else:
+            driver.save_screenshot(name + '.png')
+
+
 def removeTrailingWhitespace(string):
     """Helper function which removes trailing whitespace from a string"""
     while (string[-1] == ' ' or string[-1] == '\t'):
@@ -265,5 +281,12 @@ def parseType(input):
 
 def core_clear():
     """Clears all existing classes from the database."""
+    theme = Settings.query.get({"name":"theme"})
+    themeVal = theme.value if theme is not None else None
     db.drop_all()
     db.create_all()
+    db.session.commit()
+    if themeVal is not None:
+        newTheme = Settings(name="theme", value=themeVal)
+        db.session.add(newTheme)
+        db.session.commit()

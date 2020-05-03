@@ -1,4 +1,5 @@
 # Cowboy Emoji 7 UML Editor
+![Python application](https://github.com/mucsci-students/2020sp-420-CowboyEmoji7/workflows/Python%20application/badge.svg)
 [![codecov](https://codecov.io/gh/mucsci-students/2020sp-420-CowboyEmoji7/branch/develop/graph/badge.svg)](https://codecov.io/gh/mucsci-students/2020sp-420-CowboyEmoji7)
 
 This project is an open source UML editor built using Flask, jsPlumb, SQLAlchemy, and other useful open source projects. Contains a command line interface, as well as a graphical interface that runs inside your browser. This project exists as a passion project for us at Cowboy Emoji 7--passion for the Unified Modeling Language and, to a lesser extent, passion for passing grades <sup><sup>and degrees</sup></sup>.
@@ -58,10 +59,10 @@ We have a continuous integration setup that runs our current suite of pytest tes
 To run tests manually, ensure pytest is installed on your system and run 'pytest' in the top level of the project.
 
 # Use
-See USERGUIDE.md
+See [our user guide](USERGUIDE.md)
 
 # Contribute
-See CONTRIBUTING.md and CODE_OF_CONDUCT.md
+See [our contributing guide](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md)
 
 # License
-See LICENSE and NOTICE.txt
+See [our license](LICENSE) and [notice](NOTICE.txt)

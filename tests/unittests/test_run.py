@@ -730,7 +730,21 @@ def test_clear(capsys):
     assert captured.out == "No Classes\n\n"
 
 
+
 def teardown_method(self, method):
     # This method is being called after each test case, and it will revert input back to original function
     module.input = input  
     """
+
+################################# EXPORT #################################
+
+def test_export(capsys):
+    captured = attribute_frame(capsys)
+    app.do_export("howdy no")
+    captured = capsys.readouterr()
+    assert captured.out == "Usage: export <file_location>\n"
+
+    app.do_export("howdy")
+    captured = capsys.readouterr()
+    assert captured.out == "Successfully exported diagram as \'howdy\'\n"
+

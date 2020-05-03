@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico')}}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/themes/' + theme + '.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="{{ url_for('static', filename='css/ubuntu.css') }}" rel="stylesheet">
     <title>UML Editor</title>
@@ -75,13 +75,34 @@
             </li>
             <li><button id="ExportButton" class="non-active" onclick="openExportBox()"><i class="fa fa-clone"></i> Export</button>
                 <span class="exportPopup" id="exportForm">
-                    <form action="" class="form-container" method="POST" onsubmit="closeExportBox()">
+                    <form action="/export/" class="form-container" method="POST" onsubmit="closeExportBox()">
                         <h1>Export File</h1>
                         <input type="text" placeholder="Enter File Name" id="exportInput" name="export_name" required>
                         <button type="submit" class="btn exportButton">Export</button>
                         <button id="DeleteSave" class="btn" onclick="closeExportBoxBeforeSubmit()"><i class="fa fa-close"></i></button>
                     </form>
                 </span>
+            </li>
+            <li>
+                <form action="/clear/" method="POST">
+                    <button id="ClearButton" class="non-active" type="submit" onclick="return confirm('Are you sure you would like to clear the page?\nThis action cannot be undone.')"><i class="fa fa-paint-brush"></i> Clear</button></li>
+                </form>
+            </li>
+            <li>
+                <form id="themeSelect" action="/updateTheme/" method="POST">
+                    <input type="hidden" name="theme_name" value="">
+                    <select style="width: 70%; box-shadow: none;" name="theme" required>
+                        {% for t in availThemes %}
+                        {% if t == theme %}
+                        <option class="relOptions" selected value="{{ t }}">{{ t }}</option>
+                        {% else %}
+                        <option class="relOptions" value="{{ t }}">{{ t }}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                    <br>
+                    <button class="outline" type="submit" name="action" value="add">Update Theme</button>
+                </form>
             </li>
         </ul>
     </div>

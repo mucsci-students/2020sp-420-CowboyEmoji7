@@ -4,14 +4,16 @@ Contains routes through which requests from
   the view are passed to interact with the data model.
 """
 
-from app_package.models import Class, ClassSchema, Relationship, RelationshipSchema, Attribute
+from app_package.models import Class, ClassSchema, Relationship, RelationshipSchema, Attribute, Settings
 from flask import render_template, json, url_for, request, redirect, flash, Response, jsonify
-from app_package import app, db, cmd_stack
-from app_package.core_func import core_save, core_load, core_parse, core_clear
+from app_package import app, db, cmd_stack, driver
+from app_package.core_func import core_save, core_load, core_parse, core_clear, core_export
 from app_package.memento.func_objs import (add_class, delete_class, edit_class, 
                                            add_attr, del_attr, edit_attr, add_rel,
                                            del_rel, move)
 from parse import *
+from os import listdir
+from os.path import isfile, join
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -41,7 +43,14 @@ def index():
         # grab all entries in order
         classes = Class.query.order_by(Class.date_created).all()
         attributes = Attribute.query.order_by(Attribute.date_created).all()
-        return render_template('index.html', classes=classes, attributes=attributes, cmd_stack=cmd_stack)
+        theme = Settings.query.get({"name":"theme"})
+        if theme is None:
+            theme = "Dark-Green"
+        else:
+            theme = theme.value
+
+        athemes = populateThemes();
+        return render_template('index.html', classes=classes, attributes=attributes, cmd_stack=cmd_stack, theme=theme, availThemes=athemes)
 
 
 @app.route('/delete/', methods=['POST'])
@@ -132,7 +141,7 @@ def manipCharacteristics():
         class_name = theDict[' super ']['class_name']
         for el in theDict:
             if 'action' not in theDict[el]:
-                if theDict[el]['new_attribute'] != theDict[el]['attribute']:
+                if 'to_name' not in theDict[el] and theDict[el]['new_attribute'] != theDict[el]['attribute']:
                     #rename
                     if theDict[el]['new_attribute'] != "":
                         updateAttribute(class_name, theDict[el]['attribute'], theDict[el]['new_attribute'])
@@ -234,3 +243,37 @@ def redo():
     """Deals with requests from GUI to redo the last command undone by the user"""
     cmd_stack.redo()
     return redirect('/')
+
+def populateThemes():
+    """Helper function to query themes folder to display user options"""
+    themePath = "app_package/static/css/themes"
+    themeFiles = [f for f in listdir(themePath) if isfile(join(themePath, f))]
+    themes = []
+    for i in themeFiles:
+        themes.append(i[0:-4])
+    return themes
+
+@app.route("/updateTheme/", methods=['POST'])
+def updateTheme():
+    """Deals with requests from GUI to change to a different stylesheet"""
+    newTheme = request.form['theme']
+    theme = Settings.query.get({"name":"theme"})
+    if theme is None:
+        newTheme = Settings(name="theme", value=newTheme)
+        db.session.add(newTheme)
+    else:
+        theme.value = newTheme
+
+    db.session.commit()
+    return redirect('/')
+
+@app.route("/export/", methods=['POST'])
+def export():
+    """Deals with requests from GUI to export a screenshot of the diagram"""
+    try:
+        image_name = request.form['export_name']
+        image = core_export(image_name, "gui")
+        return Response(image, mimetype="image/png", headers={"Content-disposition": "attachment; filename=" + image_name + ".png;"})
+    except:
+        flash("There was a problem exporting. Try again.", 'error')
+        return redirect('/')
