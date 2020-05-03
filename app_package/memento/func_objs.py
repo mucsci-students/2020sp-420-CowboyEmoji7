@@ -69,10 +69,7 @@ class delete_class(Command):
         if result == 0:
             for attr in self.attributes:
                 core_add_attr(self.className, attr.attribute, attr.attr_type)
-            print(self.relationships)
             for rel in self.relationships:
-                print(rel.from_name)
-                
                 core_add_rel(rel.from_name, rel.to_name, rel.rel_type)
         
             class_ = Class.query.get_or_404(self.className)
