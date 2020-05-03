@@ -319,7 +319,7 @@ function renderLines(){
                         anchor:"Continuous",
                         endpoint:"Blank",
                         connector:getConnector(relType, from, to),
-                        paintStyle:{ stroke: '#6B6E70', strokeWidth:2 },
+                        paintStyle:{ stroke: '#FF00C9', strokeWidth:2 },
                         overlays:[getOverlay(relType)]
                     });
                 }
